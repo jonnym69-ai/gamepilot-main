@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "env": {
+    "VITE_API_URL": "@railway_api_url",
+    "VITE_ENABLE_STEAM_INTEGRATION": "true",
+    "VITE_ENABLE_DISCORD_INTEGRATION": "true",
+    "VITE_ENABLE_YOUTUBE_INTEGRATION": "true",
+    "VITE_ENABLE_MOOD_ANALYSIS": "true",
+    "NODE_ENV": "production"
+  }
+}
