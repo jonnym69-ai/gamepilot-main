@@ -1,0 +1,19 @@
+﻿{
+  "name": "@gamepilot/identity-engine",
+  "version": "1.0.0",
+  "description": "Player identity logic for GamePilot",
+  "main": "dist/identity-engine/src/index.js",
+  "types": "dist/identity-engine/src/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.0.2"
+  },
+  "files": [
+    "dist"
+  ]
+}

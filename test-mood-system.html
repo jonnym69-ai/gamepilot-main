@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Mood System Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .mood-button {
+            transition: all 0.3s ease;
+        }
+        .mood-button:hover {
+            transform: scale(1.05);
+        }
+        .mood-button.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
+            🎭 Enhanced Mood System Test
+        </h1>
+
+        <!-- Mood Selection -->
+        <div class="glass-morphism rounded-2xl p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Select Your Gaming Mood</h2>
+            
+            <div class="mb-6">
+                <h3 class="text-lg font-medium mb-3">Primary Mood</h3>
+                <div id="primaryMoodGrid" class="grid grid-cols-4 gap-4">
+                    <!-- Moods will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-lg font-medium mb-3">Secondary Mood (Optional)</h3>
+                <div id="secondaryMoodGrid" class="grid grid-cols-4 gap-4">
+                    <!-- Moods will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium mb-2">Mood Intensity</label>
+                <input type="range" id="intensitySlider" min="0" max="100" value="80" 
+                       class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                <div class="flex justify-between text-xs text-gray-400 mt-1">
+                    <span>Subtle</span>
+                    <span id="intensityValue">80%</span>
+                    <span>Strong</span>
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="testMoodSystem()" 
+                        class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-medium transition-colors">
+                    Test Recommendations
+                </button>
+                <button onclick="clearMood()" 
+                        class="bg-gray-600 hover:bg-gray-700 px-6 py-2 rounded-lg font-medium transition-colors">
+                    Clear
+                </button>
+            </div>
+        </div>
+
+        <!-- Current Selection -->
+        <div class="glass-morphism rounded-2xl p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Current Selection</h2>
+            <div id="currentSelection" class="text-gray-400">
+                No mood selected
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="glass-morphism rounded-2xl p-6">
+            <h2 class="text-2xl font-semibold mb-4">Mood-Based Recommendations</h2>
+            <div id="recommendations" class="space-y-4">
+                <p class="text-gray-400">Select a mood to see recommendations</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced Moods Data (simplified version for testing)
+        const ENHANCED_MOODS = [
+            {
+                id: 'low-energy',
+                name: 'Low-Energy',
+                emoji: '🌊',
+                color: 'from-blue-400 to-cyan-500',
+                energyLevel: 2,
+                socialRequirement: 3,
+                cognitiveLoad: 2,
+                timeCommitment: 3,
+                genreWeights: { 'casual': 0.9, 'puzzle': 0.8, 'simulation': 0.7, 'strategy': 0.3, 'action': 0.2 },
+                tagWeights: { 'relaxing': 0.9, 'meditative': 0.8, 'cozy': 0.8, 'intense': 0.1, 'competitive': 0.1 },
+                compatibleMoods: ['creative', 'exploratory'],
+                conflictingMoods: ['competitive', 'high-energy']
+            },
+            {
+                id: 'high-energy',
+                name: 'High-Energy',
+                emoji: '⚡',
+                color: 'from-yellow-500 to-orange-600',
+                energyLevel: 9,
+                socialRequirement: 6,
+                cognitiveLoad: 7,
+                timeCommitment: 6,
+                genreWeights: { 'action': 0.9, 'racing': 0.8, 'sports': 0.7, 'puzzle': 0.2, 'simulation': 0.3 },
+                tagWeights: { 'intense': 0.9, 'fast-paced': 0.8, 'exciting': 0.8, 'relaxing': 0.1, 'meditative': 0.1 },
+                compatibleMoods: ['competitive', 'social'],
+                conflictingMoods: ['low-energy', 'deep-focus']
+            },
+            {
+                id: 'deep-focus',
+                name: 'Deep-Focus',
+                emoji: '🎯',
+                color: 'from-indigo-500 to-purple-600',
+                energyLevel: 5,
+                socialRequirement: 2,
+                cognitiveLoad: 9,
+                timeCommitment: 8,
+                genreWeights: { 'strategy': 0.9, 'puzzle': 0.8, 'rpg': 0.7, 'action': 0.3, 'casual': 0.2 },
+                tagWeights: { 'strategic': 0.9, 'challenging': 0.8, 'complex': 0.7, 'simple': 0.2, 'casual': 0.2 },
+                compatibleMoods: ['immersive', 'exploratory'],
+                conflictingMoods: ['high-energy', 'social']
+            },
+            {
+                id: 'social',
+                name: 'Social',
+                emoji: '🤝',
+                color: 'from-teal-500 to-cyan-600',
+                energyLevel: 6,
+                socialRequirement: 9,
+                cognitiveLoad: 5,
+                timeCommitment: 6,
+                genreWeights: { 'multiplayer': 0.9, 'sports': 0.7, 'casual': 0.6, 'strategy': 0.5, 'puzzle': 0.3 },
+                tagWeights: { 'multiplayer': 0.9, 'cooperative': 0.8, 'team-based': 0.8, 'single-player': 0.2, 'solo': 0.2 },
+                compatibleMoods: ['high-energy', 'competitive'],
+                conflictingMoods: ['deep-focus', 'low-energy']
+            },
+            {
+                id: 'creative',
+                name: 'Creative',
+                emoji: '🎨',
+                color: 'from-green-500 to-emerald-600',
+                energyLevel: 5,
+                socialRequirement: 4,
+                cognitiveLoad: 6,
+                timeCommitment: 7,
+                genreWeights: { 'simulation': 0.9, 'casual': 0.7, 'puzzle': 0.6, 'action': 0.3, 'strategy': 0.5 },
+                tagWeights: { 'creative': 0.9, 'building': 0.8, 'customization': 0.8, 'destructive': 0.2, 'competitive': 0.3 },
+                compatibleMoods: ['low-energy', 'exploratory'],
+                conflictingMoods: ['competitive', 'high-energy']
+            },
+            {
+                id: 'exploratory',
+                name: 'Exploratory',
+                emoji: '🗺️',
+                color: 'from-green-500 to-teal-600',
+                energyLevel: 6,
+                socialRequirement: 5,
+                cognitiveLoad: 5,
+                timeCommitment: 7,
+                genreWeights: { 'adventure': 0.9, 'rpg': 0.8, 'simulation': 0.6, 'action': 0.5, 'puzzle': 0.4 },
+                tagWeights: { 'exploration': 0.9, 'discovery': 0.8, 'open-world': 0.8, 'linear': 0.2, 'structured': 0.3 },
+                compatibleMoods: ['immersive', 'creative'],
+                conflictingMoods: ['competitive']
+            },
+            {
+                id: 'competitive',
+                name: 'Competitive',
+                emoji: '🏆',
+                color: 'from-red-500 to-orange-600',
+                energyLevel: 8,
+                socialRequirement: 7,
+                cognitiveLoad: 7,
+                timeCommitment: 6,
+                genreWeights: { 'action': 0.8, 'sports': 0.8, 'multiplayer': 0.9, 'casual': 0.2, 'simulation': 0.3 },
+                tagWeights: { 'competitive': 0.9, 'challenging': 0.8, 'skill-based': 0.8, 'casual': 0.1, 'relaxing': 0.1 },
+                compatibleMoods: ['high-energy', 'social'],
+                conflictingMoods: ['low-energy', 'creative']
+            },
+            {
+                id: 'immersive',
+                name: 'Immersive',
+                emoji: '📖',
+                color: 'from-purple-500 to-pink-600',
+                energyLevel: 4,
+                socialRequirement: 2,
+                cognitiveLoad: 6,
+                timeCommitment: 9,
+                genreWeights: { 'rpg': 0.9, 'adventure': 0.8, 'story': 0.9, 'action': 0.4, 'puzzle': 0.5 },
+                tagWeights: { 'story-driven': 0.9, 'atmospheric': 0.8, 'immersive': 0.8, 'arcade': 0.2, 'casual': 0.3 },
+                compatibleMoods: ['deep-focus', 'exploratory'],
+                conflictingMoods: ['high-energy', 'social']
+            }
+        ];
+
+        // Mock Game Data
+        const mockGames = [
+            {
+                id: 'game-1',
+                title: 'Stardew Valley',
+                genres: ['casual', 'simulation'],
+                tags: ['relaxing', 'creative', 'building'],
+                platforms: ['pc', 'mobile'],
+                hoursPlayed: 45
+            },
+            {
+                id: 'game-2', 
+                title: 'Counter-Strike 2',
+                genres: ['action', 'multiplayer'],
+                tags: ['competitive', 'intense', 'team-based'],
+                platforms: ['pc'],
+                hoursPlayed: 120
+            },
+            {
+                id: 'game-3',
+                title: 'Civilization VI',
+                genres: ['strategy'],
+                tags: ['strategic', 'complex', 'challenging'],
+                platforms: ['pc'],
+                hoursPlayed: 200
+            },
+            {
+                id: 'game-4',
+                title: 'The Witcher 3',
+                genres: ['rpg', 'adventure'],
+                tags: ['story-driven', 'immersive', 'exploration'],
+                platforms: ['pc', 'console'],
+                hoursPlayed: 80
+            },
+            {
+                id: 'game-5',
+                title: 'Minecraft',
+                genres: ['creative', 'adventure'],
+                tags: ['creative', 'building', 'exploration'],
+                platforms: ['pc', 'console', 'mobile'],
+                hoursPlayed: 150
+            },
+            {
+                id: 'game-6',
+                title: 'Portal 2',
+                genres: ['puzzle'],
+                tags: ['strategic', 'challenging', 'story-driven'],
+                platforms: ['pc', 'console'],
+                hoursPlayed: 25
+            },
+            {
+                id: 'game-7',
+                title: 'Among Us',
+                genres: ['multiplayer', 'casual'],
+                tags: ['social', 'team-based', 'competitive'],
+                platforms: ['pc', 'mobile'],
+                hoursPlayed: 30
+            },
+            {
+                id: 'game-8',
+                title: 'Subnautica',
+                genres: ['adventure', 'survival'],
+                tags: ['exploration', 'immersive', 'challenging'],
+                platforms: ['pc'],
+                hoursPlayed: 60
+            }
+        ];
+
+        // State
+        let primaryMood = null;
+        let secondaryMood = null;
+        let intensity = 0.8;
+
+        // Initialize the UI
+        function initializeUI() {
+            renderMoodGrid('primaryMoodGrid', true);
+            renderMoodGrid('secondaryMoodGrid', false);
+            setupIntensitySlider();
+        }
+
+        // Render mood grid
+        function renderMoodGrid(containerId, isPrimary) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            ENHANCED_MOODS.forEach(mood => {
+                const button = document.createElement('button');
+                button.className = `mood-button glass-morphism rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer ${mood.color}`;
+                button.innerHTML = `
+                    <span class="text-3xl mb-2">${mood.emoji}</span>
+                    <span class="text-sm font-medium">${mood.name}</span>
+                    <div class="flex gap-1 mt-2">
+                        ${Array.from({ length: Math.ceil(mood.energyLevel / 2) }).map(() => 
+                            '<div class="w-1 h-3 bg-white rounded-full"></div>'
+                        ).join('')}
+                    </div>
+                `;
+                
+                button.onclick = () => selectMood(mood.id, isPrimary);
+                container.appendChild(button);
+            });
+        }
+
+        // Setup intensity slider
+        function setupIntensitySlider() {
+            const slider = document.getElementById('intensitySlider');
+            const valueDisplay = document.getElementById('intensityValue');
+            
+            slider.oninput = (e) => {
+                intensity = e.target.value / 100;
+                valueDisplay.textContent = `${e.target.value}%`;
+            };
+        }
+
+        // Select mood
+        function selectMood(moodId, isPrimary) {
+            if (isPrimary) {
+                primaryMood = moodId;
+                // Clear secondary if it conflicts
+                if (secondaryMood) {
+                    const primary = ENHANCED_MOODS.find(m => m.id === primaryMood);
+                    if (primary.conflictingMoods.includes(secondaryMood)) {
+                        secondaryMood = null;
+                    }
+                }
+            } else {
+                // Check compatibility
+                const primary = ENHANCED_MOODS.find(m => m.id === primaryMood);
+                if (primary && !primary.conflictingMoods.includes(moodId)) {
+                    secondaryMood = moodId;
+                }
+            }
+            
+            updateSelectionDisplay();
+            updateMoodButtons();
+        }
+
+        // Update selection display
+        function updateSelectionDisplay() {
+            const container = document.getElementById('currentSelection');
+            
+            if (!primaryMood) {
+                container.innerHTML = '<p class="text-gray-400">No mood selected</p>';
+                return;
+            }
+
+            const primary = ENHANCED_MOODS.find(m => m.id === primaryMood);
+            const secondary = secondaryMood ? ENHANCED_MOODS.find(m => m.id === secondaryMood) : null;
+
+            let html = `
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="text-3xl">${primary.emoji}</span>
+                        <span class="text-xl font-medium">${primary.name}</span>
+                    </div>
+            `;
+
+            if (secondary) {
+                html += `
+                    <span class="text-gray-400">+</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-3xl">${secondary.emoji}</span>
+                        <span class="text-xl font-medium">${secondary.name}</span>
+                    </div>
+                `;
+            }
+
+            html += `
+                    <div class="ml-auto text-sm text-gray-400">
+                        ${Math.round(intensity * 100)}% intensity
+                    </div>
+                </div>
+                <p class="text-sm text-gray-400 mt-2">
+                    ${primary.description}
+                    ${secondary ? ` + ${secondary.description}` : ''}
+                </p>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // Update mood button states
+        function updateMoodButtons() {
+            // Update primary mood buttons
+            document.querySelectorAll('#primaryMoodGrid button').forEach((button, index) => {
+                const mood = ENHANCED_MOODS[index];
+                if (mood.id === primaryMood) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+
+            // Update secondary mood buttons
+            document.querySelectorAll('#secondaryMoodGrid button').forEach((button, index) => {
+                const mood = ENHANCED_MOODS[index];
+                if (mood.id === secondaryMood) {
+                    button.classList.add('active');
+                    button.style.borderColor = 'rgb(168 85 247)'; // Purple border
+                } else {
+                    button.classList.remove('active');
+                    button.style.borderColor = '';
+                }
+            });
+        }
+
+        // Calculate mood score for a game
+        function calculateMoodScore(game, mood, intensity) {
+            let score = 50;
+
+            // Genre compatibility
+            game.genres.forEach(genre => {
+                const weight = mood.genreWeights[genre] || 0.5;
+                score += (weight - 0.5) * 30;
+            });
+
+            // Tag compatibility
+            game.tags.forEach(tag => {
+                const weight = mood.tagWeights[tag] || 0.5;
+                score += (weight - 0.5) * 20;
+            });
+
+            // Apply intensity
+            score = 50 + (score - 50) * intensity;
+
+            return Math.max(0, Math.min(100, score));
+        }
+
+        // Test mood system
+        function testMoodSystem() {
+            if (!primaryMood) {
+                alert('Please select a primary mood first');
+                return;
+            }
+
+            const primary = ENHANCED_MOODS.find(m => m.id === primaryMood);
+            const secondary = secondaryMood ? ENHANCED_MOODS.find(m => m.id === secondaryMood) : null;
+
+            // Calculate scores for all games
+            const gameScores = mockGames.map(game => {
+                let score = calculateMoodScore(game, primary, intensity);
+                let reasoning = `Matches ${primary.name.toLowerCase()} mood`;
+
+                if (secondary) {
+                    const secondaryScore = calculateMoodScore(game, secondary, intensity);
+                    score = (score + secondaryScore) / 2;
+                    reasoning += ` and ${secondary.name.toLowerCase()} mood`;
+                }
+
+                return {
+                    ...game,
+                    score,
+                    reasoning
+                };
+            });
+
+            // Sort by score and filter
+            const recommendations = gameScores
+                .filter(game => game.score > 40)
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 5);
+
+            displayRecommendations(recommendations, primary, secondary);
+        }
+
+        // Display recommendations
+        function displayRecommendations(recommendations, primary, secondary) {
+            const container = document.getElementById('recommendations');
+
+            if (recommendations.length === 0) {
+                container.innerHTML = '<p class="text-gray-400">No games match your mood selection</p>';
+                return;
+            }
+
+            const html = recommendations.map((game, index) => `
+                <div class="glass-morphism rounded-lg p-4 border-l-4 ${
+                    index === 0 ? 'border-green-500' : 
+                    index === 1 ? 'border-blue-500' : 
+                    index === 2 ? 'border-purple-500' : 'border-gray-500'
+                }">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-semibold">${game.title}</h3>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-gaming-accent">${Math.round(game.score)}%</div>
+                            <div class="text-xs text-gray-400">match</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mb-2">
+                        ${game.genres.map(genre => `<span class="px-2 py-1 bg-gray-700 rounded text-xs">${genre}</span>`).join('')}
+                    </div>
+                    <div class="flex gap-2 mb-2">
+                        ${game.tags.slice(0, 3).map(tag => `<span class="px-2 py-1 bg-gray-600 rounded text-xs">${tag}</span>`).join('')}
+                    </div>
+                    <p class="text-sm text-gray-300">${game.reasoning}</p>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        // Clear mood selection
+        function clearMood() {
+            primaryMood = null;
+            secondaryMood = null;
+            intensity = 0.8;
+            document.getElementById('intensitySlider').value = 80;
+            document.getElementById('intensityValue').textContent = '80%';
+            updateSelectionDisplay();
+            updateMoodButtons();
+            document.getElementById('recommendations').innerHTML = '<p class="text-gray-400">Select a mood to see recommendations</p>';
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initializeUI);
+    </script>
+</body>
+</html>

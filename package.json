@@ -1,0 +1,51 @@
+{
+  "name": "gamepilot",
+  "version": "1.0.0",
+  "description": "Next-generation gaming identity platform",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:web\" \"npm run dev:api\"",
+    "dev:web": "npm run dev --workspace=gamepilot-web",
+    "dev:api": "npm run dev --workspace=gamepilot-api",
+    "dev:web-only": "npm run dev --workspace=gamepilot-web",
+    "dev:api-only": "npm run dev --workspace=gamepilot-api",
+    "dev:isolated": "node scripts/dev-isolated.js all",
+    "dev:web-iso": "node scripts/dev-isolated.js web",
+    "dev:api-iso": "node scripts/dev-isolated.js api",
+    "build": "npm run build --workspaces",
+    "build:web": "npm run build --workspace=gamepilot-web",
+    "build:api": "npm run build --workspace=gamepilot-api",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "type-check": "npm run type-check --workspaces"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.45.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "dependencies": {
+    "framer-motion": "^12.29.0",
+    "gensync": "^1.0.0-beta.2",
+    "jsesc": "^3.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.0",
+    "run-parallel": "^1.2.0",
+    "use-sync-external-store": "^1.6.0",
+    "zustand": "^5.0.10"
+  }
+}

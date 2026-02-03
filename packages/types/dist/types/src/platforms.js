@@ -1,0 +1,34 @@
+export var PlatformCode;
+(function (PlatformCode) {
+    PlatformCode["STEAM"] = "steam";
+    PlatformCode["XBOX"] = "xbox";
+    PlatformCode["PLAYSTATION"] = "playstation";
+    PlatformCode["NINTENDO"] = "nintendo";
+    PlatformCode["EPIC"] = "epic";
+    PlatformCode["GOG"] = "gog";
+    PlatformCode["ORIGIN"] = "origin";
+    PlatformCode["UPLAY"] = "uplay";
+    PlatformCode["BATTLENET"] = "battlenet";
+    PlatformCode["DISCORD"] = "discord";
+    PlatformCode["ITCH"] = "itch";
+    PlatformCode["HUMBLE"] = "humble";
+    PlatformCode["CUSTOM"] = "custom";
+    // Emulator Platforms
+    PlatformCode["RETROARCH"] = "retroarch";
+    PlatformCode["DOLPHIN"] = "dolphin";
+    PlatformCode["PROJECT64"] = "project64";
+    PlatformCode["PCSX2"] = "pcsx2";
+    PlatformCode["RPCS3"] = "rpcs3";
+    PlatformCode["CEMU"] = "cemu";
+    PlatformCode["YUZU"] = "yuzu";
+    PlatformCode["RYUJINX"] = "ryujinx";
+    PlatformCode["MAME"] = "mame";
+    PlatformCode["DOSBOX"] = "dosbox";
+    PlatformCode["SCUMMVM"] = "scummvm";
+    PlatformCode["VITA3K"] = "vita3k";
+    PlatformCode["XEMU"] = "xemu";
+    PlatformCode["MELONDS"] = "melonds";
+    PlatformCode["PPSSPP"] = "ppsspp";
+    PlatformCode["CITRA"] = "citra";
+    PlatformCode["DESMUME"] = "desmume";
+})(PlatformCode || (PlatformCode = {}));
