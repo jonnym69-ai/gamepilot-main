@@ -824,43 +824,169 @@ export function HomeHubFinal() {
         </section>
 
         {/* CONTINUE PLAYING */}
-        <section className="mb-8">
-          <h2 
-            className="text-2xl font-gaming font-bold text-white mb-8 uppercase tracking-tight flex items-center gap-4"
-          >
-            Continue Playing
-            <span className="h-[2px] flex-1 bg-gradient-to-r from-gaming-primary/40 to-transparent" />
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mb-8"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-3xl font-gaming font-bold text-white flex items-center gap-3">
+              <motion.span
+                animate={{ rotate: [0, 5, -5, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="text-2xl"
+              >
+                🎮
+              </motion.span>
+              Continue Playing
+            </h2>
+            <Link 
+              to="/library"
+              className="text-gaming-accent hover:text-gaming-primary transition-colors text-sm font-gaming"
+            >
+              View All →
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {games
               .filter(game => game.playStatus === 'playing')
               .slice(0, 3)
-              .map((game) => (
-                <div
+              .map((game, index) => (
+                <motion.div
                   key={game.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + index * 0.1 }}
+                  whileHover={{ scale: 1.02, y: -5 }}
                   onClick={() => handlePlayGame(game)}
-                  className="glass-morphism rounded-lg p-4 border border-white/10 hover:scale-105 transition-transform cursor-pointer"
+                  className="glass-morphism rounded-xl p-4 border border-white/10 cursor-pointer group"
                 >
-                  <div className="w-full h-32 rounded-lg overflow-hidden mb-3">
+                  <div className="relative w-full h-40 rounded-lg overflow-hidden mb-4">
                     {game.coverImage ? (
-                      <img
-                        src={game.coverImage}
-                        alt={game.title}
-                        className="w-full h-full object-cover"
-                      />
+                      <>
+                        <img
+                          src={game.coverImage}
+                          alt={game.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <div className="absolute bottom-2 left-2 right-2">
+                          <p className="text-white text-sm font-semibold truncate">{game.title}</p>
+                        </div>
+                      </>
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                        <span className="text-2xl">🎮</span>
+                      <div className="w-full h-full bg-gray-700 flex items-center justify-center">
+                        <span className="text-gray-400 text-4xl">🎮</span>
                       </div>
                     )}
                   </div>
-                  <h3 className="text-white font-semibold">{game.title}</h3>
-                  <p className="text-white/60 text-sm">{game.hoursPlayed}h played</p>
-                  <div className="flex items-center justify-between mt-2">
-                    <span className="text-gaming-accent text-sm font-gaming">
-                      {game.playStatus === 'playing' ? 'Playing' : 'Continue'}
-                    </span>
-                    <span className="text-white/40 text-xs">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="text-white font-semibold text-sm">{game.title}</p>
+                      <p className="text-gray-400 text-xs">{game.hoursPlayed || 0} hours played</p>
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="bg-gaming-primary hover:bg-gaming-accent text-white p-2 rounded-lg transition-colors"
+                    >
+                      ▶️
+                    </motion.button>
+                  </div>
+                </motion.div>
+              ))}
+          </div>
+        </motion.section>
+
+        {/* MOOD RECOMMENDATIONS */}
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mb-8"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-3xl font-gaming font-bold text-white flex items-center gap-3">
+              <motion.span
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 3, repeat: Infinity }}
+                className="text-2xl"
+              >
+                🎭
+              </motion.span>
+              Mood Recommendations
+            </h2>
+            <button
+              onClick={() => setShowMoodSelector(!showMoodSelector)}
+              className="bg-gaming-primary hover:bg-gaming-accent text-white px-4 py-2 rounded-lg transition-colors text-sm font-gaming"
+            >
+              Change Mood
+            </button>
+          </div>
+          
+          {hasMoodRecommendations && moodRecommendations.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {moodRecommendations.slice(0, 6).map((game, index) => (
+                <motion.div
+                  key={game.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.5 + index * 0.1 }}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                  className="glass-morphism rounded-xl p-4 border border-white/10 cursor-pointer group"
+                >
+                  <div className="relative w-full h-40 rounded-lg overflow-hidden mb-4">
+                    {game.coverImage ? (
+                      <>
+                        <img
+                          src={game.coverImage}
+                          alt={game.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <div className="absolute top-2 right-2">
+                          <div className="bg-gaming-primary text-white text-xs px-2 py-1 rounded-full">
+                            {primaryMood}
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="w-full h-full bg-gray-700 flex items-center justify-center">
+                        <span className="text-gray-400 text-4xl">🎮</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="text-white font-semibold text-sm">{game.title}</p>
+                      <p className="text-gray-400 text-xs">{game.genres?.[0]?.name || 'Game'}</p>
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="bg-gaming-accent hover:bg-gaming-primary text-white p-2 rounded-lg transition-colors"
+                    >
+                      ⭐
+                    </motion.button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="glass-morphism rounded-xl p-8 border border-white/10 text-center">
+              <div className="text-6xl mb-4">🎭</div>
+              <h3 className="text-xl font-semibold text-white mb-2">No Mood Selected</h3>
+              <p className="text-gray-400 mb-4">Select your current mood to get personalized game recommendations</p>
+              <button
+                onClick={() => setShowMoodSelector(true)}
+                className="bg-gaming-primary hover:bg-gaming-accent text-white px-6 py-3 rounded-lg transition-colors"
+              >
+                Select Mood
+              </button>
+            </div>
+          )}
+        </motion.section>
                       {game.lastPlayed ? new Date(game.lastPlayed).toLocaleDateString() : 'Never'}
                     </span>
                   </div>

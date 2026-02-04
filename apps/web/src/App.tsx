@@ -64,7 +64,8 @@ function App() {
 
     // Check if user has completed beta onboarding
     const hasCompletedOnboarding = localStorage.getItem('beta_onboarding_completed')
-    if (!hasCompletedOnboarding) {
+    // TEMPORARILY FORCE ONBOARDING - REMOVE TO USE NORMAL LOGIC
+    if (!hasCompletedOnboarding || true) { // <-- Added || true to force onboarding
       setShowBetaOnboarding(true)
     }
   }, [])

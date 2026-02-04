@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from '../Toast'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface BetaOnboardingProps {
   onComplete: () => void
@@ -18,21 +19,91 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
       title: 'Welcome to GamePilot Beta! 🎮',
       description: 'Thank you for joining our beta program! You\'re among the first to experience the future of game discovery.',
       content: (
-        <div className="text-center space-y-4">
-          <div className="text-6xl mb-4">🚀</div>
-          <p className="text-gray-300">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center space-y-6"
+        >
+          <motion.div 
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 200, damping: 15 }}
+            className="text-8xl mb-6"
+          >
+            🚀
+          </motion.div>
+          <motion.h2 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-3xl font-bold text-white mb-4"
+          >
+            Welcome to GamePilot Beta!
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-lg text-gray-300 mb-6"
+          >
+            Thank you for joining our beta program! You're among the first to experience the future of game discovery.
+          </motion.p>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-gray-400"
+          >
             GamePilot uses AI to understand your gaming mood and recommend the perfect games from your library.
-          </p>
-          <div className="bg-blue-900/30 border border-blue-500/30 rounded-lg p-4">
-            <h4 className="text-blue-400 font-semibold mb-2">Beta Features:</h4>
-            <ul className="text-left text-sm space-y-1">
-              <li>✨ Steam library integration</li>
-              <li>🎭 Mood-based recommendations</li>
-              <li>📊 Gaming analytics dashboard</li>
-              <li>🔗 Multi-platform support</li>
-            </ul>
-          </div>
-        </div>
+          </motion.p>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5 }}
+            className="bg-gradient-to-r from-blue-900/40 to-purple-900/40 border border-blue-500/30 rounded-xl p-6 backdrop-blur-sm"
+          >
+            <h4 className="text-blue-400 font-semibold mb-4 text-lg">✨ Beta Features:</h4>
+            <div className="grid grid-cols-2 gap-3 text-left">
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 }}
+                className="flex items-center space-x-2"
+              >
+                <span className="text-2xl">🎮</span>
+                <span className="text-gray-300">Steam library integration</span>
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.7 }}
+                className="flex items-center space-x-2"
+              >
+                <span className="text-2xl">🎭</span>
+                <span className="text-gray-300">Mood-based recommendations</span>
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.8 }}
+                className="flex items-center space-x-2"
+              >
+                <span className="text-2xl">📊</span>
+                <span className="text-gray-300">Gaming analytics dashboard</span>
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.9 }}
+                className="flex items-center space-x-2"
+              >
+                <span className="text-2xl">🔗</span>
+                <span className="text-gray-300">Multi-platform support</span>
+              </motion.div>
+            </div>
+          </motion.div>
+        </motion.div>
       )
     },
     {
@@ -223,9 +294,52 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
   const progress = ((currentStep + 1) / onboardingSteps.length) * 100
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-black flex items-center justify-center p-4">
+      <div className="max-w-4xl w-full">
         {/* Progress Bar */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl font-bold text-white">GamePilot Setup</h1>
+            <span className="text-gray-400">Step {currentStep + 1} of {onboardingSteps.length}</span>
+          </div>
+          <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+            <motion.div 
+              className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            />
+          </div>
+          {/* Step Indicators */}
+          <div className="flex justify-between mt-4">
+            {onboardingSteps.map((step, index) => (
+              <motion.div
+                key={step.id}
+                className="flex flex-col items-center"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <div
+                  className={`w-3 h-3 rounded-full mb-2 transition-colors ${
+                    index <= currentStep 
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-600' 
+                      : 'bg-gray-600'
+                  }`}
+                />
+                <span className={`text-xs ${
+                  index === currentStep ? 'text-white font-semibold' : 'text-gray-500'
+                }`}>
+                  {step.title.split(' ')[0]}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm text-gray-400">
@@ -241,47 +355,71 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
           </div>
         </div>
 
-        {/* Onboarding Card */}
-        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-8 border border-gray-700">
-          <div className="mb-6">
-            <h2 className="text-3xl font-bold text-white mb-2">
-              {currentStepData.title}
-            </h2>
-            <p className="text-gray-300">
-              {currentStepData.description}
-            </p>
-          </div>
+        {/* Main Content */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.3 }}
+            className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-8 border border-gray-700/50 shadow-2xl"
+          >
+            {/* Step Header */}
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-center mb-8"
+            >
+              <h2 className="text-3xl font-bold text-white mb-2">{currentStepData.title}</h2>
+              <p className="text-gray-400">{currentStepData.description}</p>
+            </motion.div>
 
-          <div className="mb-8">
-            {currentStepData.content}
-          </div>
+            {/* Step Content */}
+            <div className="mb-8">
+              {currentStepData.content}
+            </div>
 
-          {/* Navigation Buttons */}
-          <div className="flex gap-4">
-            {currentStep > 0 && (
-              <button
-                onClick={handlePrevious}
-                className="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg transition-colors"
+            {/* Navigation Buttons */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex justify-between items-center"
+            >
+              <div className="flex gap-3">
+                {currentStep > 0 && (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handlePrevious}
+                    className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+                  >
+                    ← Previous
+                  </motion.button>
+                )}
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleSkip}
+                  className="bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold py-3 px-6 rounded-lg transition-colors"
+                >
+                  Skip Setup
+                </motion.button>
+              </div>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleNext}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-8 rounded-lg transition-all shadow-lg"
               >
-                Previous
-              </button>
-            )}
-            
-            <button
-              onClick={handleSkip}
-              className="px-6 py-3 text-gray-400 hover:text-white font-semibold transition-colors"
-            >
-              Skip Onboarding
-            </button>
-
-            <button
-              onClick={handleNext}
-              className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
-            >
-              {currentStep === onboardingSteps.length - 1 ? 'Get Started' : 'Next'}
-            </button>
-          </div>
-        </div>
+                {currentStep === onboardingSteps.length - 1 ? '🎉 Get Started' : 'Next Step →'}
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        </AnimatePresence>
 
         {/* Beta Badge */}
         <div className="mt-6 text-center">
