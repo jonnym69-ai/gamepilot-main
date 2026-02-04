@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { SimpleMoodSelector } from '../components/SimpleMoodSelector'
-import { useMoodRecommendations } from '../hooks/useMoodRecommendations'
+import { useNewMoodRecommendations } from '../hooks/useNewMoodRecommendations'
 import type { Game } from '../types'
 
 /**
@@ -19,11 +19,10 @@ export function EnhancedLibraryExample({ games }: { games: Game[] }) {
     secondaryMoodInfo,
     recommendations,
     isLoading,
-    hasRecommendations,
     recommendationCount
-  } = useMoodRecommendations({
+  } = useNewMoodRecommendations({
     games,
-    onRecommendationsChange: (recs) => {
+    onRecommendationsChange: (recs: Game[]) => {
       console.log('Mood recommendations updated:', recs.length)
     }
   })
@@ -132,14 +131,6 @@ export function EnhancedLibraryExample({ games }: { games: Game[] }) {
             <div key={game.id} className="glass-morphism rounded-lg p-4 hover:scale-105 transition-transform">
               <div className="flex justify-between items-start mb-3">
                 <h3 className="text-lg font-semibold text-white">{game.title}</h3>
-                {currentView === 'mood' && game.moodScore && (
-                  <div className="text-right">
-                    <div className="text-xl font-bold text-blue-400">
-                      {Math.round(game.moodScore)}%
-                    </div>
-                    <div className="text-xs text-gray-400">match</div>
-                  </div>
-                )}
               </div>
               
               <div className="flex gap-2 mb-2">
@@ -163,12 +154,6 @@ export function EnhancedLibraryExample({ games }: { games: Game[] }) {
                   </span>
                 ))}
               </div>
-              
-              {currentView === 'mood' && game.moodReasoning && (
-                <p className="text-sm text-gray-300 italic">
-                  {game.moodReasoning}
-                </p>
-              )}
               
               <div className="flex items-center justify-between text-sm text-gray-400">
                 <span>{game.hoursPlayed || 0} hours played</span>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLibraryPersona } from '../../hooks/persona';
-import { useMoodRecommendations } from '../../hooks/useMoodRecommendations';
+import { useNewMoodRecommendations } from '../../hooks/useNewMoodRecommendations';
 import { useLibraryStore } from '../../stores/useLibraryStore';
 import { SummaryCard } from './SummaryCard';
 import { MoodDistribution } from './MoodDistribution';
@@ -58,7 +58,7 @@ export const MoodAnalyticsPage: React.FC<MoodAnalyticsPageProps> = ({
   // Get persona data for enhanced analytics
   const persona = useLibraryPersona();
   const { games } = useLibraryStore();
-  const { primaryMoodInfo, hasRecommendations } = useMoodRecommendations({ games });
+  const { primaryMoodInfo, hasRecommendations } = useNewMoodRecommendations({ games });
   
   return (
     <div className="space-y-8">
