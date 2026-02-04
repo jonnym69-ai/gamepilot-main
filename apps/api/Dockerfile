@@ -2,14 +2,17 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy the entire monorepo structure
-COPY . ./
+# Copy standalone package.json (has all dependencies bundled)
+COPY package.standalone.json ./package.json
 
-# Install all dependencies including monorepo packages
-RUN npm install
+# Install dependencies
+RUN npm install --only=production
 
-# Build the application
-RUN npm run build
+# Copy source code
+COPY . .
+
+# Copy pre-built dist files (skip build step for standalone)
+COPY dist ./dist
 
 # Expose port
 EXPOSE 3001
