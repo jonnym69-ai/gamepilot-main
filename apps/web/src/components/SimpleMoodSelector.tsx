@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { MOODS, type MoodId } from '@gamepilot/static-data'
 
 /**
@@ -16,6 +17,7 @@ export function SimpleMoodSelector({ onMoodChange, className = '', variant = 'co
   const [primaryMood, setPrimaryMood] = useState<MoodId | null>(null)
   const [secondaryMood, setSecondaryMood] = useState<MoodId | null>(null)
   const [showSecondary, setShowSecondary] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const handlePrimaryMoodSelect = useCallback((moodId: MoodId) => {
     setPrimaryMood(moodId)

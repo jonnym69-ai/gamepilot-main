@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import type { PlayStatus } from '@gamepilot/types'
 import type { Game } from '@gamepilot/types'
 import { getHighQualityGameImage } from "../../../utils/gameImageUtils";
@@ -121,8 +122,12 @@ export const GameCard: React.FC<GameCardProps> = ({
   const hasSteamAppId = game.appId && String(game.appId).trim() !== ''
 
   return (
-    <div 
-      className={`group relative bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer ${
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      whileHover={{ scale: 1.02, y: -5 }}
+      className={`group relative bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border transition-all duration-300 cursor-pointer ${
         isSelected 
           ? 'border-gaming-primary shadow-gaming-primary/50' 
           : 'border-gray-700/50 hover:border-gray-600/50'
@@ -135,7 +140,12 @@ export const GameCard: React.FC<GameCardProps> = ({
     >
       {/* Selection Checkbox */}
       {isSelectable && (
-        <div className="absolute top-3 left-3 z-10">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.1 }}
+          className="absolute top-3 left-3 z-10"
+        >
           <input
             type="checkbox"
             checked={isSelected}
@@ -143,11 +153,11 @@ export const GameCard: React.FC<GameCardProps> = ({
               e.stopPropagation()
               onSelect?.(game, e.target.checked)
             }}
-            className="w-4 h-4 rounded border-gray-300 text-gaming-primary focus:ring-gaming-primary"
+            className="w-5 h-5 rounded border-2 border-gray-300 text-gaming-primary focus:ring-gaming-primary focus:ring-2 transition-colors"
             aria-label={`Select ${game.title}`}
             title={`Select ${game.title}`}
           />
-        </div>
+        </motion.div>
       )}
       
       {/* Game Cover Image */}
