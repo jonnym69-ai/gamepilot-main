@@ -5,10 +5,10 @@ WORKDIR /app
 # Copy standalone package.json (now includes monorepo deps)
 COPY package.standalone.json ./package.json
 
-# Copy shared packages for file: dependencies
-COPY ../../packages/shared ./packages/shared
-COPY ../../packages/types ./packages/types
-COPY ../../packages/static-data ./packages/static-data
+# Copy shared packages for file: dependencies (correct paths for Railway context)
+COPY ../../../packages/shared ./packages/shared
+COPY ../../../packages/types ./packages/types
+COPY ../../../packages/static-data ./packages/static-data
 
 # Install dependencies including monorepo packages
 RUN npm install --only=production
