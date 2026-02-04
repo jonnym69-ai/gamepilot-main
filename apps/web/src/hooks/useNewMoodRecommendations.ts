@@ -40,14 +40,20 @@ export function useNewMoodRecommendations({ games, onRecommendationsChange }: Us
     if (derivedMood === moodId) {
       score += 100 // Perfect match
     } else {
-      // Check if moods are compatible
+      // Check if moods are compatible via associated genres
       const selectedMood = MOODS.find(m => m.id === moodId)
       const derivedMoodObj = MOODS.find(m => m.id === derivedMood)
       
-      if (selectedMood && derivedMoodObj && selectedMood.compatibleMoods?.includes(derivedMood)) {
-        score += 75 // Compatible mood
-      } else {
-        score += 25 // Some compatibility
+      if (selectedMood && derivedMoodObj) {
+        // Check if they share associated genres
+        const sharedGenres = selectedMood.associatedGenres.filter(genre => 
+          derivedMoodObj.associatedGenres.includes(genre)
+        )
+        if (sharedGenres.length > 0) {
+          score += 75 // Compatible mood via shared genres
+        } else {
+          score += 25 // Some compatibility
+        }
       }
     }
     
@@ -141,6 +147,9 @@ export function useNewMoodRecommendations({ games, onRecommendationsChange }: Us
     setIntensity,
     
     // Computed
-    hasRecommendations: state.recommendations.length > 0
+    hasRecommendations: state.recommendations.length > 0,
+    recommendationCount: state.recommendations.length,
+    primaryMoodInfo: state.primaryMood ? MOODS.find(m => m.id === state.primaryMood) : undefined,
+    secondaryMoodInfo: state.secondaryMood ? MOODS.find(m => m.id === state.secondaryMood) : undefined
   }
 }
