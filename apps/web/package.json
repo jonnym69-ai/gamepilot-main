@@ -16,7 +16,7 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
-    "@gamepilot/shared": "workspace:*",
+    "@gamepilot/shared": "file:../../packages/shared",
     "@tanstack/react-query": "^5.90.17",
     "@tanstack/react-virtual": "^3.13.18",
     "axios": "^1.13.2",
