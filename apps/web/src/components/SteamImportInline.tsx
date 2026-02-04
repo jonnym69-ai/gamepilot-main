@@ -33,11 +33,7 @@ export function SteamImportInline({ className = '' }: SteamImportInlineProps) {
             title: 'Counter-Strike 2',
             description: 'The world\'s #1 online action game. Experience the thrill of competitive tactical shooter gameplay.',
             backgroundImages: ['https://cdn.akamai.steamstatic.com/steam/apps/730/header.jpg'],
-            moods: {
-              primary: 'competitive',
-              secondary: undefined,
-              intensity: 0.9
-            },
+            moods: ['competitive'],
             coverImage: 'https://cdn.akamai.steamstatic.com/steam/apps/730/header.jpg',
             releaseDate: new Date('2023-09-27'),
             developer: 'Valve',
@@ -79,11 +75,7 @@ export function SteamImportInline({ className = '' }: SteamImportInlineProps) {
             title: 'Team Fortress 2',
             description: 'Nine distinct classes provide a broad range of tactical abilities and personalities.',
             backgroundImages: ['https://cdn.akamai.steamstatic.com/steam/apps/440/header.jpg'],
-            moods: {
-              primary: 'competitive',
-              secondary: undefined,
-              intensity: 0.8
-            },
+            moods: ['competitive'],
             coverImage: 'https://cdn.akamai.steamstatic.com/steam/apps/440/header.jpg',
             releaseDate: new Date('2007-10-10'),
             developer: 'Valve',
