@@ -6,15 +6,15 @@ export declare const registerSchema: z.ZodObject<{
     displayName: z.ZodString;
     timezone: z.ZodDefault<z.ZodOptional<z.ZodString>>;
 }, "strip", z.ZodTypeAny, {
-    displayName: string;
     email: string;
     username: string;
-    password: string;
+    displayName: string;
     timezone: string;
+    password: string;
 }, {
-    displayName: string;
     email: string;
     username: string;
+    displayName: string;
     password: string;
     timezone?: string | undefined;
 }>;
@@ -60,20 +60,20 @@ export declare const addGameSchema: z.ZodObject<{
     notes: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     title: string;
-    tags?: string[] | undefined;
     status?: "unplayed" | "playing" | "completed" | "paused" | "abandoned" | undefined;
+    rating?: number | undefined;
     notes?: string | undefined;
     genres?: string[] | undefined;
     platforms?: string[] | undefined;
-    rating?: number | undefined;
+    tags?: string[] | undefined;
 }, {
     title: string;
-    tags?: string[] | undefined;
     status?: "unplayed" | "playing" | "completed" | "paused" | "abandoned" | undefined;
+    rating?: number | undefined;
     notes?: string | undefined;
     genres?: string[] | undefined;
     platforms?: string[] | undefined;
-    rating?: number | undefined;
+    tags?: string[] | undefined;
 }>;
 export declare const updateGameSchema: z.ZodObject<{
     id: z.ZodString;
@@ -87,24 +87,24 @@ export declare const updateGameSchema: z.ZodObject<{
     playtime: z.ZodOptional<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    tags?: string[] | undefined;
     status?: "unplayed" | "playing" | "completed" | "paused" | "abandoned" | undefined;
+    rating?: number | undefined;
     notes?: string | undefined;
+    playtime?: number | undefined;
     title?: string | undefined;
     genres?: string[] | undefined;
     platforms?: string[] | undefined;
-    rating?: number | undefined;
-    playtime?: number | undefined;
+    tags?: string[] | undefined;
 }, {
     id: string;
-    tags?: string[] | undefined;
     status?: "unplayed" | "playing" | "completed" | "paused" | "abandoned" | undefined;
+    rating?: number | undefined;
     notes?: string | undefined;
+    playtime?: number | undefined;
     title?: string | undefined;
     genres?: string[] | undefined;
     platforms?: string[] | undefined;
-    rating?: number | undefined;
-    playtime?: number | undefined;
+    tags?: string[] | undefined;
 }>;
 export declare const deleteGameSchema: z.ZodObject<{
     id: z.ZodString;
@@ -120,14 +120,14 @@ export declare const moodEntrySchema: z.ZodObject<{
     activities: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     notes: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    mood: string;
     intensity: number;
+    mood: string;
     notes?: string | undefined;
     triggers?: string[] | undefined;
     activities?: string[] | undefined;
 }, {
-    mood: string;
     intensity: number;
+    mood: string;
     notes?: string | undefined;
     triggers?: string[] | undefined;
     activities?: string[] | undefined;
@@ -143,12 +143,12 @@ export declare const personaUpdateSchema: z.ZodObject<{
         genres?: string[] | undefined;
         playtimes?: string[] | undefined;
         socialLevel?: "solo" | "small" | "large" | undefined;
-        competitiveness?: "casual" | "moderate" | "competitive" | undefined;
+        competitiveness?: "competitive" | "casual" | "moderate" | undefined;
     }, {
         genres?: string[] | undefined;
         playtimes?: string[] | undefined;
         socialLevel?: "solo" | "small" | "large" | undefined;
-        competitiveness?: "casual" | "moderate" | "competitive" | undefined;
+        competitiveness?: "competitive" | "casual" | "moderate" | undefined;
     }>>;
 }, "strip", z.ZodTypeAny, {
     traits?: string[] | undefined;
@@ -156,7 +156,7 @@ export declare const personaUpdateSchema: z.ZodObject<{
         genres?: string[] | undefined;
         playtimes?: string[] | undefined;
         socialLevel?: "solo" | "small" | "large" | undefined;
-        competitiveness?: "casual" | "moderate" | "competitive" | undefined;
+        competitiveness?: "competitive" | "casual" | "moderate" | undefined;
     } | undefined;
 }, {
     traits?: string[] | undefined;
@@ -164,7 +164,7 @@ export declare const personaUpdateSchema: z.ZodObject<{
         genres?: string[] | undefined;
         playtimes?: string[] | undefined;
         socialLevel?: "solo" | "small" | "large" | undefined;
-        competitiveness?: "casual" | "moderate" | "competitive" | undefined;
+        competitiveness?: "competitive" | "casual" | "moderate" | undefined;
     } | undefined;
 }>;
 export declare const recommendationRequestSchema: z.ZodObject<{
@@ -184,22 +184,22 @@ export declare const recommendationRequestSchema: z.ZodObject<{
     limit: z.ZodDefault<z.ZodOptional<z.ZodNumber>>;
 }, "strip", z.ZodTypeAny, {
     limit: number;
-    genres?: string[] | undefined;
-    platforms?: string[] | undefined;
+    mood?: string | undefined;
     playtime?: {
         min?: number | undefined;
         max?: number | undefined;
     } | undefined;
-    mood?: string | undefined;
+    genres?: string[] | undefined;
+    platforms?: string[] | undefined;
 }, {
-    genres?: string[] | undefined;
-    platforms?: string[] | undefined;
+    limit?: number | undefined;
+    mood?: string | undefined;
     playtime?: {
         min?: number | undefined;
         max?: number | undefined;
     } | undefined;
-    mood?: string | undefined;
-    limit?: number | undefined;
+    genres?: string[] | undefined;
+    platforms?: string[] | undefined;
 }>;
 export declare const steamConnectSchema: z.ZodObject<{
     steamId: z.ZodString;
@@ -234,17 +234,17 @@ export declare const gameFilterSchema: z.ZodObject<{
     limit: number;
     page: number;
     status?: "unplayed" | "playing" | "completed" | "paused" | "abandoned" | undefined;
-    platform?: string | undefined;
     rating?: number | undefined;
     genre?: string | undefined;
+    platform?: string | undefined;
     search?: string | undefined;
 }, {
-    status?: "unplayed" | "playing" | "completed" | "paused" | "abandoned" | undefined;
-    platform?: string | undefined;
-    rating?: number | undefined;
     limit?: number | undefined;
-    page?: number | undefined;
+    status?: "unplayed" | "playing" | "completed" | "paused" | "abandoned" | undefined;
+    rating?: number | undefined;
     genre?: string | undefined;
+    platform?: string | undefined;
+    page?: number | undefined;
     search?: string | undefined;
 }>;
 export declare function validateBody<T>(schema: z.ZodSchema<T>): (req: any, res: any, next: any) => any;

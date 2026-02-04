@@ -23,18 +23,18 @@ export declare const GameSchema: z.ZodObject<{
     notes: z.ZodOptional<z.ZodString>;
     isFavorite: z.ZodBoolean;
 }, "strip", z.ZodTypeAny, {
+    playStatus: "unplayed" | "playing" | "completed" | "paused" | "abandoned";
+    genres: string[];
+    platforms: string[];
     id: string;
     title: string;
-    genres: string[];
     subgenres: string[];
-    platforms: string[];
     emotionalTags: string[];
-    playStatus: "unplayed" | "playing" | "completed" | "paused" | "abandoned";
     addedAt: Date;
     isFavorite: boolean;
     description?: string | undefined;
-    coverImage?: string | undefined;
     backgroundImages?: string[] | undefined;
+    coverImage?: string | undefined;
     releaseDate?: Date | undefined;
     developer?: string | undefined;
     publisher?: string | undefined;
@@ -44,18 +44,18 @@ export declare const GameSchema: z.ZodObject<{
     lastPlayed?: Date | undefined;
     notes?: string | undefined;
 }, {
+    playStatus: "unplayed" | "playing" | "completed" | "paused" | "abandoned";
+    genres: string[];
+    platforms: string[];
     id: string;
     title: string;
-    genres: string[];
     subgenres: string[];
-    platforms: string[];
     emotionalTags: string[];
-    playStatus: "unplayed" | "playing" | "completed" | "paused" | "abandoned";
     addedAt: Date;
     isFavorite: boolean;
     description?: string | undefined;
-    coverImage?: string | undefined;
     backgroundImages?: string[] | undefined;
+    coverImage?: string | undefined;
     releaseDate?: Date | undefined;
     developer?: string | undefined;
     publisher?: string | undefined;

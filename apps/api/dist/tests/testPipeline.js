@@ -273,7 +273,7 @@ class PipelineTester {
             const recommendations = await this.moodPersonaIntegration.generatePersonalizedRecommendations(profile, 'energetic', {
                 availableGames: [],
                 limit: 5
-            });
+            }, []);
             return {
                 test: 'Personalized Recommendations',
                 success: Array.isArray(recommendations),

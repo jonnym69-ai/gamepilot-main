@@ -362,7 +362,7 @@ class MoodPersonaService {
             params.push(period);
         }
         query += ' ORDER BY timestamp DESC LIMIT ?';
-        params.push(limit);
+        params.push(String(limit));
         const rows = await this.db.all(query, params);
         return rows.map(moodPersona_1.mapRowToLearningMetrics);
     }

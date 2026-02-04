@@ -231,7 +231,7 @@ class SimpleMoodPersonaService {
                 puzzle: 80
             }
         };
-        const gameGenres = game.genres || [];
+        const gameGenres = game.genres?.map(g => g.name) || [];
         const moodScores = moodGameMap[mood] || {};
         let maxScore = 0;
         gameGenres.forEach(genre => {
@@ -252,10 +252,10 @@ class SimpleMoodPersonaService {
             if (action.gameId === game.id)
                 return true;
             // Simple genre similarity check
-            const gameGenres = game.genres || [];
+            const gameGenres = game.genres?.map(g => g.name) || [];
             const actionGame = this.getGameById(action.gameId);
             if (actionGame) {
-                const actionGenres = actionGame.genres || [];
+                const actionGenres = actionGame.genres?.map(g => g.name) || [];
                 return gameGenres.some(genre => actionGenres.includes(genre));
             }
             return false;
@@ -274,7 +274,7 @@ class SimpleMoodPersonaService {
         if (secondaryMood) {
             reasons.push(`Also fits your ${secondaryMood} preferences`);
         }
-        const gameGenres = game.genres || [];
+        const gameGenres = game.genres?.map(g => g.name) || [];
         if (gameGenres.length > 0) {
             reasons.push(`${gameGenres[0]} genre aligns with your interests`);
         }
@@ -283,7 +283,7 @@ class SimpleMoodPersonaService {
             const similarGames = profile.actions.filter((action) => {
                 const actionGame = this.getGameById(action.gameId);
                 if (actionGame) {
-                    const actionGenres = actionGame.genres || [];
+                    const actionGenres = actionGame.genres?.map(g => g.name) || [];
                     return gameGenres.some(genre => actionGenres.includes(genre));
                 }
                 return false;
@@ -300,7 +300,7 @@ class SimpleMoodPersonaService {
     estimatePlaytime(game, profile) {
         // Simple playtime estimation based on game type and user preferences
         const baseTime = 60; // 60 minutes base
-        const gameGenres = game.genres || [];
+        const gameGenres = game.genres?.map(g => g.name) || [];
         if (gameGenres.includes('casual') || gameGenres.includes('puzzle')) {
             return baseTime * 0.5;
         }
@@ -318,7 +318,7 @@ class SimpleMoodPersonaService {
             return profile.playstylePreferences.difficulty;
         }
         // Simple difficulty recommendation based on game genres
-        const gameGenres = game.genres || [];
+        const gameGenres = game.genres?.map(g => g.name) || [];
         if (gameGenres.includes('casual') || gameGenres.includes('puzzle')) {
             return 'casual';
         }

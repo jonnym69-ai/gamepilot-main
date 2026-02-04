@@ -277,7 +277,7 @@ class ObservabilityService {
             },
             errors: {
                 last24h: errorMetrics.totalErrors,
-                lastHour: await this.getErrorStats(1).totalErrors,
+                lastHour: (await this.getErrorStats(1)).totalErrors,
                 criticalErrors: errorMetrics.recentErrors.filter(e => e.severity === 'critical').map(e => ({
                     timestamp: e.timestamp,
                     operation: e.operation,

@@ -33,10 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sentryLogger = exports.SentryLogger = void 0;
-exports.initializeSentry = initializeSentry;
-exports.sentryErrorHandler = sentryErrorHandler;
-exports.sentryRequestHandler = sentryRequestHandler;
+exports.SentryLogger = void 0;
 const Sentry = __importStar(require("@sentry/node"));
 class SentryLogger {
     constructor() {
@@ -61,22 +58,16 @@ class SentryLogger {
             environment: config.environment || process.env.NODE_ENV || 'development',
             release: config.release || process.env.npm_package_version || '1.0.0',
             tracesSampleRate: config.tracesSampleRate || 0.1,
-            integrations: [
-                new Sentry.Integrations.Http({ tracing: true }),
-                new Sentry.Integrations.Express({ app: null }),
-                new Sentry.Integrations.OnUncaughtException(),
-                new Sentry.Integrations.OnUnhandledRejection(),
-            ],
             beforeSend(event) {
                 // Filter out certain errors in development
                 if (process.env.NODE_ENV === 'development') {
                     // Don't send certain errors in development
-                    if (event.exception?.message?.includes('EADDRINUSE')) {
+                    if (event.exception?.values?.[0]?.value?.includes('EADDRINUSE')) {
                         return null;
                     }
                 }
                 return event;
-            }
+            },
         });
         this.isInitialized = true;
         console.log('✅ Sentry initialized');
@@ -103,150 +94,60 @@ class SentryLogger {
             scope.setExtra('query', context.request.query);
             scope.setExtra('params', context.request.params);
         }
-        // Add custom tags and extra data
-        if (context?.tags) {
-            scope.setTags(context.tags);
-        }
-        if (context?.extra) {
-            Object.keys(context.extra).forEach(key => {
-                scope.setExtra(key, context.extra[key]);
+        // Add custom details
+        if (context?.details) {
+            Object.keys(context.details).forEach(key => {
+                scope.setExtra(key, context.details[key]);
             });
         }
-        Sentry.captureException(error, scope);
+        Sentry.captureException(error);
     }
     captureMessage(message, level = 'info', context) {
         if (!this.isInitialized) {
             console.log(`Sentry not initialized, falling back to console: [${level}] ${message}`);
             return;
         }
-        const scope = new Sentry.Scope();
-        // Add request context
-        if (context?.request) {
-            scope.setUser({
-                id: context.userId || 'anonymous',
-                ip: context.request.ip,
-                userAgent: context.request.get('User-Agent')
-            });
-            scope.setTags({
-                method: context.request.method,
-                url: context.request.url,
-                requestId: context.request.requestId || 'unknown'
-            });
-        }
-        // Add custom tags and extra data
-        if (context?.tags) {
-            scope.setTags(context.tags);
-        }
-        if (context?.extra) {
-            Object.keys(context.extra).forEach(key => {
-                scope.setExtra(key, context.extra[key]);
-            });
-        }
-        Sentry.captureMessage(message, level, scope);
+        Sentry.captureMessage(message, level);
     }
+    // Performance monitoring
+    startTransaction(name, op = 'http') {
+        if (!this.isInitialized) {
+            return null;
+        }
+        return Sentry.startSpan({
+            name,
+            op,
+        }, () => null) || null;
+    }
+    // User tracking
     setUser(user) {
         if (!this.isInitialized) {
             return;
         }
         Sentry.setUser(user);
     }
-    clearUser() {
-        if (!this.isInitialized) {
-            return;
-        }
-        Sentry.setUser(null);
-    }
+    // Tagging
     setTags(tags) {
         if (!this.isInitialized) {
             return;
         }
         Sentry.setTags(tags);
     }
-    setExtra(key, value) {
-        if (!this.isInitialized) {
-            return;
-        }
-        Sentry.setExtra(key, value);
-    }
+    // Breadcrumbs
     addBreadcrumb(breadcrumb) {
         if (!this.isInitialized) {
             return;
         }
         Sentry.addBreadcrumb(breadcrumb);
     }
-    // Security event logging
-    captureSecurityEvent(event, severity = 'warning', context) {
-        this.captureMessage(`SECURITY: ${event}`, severity, {
-            ...context,
-            tags: {
-                security: 'true',
-                ...context?.tags
-            },
-            extra: {
-                ...context?.details,
-                timestamp: new Date().toISOString()
-            }
-        });
-    }
-    // Performance monitoring
-    startTransaction(name, operation) {
-        if (!this.isInitialized) {
-            return undefined;
-        }
-        return Sentry.startTransaction({
-            name,
-            op: operation || 'http.server'
-        });
-    }
-    // Check if Sentry is available
-    isReady() {
-        return this.isInitialized;
+    // Health check
+    healthCheck() {
+        return {
+            initialized: this.isInitialized,
+            dsnConfigured: !!process.env.SENTRY_DSN
+        };
     }
 }
 exports.SentryLogger = SentryLogger;
-// Export singleton instance
-exports.sentryLogger = SentryLogger.getInstance();
-// Initialize Sentry if DSN is available
-function initializeSentry() {
-    const dsn = process.env.SENTRY_DSN;
-    if (dsn) {
-        exports.sentryLogger.initialize({
-            dsn,
-            environment: process.env.NODE_ENV || 'development',
-            release: process.env.npm_package_version || '1.0.0',
-            tracesSampleRate: parseFloat(process.env.SENTRY_TRACES_SAMPLE_RATE || '0.1')
-        });
-    }
-    else {
-        console.log('ℹ️ Sentry DSN not found, error monitoring disabled');
-    }
-}
-// Express middleware for Sentry
-function sentryErrorHandler(error, req, res, next) {
-    if (exports.sentryLogger.isReady()) {
-        exports.sentryLogger.captureException(error, {
-            request: req,
-            tags: {
-                express: 'error_handler'
-            }
-        });
-    }
-    next(error);
-}
-// Request middleware for Sentry
-function sentryRequestHandler(req, res, next) {
-    if (exports.sentryLogger.isReady()) {
-        exports.sentryLogger.addBreadcrumb({
-            category: 'request',
-            message: `${req.method} ${req.url}`,
-            level: 'info',
-            data: {
-                method: req.method,
-                url: req.url,
-                headers: req.headers
-            }
-        });
-    }
-    next();
-}
+exports.default = SentryLogger;
 //# sourceMappingURL=sentryLogger.js.map

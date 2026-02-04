@@ -67,7 +67,7 @@ class AlertingService {
     initializeEmailTransporter() {
         if (this.config.email?.enabled) {
             try {
-                this.emailTransporter = nodemailer_1.default.createTransporter({
+                this.emailTransporter = nodemailer_1.default.createTransport({
                     host: this.config.email.smtp.host,
                     port: this.config.email.smtp.port,
                     secure: this.config.email.smtp.secure,
@@ -114,7 +114,7 @@ class AlertingService {
             const color = this.getSlackColor(alert.severity);
             const emoji = this.getSlackEmoji(alert.severity);
             const payload = {
-                channel: this.config.slack.channel,
+                channel: this.config.slack?.channel ?? "#alerts",
                 username: 'GamePilot Alerts',
                 icon_emoji: ':robot_face:',
                 attachments: [
@@ -149,7 +149,7 @@ class AlertingService {
                     }
                 ]
             };
-            await axios_1.default.post(this.config.slack.webhookUrl, payload, {
+            await axios_1.default.post(this.config.slack?.webhookUrl ?? "", payload, {
                 headers: { 'Content-Type': 'application/json' },
                 timeout: 5000
             });
@@ -163,15 +163,15 @@ class AlertingService {
      * Send email alert
      */
     async sendEmailAlert(alert) {
-        if (!this.emailTransporter || !this.config.email.to.length) {
+        if (!this.emailTransporter || !this.config.email?.to?.length) {
             return;
         }
         try {
             const subject = `[${alert.severity.toUpperCase()}] GamePilot Alert: ${alert.type}`;
             const html = this.generateEmailHtml(alert);
             await this.emailTransporter.sendMail({
-                from: this.config.email.from,
-                to: this.config.email.to,
+                from: this.config.email?.from ?? "",
+                to: this.config.email?.to ?? [],
                 subject,
                 html
             });

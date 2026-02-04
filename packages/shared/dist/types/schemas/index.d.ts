@@ -1438,8 +1438,8 @@ export declare const UserProfileSchema: z.ZodObject<{
     totalPlaytime: z.ZodNumber;
     achievementCount: z.ZodNumber;
 }, "strip", z.ZodTypeAny, {
-    id: string;
     email: string;
+    id: string;
     createdAt: Date;
     updatedAt: Date;
     username: string;
@@ -1583,8 +1583,8 @@ export declare const UserProfileSchema: z.ZodObject<{
         gradient?: string | undefined;
     } | undefined;
 }, {
-    id: string;
     email: string;
+    id: string;
     createdAt: Date;
     updatedAt: Date;
     username: string;
@@ -1844,8 +1844,8 @@ export declare const validateGame: (data: unknown) => {
     notes?: string | undefined;
 };
 export declare const validateUserProfile: (data: unknown) => {
-    id: string;
     email: string;
+    id: string;
     createdAt: Date;
     updatedAt: Date;
     username: string;

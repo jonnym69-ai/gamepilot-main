@@ -43,6 +43,7 @@ class SteamAdapter {
             addedAt: now,
             notes: '',
             isFavorite: false,
+            tags: [],
             releaseYear: steamGame.releaseYear || now.getFullYear(),
             achievements: steamGame.achievements,
             totalPlaytime: playtimeHours,

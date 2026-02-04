@@ -103,6 +103,7 @@ const validateGame = (game) => {
             return { id: platform, name: platform, code, isConnected: false };
         }),
         emotionalTags: parsed.emotionalTags.map((tag) => ({ id: tag, name: tag, color: '#666', category: 'feeling', isCustom: false, games: [] })),
+        tags: [],
         moods: [],
         playHistory: [],
         releaseYear: parsed.releaseDate?.getFullYear() || new Date().getFullYear()
@@ -132,6 +133,7 @@ const createGame = (data) => {
         addedAt: data.addedAt || now,
         notes: data.notes,
         isFavorite: data.isFavorite || false,
+        tags: data.tags || [],
         // Required properties matching Game interface
         moods: data.moods || [],
         playHistory: data.playHistory || [],

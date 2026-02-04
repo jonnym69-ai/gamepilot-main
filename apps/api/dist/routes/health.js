@@ -37,6 +37,7 @@ const express_1 = require("express");
 const errorHandler_1 = require("../middleware/errorHandler");
 const productionDatabase_1 = require("../config/productionDatabase");
 const sslConfig_1 = require("../config/sslConfig");
+const database_1 = require("../services/database");
 const os = __importStar(require("os"));
 const fs = __importStar(require("fs/promises"));
 const router = (0, express_1.Router)();
@@ -93,7 +94,7 @@ router.get('/live', (0, errorHandler_1.asyncHandler)(async (req, res) => {
 // GET /health/database - Database health check
 router.get('/database', (0, errorHandler_1.asyncHandler)(async (req, res) => {
     try {
-        const dbHealth = await (0, productionDatabase_1.checkDatabaseHealth)();
+        const dbHealth = await (0, productionDatabase_1.checkDatabaseHealth)(database_1.databaseService.db);
         res.status(dbHealth.status === 'healthy' ? 200 : 503).json(dbHealth);
     }
     catch (error) {
@@ -126,34 +127,49 @@ router.get('/metrics', (0, errorHandler_1.asyncHandler)(async (req, res) => {
 // Perform all health checks
 async function performAllHealthChecks() {
     const [database, ssl, memory, disk, api] = await Promise.allSettled([
-        (0, productionDatabase_1.checkDatabaseHealth)(),
+        (0, productionDatabase_1.checkDatabaseHealth)(database_1.databaseService.db),
         checkSSLHealth(),
         checkMemoryHealth(),
         checkDiskHealth(),
         checkAPIHealth()
     ]);
     return {
-        database: database.status === 'fulfilled' ? database.value : {
+        database: database.status === 'fulfilled' ? {
+            ...database.value,
+            status: database.value.status
+        } : {
             status: 'unhealthy',
             message: 'Database check failed',
             details: database.reason
         },
-        ssl: ssl.status === 'fulfilled' ? ssl.value : {
+        ssl: ssl.status === 'fulfilled' ? {
+            ...ssl.value,
+            status: ssl.value.status
+        } : {
             status: 'unhealthy',
             message: 'SSL check failed',
             details: ssl.reason
         },
-        memory: memory.status === 'fulfilled' ? memory.value : {
+        memory: memory.status === 'fulfilled' ? {
+            ...memory.value,
+            status: memory.value.status
+        } : {
             status: 'unhealthy',
             message: 'Memory check failed',
             details: memory.reason
         },
-        disk: disk.status === 'fulfilled' ? disk.value : {
+        disk: disk.status === 'fulfilled' ? {
+            ...disk.value,
+            status: disk.value.status
+        } : {
             status: 'unhealthy',
             message: 'Disk check failed',
             details: disk.reason
         },
-        api: api.status === 'fulfilled' ? api.value : {
+        api: api.status === 'fulfilled' ? {
+            ...api.value,
+            status: api.value.status
+        } : {
             status: 'unhealthy',
             message: 'API check failed',
             details: api.reason

@@ -98,8 +98,13 @@ router.post('/action', identityService_1.authenticateToken, async (req, res) => 
             });
         }
         const validatedData = UserActionSchema.parse(req.body);
+        // Ensure metadata exists for the service
+        const actionData = {
+            ...validatedData,
+            metadata: validatedData.metadata ?? {}
+        };
         // Process user action
-        const action = await simpleMoodPersonaService.processUserAction(userId, validatedData);
+        const action = await simpleMoodPersonaService.processUserAction(userId, actionData);
         res.json({
             success: true,
             data: {

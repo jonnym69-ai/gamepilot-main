@@ -158,14 +158,14 @@ export declare const updatePrivacySchema: z.ZodObject<{
     allowFriendRequests: z.ZodOptional<z.ZodBoolean>;
     showOnlineStatus: z.ZodOptional<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
-    profileVisibility?: "public" | "friends" | "private" | undefined;
+    profileVisibility?: "private" | "public" | "friends" | undefined;
     sharePlaytime?: boolean | undefined;
     shareAchievements?: boolean | undefined;
     shareGameLibrary?: boolean | undefined;
     allowFriendRequests?: boolean | undefined;
     showOnlineStatus?: boolean | undefined;
 }, {
-    profileVisibility?: "public" | "friends" | "private" | undefined;
+    profileVisibility?: "private" | "public" | "friends" | undefined;
     sharePlaytime?: boolean | undefined;
     shareAchievements?: boolean | undefined;
     shareGameLibrary?: boolean | undefined;
@@ -178,12 +178,12 @@ export declare const connectIntegrationSchema: z.ZodObject<{
     refreshToken: z.ZodOptional<z.ZodString>;
     scopes: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
-    platform: "steam" | "discord" | "youtube" | "spotify" | "twitch";
+    platform: "steam" | "discord" | "youtube" | "twitch" | "spotify";
     accessToken?: string | undefined;
     refreshToken?: string | undefined;
     scopes?: string[] | undefined;
 }, {
-    platform: "steam" | "discord" | "youtube" | "spotify" | "twitch";
+    platform: "steam" | "discord" | "youtube" | "twitch" | "spotify";
     accessToken?: string | undefined;
     refreshToken?: string | undefined;
     scopes?: string[] | undefined;

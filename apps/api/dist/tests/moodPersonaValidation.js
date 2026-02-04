@@ -170,7 +170,7 @@ class MoodPersonaValidator {
                 : 'Mood selection flow failed at some point';
             return {
                 test: 'Mood Selection Flow',
-                success,
+                success: !!success,
                 details,
                 data: {
                     moodSelectionId: moodSelection?.id,

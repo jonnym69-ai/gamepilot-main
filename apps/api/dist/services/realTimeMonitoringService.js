@@ -135,7 +135,8 @@ class RealTimeMonitoringService {
                 severity: 'critical',
                 message: `High error rate: ${healthMetrics.errors.last24h} errors in last 24h`,
                 value: healthMetrics.errors.last24h,
-                threshold: 100
+                threshold: 100,
+                timestamp: new Date()
             });
         }
         // Response time alerts
@@ -145,7 +146,8 @@ class RealTimeMonitoringService {
                 severity: 'warning',
                 message: `High response time: ${healthMetrics.moodPersona.avgResponseTime}ms`,
                 value: healthMetrics.moodPersona.avgResponseTime,
-                threshold: 2000
+                threshold: 2000,
+                timestamp: new Date()
             });
         }
         // Success rate alerts
@@ -155,7 +157,8 @@ class RealTimeMonitoringService {
                 severity: 'warning',
                 message: `Low success rate: ${(healthMetrics.moodPersona.successRate * 100).toFixed(1)}%`,
                 value: healthMetrics.moodPersona.successRate,
-                threshold: 0.9
+                threshold: 0.9,
+                timestamp: new Date()
             });
         }
         // Critical errors
@@ -165,7 +168,8 @@ class RealTimeMonitoringService {
                 severity: 'critical',
                 message: `${healthMetrics.errors.criticalErrors.length} critical errors detected`,
                 value: healthMetrics.errors.criticalErrors.length,
-                threshold: 0
+                threshold: 0,
+                timestamp: new Date()
             });
         }
         // Slow queries
@@ -175,7 +179,8 @@ class RealTimeMonitoringService {
                 severity: 'warning',
                 message: `${healthMetrics.performance.slowQueries.length} slow queries detected`,
                 value: healthMetrics.performance.slowQueries.length,
-                threshold: 5
+                threshold: 5,
+                timestamp: new Date()
             });
         }
         // Send alerts

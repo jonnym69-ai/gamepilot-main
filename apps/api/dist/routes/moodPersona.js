@@ -6,12 +6,13 @@ const identityService_1 = require("../identity/identityService");
 const database_1 = require("../services/database");
 const moodPersonaService_1 = require("../services/moodPersonaService");
 const simpleMoodPersonaService_1 = require("../services/simpleMoodPersonaService");
-// import type { MoodSuggestionContext } from '@gamepilot/identity-engine'
+const identity_engine_1 = require("@gamepilot/identity-engine");
+const observabilityService_1 = require("../services/observabilityService");
 const router = (0, express_1.Router)();
 const moodPersonaService = new moodPersonaService_1.MoodPersonaService(database_1.databaseService.db);
 const simpleMoodPersonaService = new simpleMoodPersonaService_1.SimpleMoodPersonaService();
-// const moodPersonaIntegration = new MoodPersonaIntegration()
-// const observabilityService = new ObservabilityService((databaseService as any).db)
+const moodPersonaIntegration = new identity_engine_1.MoodPersonaIntegration();
+const observabilityService = new observabilityService_1.ObservabilityService(database_1.databaseService.db);
 // Validation schemas
 const MoodSelectionSchema = zod_1.z.object({
     primaryMood: zod_1.z.string(),
@@ -34,7 +35,7 @@ const MoodSelectionSchema = zod_1.z.object({
     })
 });
 const UserActionSchema = zod_1.z.object({
-    type: zod_1.z.enum(['launch', 'ignore', 'view', 'wishlist', 'rate', 'switch_mood', 'session_complete']),
+    type: zod_1.z.enum(['launch', 'ignore', 'rate', 'switch_mood', 'session_complete']),
     gameId: zod_1.z.string().optional(),
     gameTitle: zod_1.z.string().optional(),
     moodContext: zod_1.z.object({
@@ -80,7 +81,7 @@ const MoodPredictionSchema = zod_1.z.object({
  */
 router.post('/selection', identityService_1.authenticateToken, async (req, res) => {
     const startTime = Date.now();
-    const userId = req.user.id;
+    const userId = req.authenticatedUser.id;
     try {
         const validatedData = MoodSelectionSchema.parse(req.body);
         // Create mood selection record
@@ -143,7 +144,7 @@ router.post('/selection', identityService_1.authenticateToken, async (req, res) 
  */
 router.get('/selections', identityService_1.authenticateToken, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.authenticatedUser.id;
         const limit = parseInt(req.query.limit) || 50;
         const selections = await moodPersonaService.getMoodSelections(userId, limit);
         res.json({
@@ -165,7 +166,7 @@ router.get('/selections', identityService_1.authenticateToken, async (req, res) 
  */
 router.post('/action', identityService_1.authenticateToken, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.authenticatedUser.id;
         const validatedData = UserActionSchema.parse(req.body);
         // Create user action record
         const userAction = await moodPersonaService.createUserAction({
@@ -199,7 +200,7 @@ router.post('/action', identityService_1.authenticateToken, async (req, res) => 
  */
 router.get('/actions', identityService_1.authenticateToken, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.authenticatedUser.id;
         const limit = parseInt(req.query.limit) || 100;
         const type = req.query.type;
         const actions = type
@@ -224,7 +225,7 @@ router.get('/actions', identityService_1.authenticateToken, async (req, res) => 
  */
 router.post('/recommendation', identityService_1.authenticateToken, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.authenticatedUser.id;
         const validatedData = RecommendationEventSchema.parse(req.body);
         const recommendationEvent = await moodPersonaService.createRecommendationEvent({
             userId,
@@ -255,7 +256,7 @@ router.post('/recommendation', identityService_1.authenticateToken, async (req, 
  */
 router.get('/recommendations', identityService_1.authenticateToken, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.authenticatedUser.id;
         const limit = parseInt(req.query.limit) || 50;
         const recommendations = await moodPersonaService.getRecommendationEvents(userId, limit);
         res.json({
@@ -277,7 +278,7 @@ router.get('/recommendations', identityService_1.authenticateToken, async (req, 
  */
 router.post('/prediction', identityService_1.authenticateToken, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.authenticatedUser.id;
         const validatedData = MoodPredictionSchema.parse(req.body);
         const moodPrediction = await moodPersonaService.createMoodPrediction({
             userId,
@@ -310,7 +311,7 @@ router.post('/prediction', identityService_1.authenticateToken, async (req, res)
  */
 router.get('/predictions', identityService_1.authenticateToken, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.authenticatedUser.id;
         const limit = parseInt(req.query.limit) || 50;
         const predictions = await moodPersonaService.getMoodPredictions(userId, limit);
         res.json({
@@ -332,7 +333,7 @@ router.get('/predictions', identityService_1.authenticateToken, async (req, res)
  */
 router.get('/persona', identityService_1.authenticateToken, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.authenticatedUser.id;
         let profile = await moodPersonaService.getPersonaProfile(userId);
         // Create default profile if none exists
         if (!profile) {
@@ -379,7 +380,7 @@ router.get('/persona', identityService_1.authenticateToken, async (req, res) => 
  */
 router.put('/persona', identityService_1.authenticateToken, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.authenticatedUser.id;
         const updates = req.body;
         const profile = await moodPersonaService.updatePersonaProfile(userId, updates);
         res.json({
@@ -401,7 +402,7 @@ router.put('/persona', identityService_1.authenticateToken, async (req, res) => 
  */
 router.get('/patterns', identityService_1.authenticateToken, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.authenticatedUser.id;
         const patternType = req.query.type;
         const patterns = await moodPersonaService.getMoodPatterns(userId, patternType);
         res.json({
@@ -423,7 +424,7 @@ router.get('/patterns', identityService_1.authenticateToken, async (req, res) =>
  */
 router.get('/analytics', identityService_1.authenticateToken, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.authenticatedUser.id;
         const days = parseInt(req.query.days) || 30;
         const [moodStats, recommendationSuccess, predictionAccuracy] = await Promise.all([
             moodPersonaService.getMoodSelectionStats(userId, days),

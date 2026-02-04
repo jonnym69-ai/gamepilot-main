@@ -1,6 +1,6 @@
 import { MoodVector, MoodAnalysisResult } from './types';
 import { PlayHistory, Game, Activity } from '@gamepilot/types';
-import { type MoodTrendAnalysis, type MoodForecastingResult } from '@gamepilot/identity-engine';
+import { type MoodForecastingResult, type MoodTrendAnalysis } from '@gamepilot/identity-engine';
 /**
  * Main Mood Analysis Service
  * Coordinates signal collection, feature extraction, and mood inference

@@ -728,9 +728,9 @@ class DatabaseService {
         id, title, description, backgroundImages, coverImage, releaseDate,
         developer, publisher, genres, subgenres, platforms, emotionalTags,
         userRating, globalRating, playStatus, hoursPlayed, lastPlayed,
-        addedAt, notes, isFavorite, moods, playHistory, releaseYear,
+        addedAt, notes, isFavorite, tags, moods, playHistory, releaseYear,
         achievements, totalPlaytime, averageRating, completionPercentage, appId
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
             gameToInsert.id,
             gameToInsert.title,
             gameToInsert.description,
@@ -751,6 +751,7 @@ class DatabaseService {
             gameToInsert.addedAt.toISOString(),
             gameToInsert.notes,
             gameToInsert.isFavorite ? 1 : 0,
+            JSON.stringify(gameToInsert.tags || []),
             JSON.stringify(gameToInsert.moods),
             JSON.stringify(gameToInsert.playHistory),
             gameToInsert.releaseYear,
@@ -974,6 +975,7 @@ class DatabaseService {
             addedAt: new Date(row.addedAt),
             notes: row.notes,
             isFavorite: Boolean(row.isFavorite),
+            tags: JSON.parse(row.tags || '[]'),
             moods: JSON.parse(row.moods || '[]'),
             playHistory: JSON.parse(row.playHistory || '[]'),
             releaseYear: row.releaseYear,

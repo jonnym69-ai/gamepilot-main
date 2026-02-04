@@ -84,6 +84,7 @@ router.post('/upsert-games', async (req, res) => {
                 emotionalTags: validatedData.emotionalTags || existingGame?.emotionalTags || [],
                 releaseYear: validatedData.releaseYear || existingGame?.releaseYear || new Date().getFullYear(),
                 isFavorite: validatedData.isFavorite !== undefined ? validatedData.isFavorite : (existingGame?.isFavorite || false),
+                tags: validatedData.tags ?? existingGame?.tags ?? [],
                 appId: validatedData.appId || existingGame?.appId
             };
             if (existingGame) {

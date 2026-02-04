@@ -131,7 +131,7 @@ class DatabasePool {
                 this.updateConnectionMetrics(startTime);
                 (0, errorLogger_1.logInfo)(`Created new database connection ${connectionId}`, undefined, {
                     connectionId,
-                    totalConnections: this.connections.length
+                    totalConnections: String(this.connections.length)
                 });
                 return db;
             }
@@ -141,8 +141,8 @@ class DatabasePool {
         catch (error) {
             this.connectionErrors++;
             (0, errorLogger_1.logError)('Failed to get database connection', error, undefined, {
-                totalConnections: this.connections.length,
-                connectionErrors: this.connectionErrors
+                totalConnections: String(this.connections.length),
+                connectionErrors: String(this.connectionErrors)
             });
             throw error;
         }
@@ -194,7 +194,7 @@ class DatabasePool {
         }
         if (expiredConnections.length > 0) {
             (0, errorLogger_1.logInfo)(`Cleaned up ${expiredConnections.length} expired database connections`, undefined, {
-                remainingConnections: this.connections.length
+                remainingConnections: String(this.connections.length)
             });
         }
     }
@@ -217,7 +217,7 @@ class DatabasePool {
         }
         this.connections = [];
         (0, errorLogger_1.logInfo)('All database connections closed', undefined, {
-            totalConnections: this.connections.length
+            totalConnections: String(this.connections.length)
         });
     }
     // Health check for the pool
@@ -282,7 +282,7 @@ function getDatabasePool() {
         databasePool = new DatabasePool(config);
         // Set up periodic cleanup
         setInterval(() => {
-            databasePool.cleanup().catch(error => {
+            databasePool?.cleanup().catch(error => {
                 (0, errorLogger_1.logError)('Database pool cleanup failed', error);
             });
         }, 60000); // Every minute
@@ -315,8 +315,8 @@ async function withDatabase(operation, maxRetries = 3) {
             if (attempt < maxRetries) {
                 (0, errorLogger_1.logWarning)(`Database operation failed, retrying (${attempt}/${maxRetries})`, undefined, {
                     error: error.message,
-                    attempt,
-                    maxRetries
+                    attempt: String(attempt),
+                    maxRetries: String(maxRetries)
                 });
                 // Exponential backoff
                 const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
@@ -325,8 +325,8 @@ async function withDatabase(operation, maxRetries = 3) {
         }
     }
     (0, errorLogger_1.logError)('Database operation failed after all retries', lastError || new Error('Unknown error'), undefined, {
-        maxRetries,
-        finalAttempt: maxRetries,
+        maxRetries: String(maxRetries),
+        finalAttempt: String(maxRetries),
         error: lastError?.message || 'Unknown error'
     });
     throw lastError;
