@@ -2,21 +2,25 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files
-COPY package.standalone.json ./package.json
+# Copy all package files for monorepo
+COPY package*.json ../../packages/shared/package.json ../../packages/types/package.json ../../packages/static-data/package.json ./
 
-# Install dependencies
-RUN npm install --only=production
+# Copy shared packages
+COPY ../../packages/shared ./packages/shared
+COPY ../../packages/types ./packages/types  
+COPY ../../packages/static-data ./packages/static-data
+
+# Install all dependencies including monorepo packages
+RUN npm install
 
 # Copy source code
 COPY . .
 
+# Build the application
+RUN npm run build
+
 # Expose port
 EXPOSE 3001
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http://localhost:3001/health').then(() => process.exit(0)).catch(() => process.exit(1));"
 
 # Start the application
 CMD ["npm", "start"]
