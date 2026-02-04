@@ -85,17 +85,17 @@ export declare const updatePreferencesSchema: z.ZodObject<{
         friendActivity: z.ZodOptional<z.ZodBoolean>;
         platformUpdates: z.ZodOptional<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
-        recommendations?: boolean | undefined;
+        email?: boolean | undefined;
         push?: boolean | undefined;
         achievements?: boolean | undefined;
-        email?: boolean | undefined;
+        recommendations?: boolean | undefined;
         friendActivity?: boolean | undefined;
         platformUpdates?: boolean | undefined;
     }, {
-        recommendations?: boolean | undefined;
+        email?: boolean | undefined;
         push?: boolean | undefined;
         achievements?: boolean | undefined;
-        email?: boolean | undefined;
+        recommendations?: boolean | undefined;
         friendActivity?: boolean | undefined;
         platformUpdates?: boolean | undefined;
     }>>;
@@ -116,13 +116,13 @@ export declare const updatePreferencesSchema: z.ZodObject<{
         showRatings?: boolean | undefined;
     }>>;
 }, "strip", z.ZodTypeAny, {
-    theme?: "auto" | "dark" | "light" | undefined;
+    theme?: "dark" | "light" | "auto" | undefined;
     language?: string | undefined;
     notifications?: {
-        recommendations?: boolean | undefined;
+        email?: boolean | undefined;
         push?: boolean | undefined;
         achievements?: boolean | undefined;
-        email?: boolean | undefined;
+        recommendations?: boolean | undefined;
         friendActivity?: boolean | undefined;
         platformUpdates?: boolean | undefined;
     } | undefined;
@@ -133,13 +133,13 @@ export declare const updatePreferencesSchema: z.ZodObject<{
         showRatings?: boolean | undefined;
     } | undefined;
 }, {
-    theme?: "auto" | "dark" | "light" | undefined;
+    theme?: "dark" | "light" | "auto" | undefined;
     language?: string | undefined;
     notifications?: {
-        recommendations?: boolean | undefined;
+        email?: boolean | undefined;
         push?: boolean | undefined;
         achievements?: boolean | undefined;
-        email?: boolean | undefined;
+        recommendations?: boolean | undefined;
         friendActivity?: boolean | undefined;
         platformUpdates?: boolean | undefined;
     } | undefined;

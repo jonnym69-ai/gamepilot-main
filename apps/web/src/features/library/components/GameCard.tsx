@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import type { PlayStatus } from '@gamepilot/types'
 import type { Game } from '@gamepilot/types'
+import { MOODS, type MoodId } from '@gamepilot/static-data'
 import { getHighQualityGameImage } from "../../../utils/gameImageUtils";
 import { useLibraryStore } from '../../../stores/useLibraryStore'
 import { LazyImage } from '../../../components/LazyImage'
 import { useDragAndDrop, useDragStyles } from '../../../hooks/useDragAndDrop'
+import { deriveMoodFromGame } from '../../../utils/moodMapping'
 
 interface GameCardProps {
   game: Game
@@ -284,28 +286,73 @@ export const GameCard: React.FC<GameCardProps> = ({
               </p>
             )}
             
-            {/* Tags or mood info */}
-            {game.tags || game.moods ? (
-              <div className="flex flex-wrap gap-1 mb-3">
-                {game.moods && typeof game.moods === 'string' && (
-                  <span className="px-2 py-1 bg-purple-600/30 border border-purple-500/30 rounded text-xs text-purple-200">
-                    🎭 {game.moods}
-                  </span>
-                )}
-                {game.tags && game.tags.slice(0, 3).map((tag: string, index: number) => (
-                  <span 
-                    key={index} 
-                    className={`px-2 py-1 rounded text-xs ${
-                      tag === 'Backlog' 
-                        ? 'bg-yellow-500/20 border border-yellow-500/30 text-yellow-300' 
-                        : 'bg-gray-700/50 border border-gray-600/30 text-gray-300'
-                    }`}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            ) : null}
+            {/* Enhanced Mood Display */}
+            <div className="flex flex-wrap gap-1 mb-3">
+              {game.moods && Array.isArray(game.moods) && game.moods.length > 0 ? (
+                game.moods.slice(0, 2).map((moodId: string, index: number) => {
+                  const mood = MOODS.find(m => m.id === moodId)
+                  if (!mood) return null
+                  return (
+                    <motion.span
+                      key={moodId}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.1 }}
+                      className={`px-2 py-1 rounded-full text-xs font-medium border ${
+                        mood.id === 'competitive' ? 'bg-red-500/20 border-red-500/40 text-red-300' :
+                        mood.id === 'chill' ? 'bg-blue-500/20 border-blue-500/40 text-blue-300' :
+                        mood.id === 'story' ? 'bg-purple-500/20 border-purple-500/40 text-purple-300' :
+                        mood.id === 'creative' ? 'bg-green-500/20 border-green-500/40 text-green-300' :
+                        mood.id === 'social' ? 'bg-teal-500/20 border-teal-500/40 text-teal-300' :
+                        mood.id === 'focused' ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-300' :
+                        mood.id === 'energetic' ? 'bg-yellow-500/20 border-yellow-500/40 text-yellow-300' :
+                        mood.id === 'exploratory' ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300' :
+                        'bg-gray-500/20 border-gray-500/40 text-gray-300'
+                      }`}
+                    >
+                      {mood.emoji} {mood.name}
+                    </motion.span>
+                  )
+                })
+              ) : (
+                // Derive mood from game if not explicitly tagged
+                (() => {
+                  const derivedMoodId = deriveMoodFromGame(game)
+                  const derivedMood = derivedMoodId ? MOODS.find(m => m.id === derivedMoodId) : null
+                  return derivedMood ? (
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className={`px-2 py-1 rounded-full text-xs font-medium border ${
+                        derivedMood.id === 'competitive' ? 'bg-red-500/20 border-red-500/40 text-red-300' :
+                        derivedMood.id === 'chill' ? 'bg-blue-500/20 border-blue-500/40 text-blue-300' :
+                        derivedMood.id === 'story' ? 'bg-purple-500/20 border-purple-500/40 text-purple-300' :
+                        derivedMood.id === 'creative' ? 'bg-green-500/20 border-green-500/40 text-green-300' :
+                        derivedMood.id === 'social' ? 'bg-teal-500/20 border-teal-500/40 text-teal-300' :
+                        derivedMood.id === 'focused' ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-300' :
+                        derivedMood.id === 'energetic' ? 'bg-yellow-500/20 border-yellow-500/40 text-yellow-300' :
+                        derivedMood.id === 'exploratory' ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300' :
+                        'bg-gray-500/20 border-gray-500/40 text-gray-300'
+                      }`}
+                    >
+                      {derivedMood.emoji} {derivedMood.name}
+                    </motion.span>
+                  ) : null
+                })()
+              )}
+              
+              {/* Show play status as secondary tag */}
+              {game.playStatus && game.playStatus !== 'backlog' && (
+                <span className={`px-2 py-1 rounded text-xs font-medium ${
+                  game.playStatus === 'playing' ? 'bg-green-500/20 border-green-500/40 text-green-300' :
+                  game.playStatus === 'completed' ? 'bg-blue-500/20 border-blue-500/40 text-blue-300' :
+                  game.playStatus === 'abandoned' ? 'bg-red-500/20 border-red-500/40 text-red-300' :
+                  'bg-gray-500/20 border-gray-500/40 text-gray-300'
+                }`}>
+                  {getStatusIcon(game.playStatus)} {game.playStatus}
+                </span>
+              )}
+            </div>
 
             {/* Rating or achievement info */}
             {(game as any).rating || (game as any).achievements ? (
@@ -379,6 +426,6 @@ export const GameCard: React.FC<GameCardProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }

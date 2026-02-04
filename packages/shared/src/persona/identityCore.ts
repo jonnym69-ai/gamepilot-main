@@ -8,11 +8,12 @@ import type { Game } from '../index'
  */
 export interface Session {
   gameId: string
-  startTime: Date
-  endTime: Date
+  startTime?: Date
+  timestamp?: Date // Support both startTime and timestamp
+  endTime?: Date
   duration: number // in minutes
-  achievements: number
-  multiplayer: boolean
+  achievements?: number
+  multiplayer?: boolean
 }
 
 /**

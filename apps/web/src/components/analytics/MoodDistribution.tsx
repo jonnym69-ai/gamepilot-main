@@ -15,6 +15,9 @@ export const MoodDistribution: React.FC<MoodDistributionProps> = ({
   getMoodColor,
   onMoodClick
 }) => {
+  // Calculate total count from the distribution itself to ensure percentages are correct (max 100%)
+  const totalCount = Object.values(moodDistribution).reduce((sum, count) => sum + count, 0) || 1;
+
   return (
     <div className="glass-morphism rounded-xl p-6 border border-white/10 hover:shadow-cinematic transition-all duration-300 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-32 h-32 bg-gaming-primary/5 blur-[60px] rounded-full" />
@@ -27,7 +30,7 @@ export const MoodDistribution: React.FC<MoodDistributionProps> = ({
         {Object.entries(moodDistribution)
           .sort(([,a], [,b]) => b - a)
           .map(([mood, count], index) => {
-            const percentage = (count / totalTrends) * 100;
+            const percentage = (count / totalCount) * 100;
             return (
               <div 
                 key={mood} 

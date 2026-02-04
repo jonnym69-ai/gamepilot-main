@@ -893,6 +893,39 @@ class DatabaseService {
         const result = await this.db.run('DELETE FROM games WHERE id = ?', [id]);
         return (result.changes || 0) > 0;
     }
+    /**
+     * Delete user and all associated data (GDPR compliant cleanup)
+     * Budget-friendly: Uses SQLite cascading and manual cleanup
+     */
+    async deleteUser(id) {
+        if (!this.db)
+            throw new Error('Database not initialized');
+        console.log(`🗑️ Database: Deleting user ${id} and all associated data`);
+        try {
+            // Use a transaction for atomic deletion
+            await this.db.run('BEGIN TRANSACTION');
+            // Delete from all tables (SQLite ON DELETE CASCADE handles some, but let's be explicit)
+            await this.db.run('DELETE FROM user_integrations WHERE userId = ?', [id]);
+            await this.db.run('DELETE FROM user_games WHERE userId = ?', [id]);
+            await this.db.run('DELETE FROM game_sessions WHERE userId = ?', [id]);
+            await this.db.run('DELETE FROM personas WHERE userId = ?', [id]);
+            await this.db.run('DELETE FROM sessions WHERE userId = ?', [id]);
+            await this.db.run('DELETE FROM passwords WHERE userId = ?', [id]);
+            // Finally delete the user record
+            const result = await this.db.run('DELETE FROM users WHERE id = ?', [id]);
+            await this.db.run('COMMIT');
+            const success = (result.changes || 0) > 0;
+            if (success) {
+                console.log(`✅ Database: User ${id} deleted successfully`);
+            }
+            return success;
+        }
+        catch (error) {
+            await this.db.run('ROLLBACK');
+            console.error(`❌ Database: Failed to delete user ${id}:`, error);
+            throw error;
+        }
+    }
     async addUserGame(userId, gameId, gameData = {}) {
         if (!this.db)
             throw new Error('Database not initialized');

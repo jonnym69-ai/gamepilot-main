@@ -17,8 +17,8 @@ const axios_1 = __importDefault(require("axios"));
 const STEAM_OPENID_URL = 'https://steamcommunity.com/openid/login';
 const REALM = process.env.NODE_ENV === 'production'
     ? 'https://gamepilot.com'
-    : 'http://localhost:3002';
-const RETURN_URL = 'http://localhost:3002/api/auth/callback/steam';
+    : 'http://localhost:3001'; // Point to API port
+const RETURN_URL = 'http://localhost:3001/api/auth/callback/steam';
 // Helper function to get STEAM_API_KEY dynamically
 const getSteamApiKey = () => process.env.STEAM_API_KEY;
 /**

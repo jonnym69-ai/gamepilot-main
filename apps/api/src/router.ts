@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import authRoutes from './routes/auth'
+import steamAuthRoutes from './routes/steamAuth'
 import gameRoutes from './routes/games'
 import moodPersonaRoutes from './routes/moodPersonaSimple'
 // import diagnosticsRoutes from './routes/diagnostics'
@@ -9,6 +10,7 @@ import sessionRoutes from './routes/session'
 import homeRoutes from './routes/home'
 import personaRoutes from './routes/persona'
 import recommendationRoutes from './routes/recommendations'
+import analyticsRoutes from './routes/analytics'
 import launcherRoutes from './routes/launcher'
 import feedbackRoutes from './routes/feedback'
 import healthRoutes from './routes/health'
@@ -20,6 +22,7 @@ console.log('🔧 Loading API routes...')
 
 // Register all route modules
 router.use('/auth', authRoutes)
+router.use('/auth', steamAuthRoutes) // Combine steam auth with main auth
 console.log('✅ Auth routes loaded')
 router.use('/games', gameRoutes)
 console.log('✅ Games routes loaded')
@@ -507,7 +510,8 @@ console.log('✅ Home routes loaded')
 router.use('/persona', personaRoutes)
 console.log('✅ Persona routes loaded')
 router.use('/recommendations', recommendationRoutes)
-console.log('✅ Recommendation routes loaded')
+router.use('/analytics', analyticsRoutes)
+console.log('✅ Recommendation and Analytics routes loaded')
 router.use('/launcher', launcherRoutes)
 console.log('✅ Launcher routes loaded')
 router.use('/feedback', feedbackRoutes)

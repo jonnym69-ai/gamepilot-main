@@ -4,11 +4,12 @@ import type { Game } from '../index';
  */
 export interface Session {
     gameId: string;
-    startTime: Date;
-    endTime: Date;
+    startTime?: Date;
+    timestamp?: Date;
+    endTime?: Date;
     duration: number;
-    achievements: number;
-    multiplayer: boolean;
+    achievements?: number;
+    multiplayer?: boolean;
 }
 /**
  * Identity Core - Canonical persona engine schema

@@ -6,6 +6,7 @@ import { EditModeButton } from '../features/customisation/EditModeButton';
 import { MOODS } from '@gamepilot/static-data';
 import { useLibraryStore } from '../stores/useLibraryStore';
 import { EditModePanel } from '../features/customisation/EditModePanel';
+import { apiFetch } from '../config/api';
 
 // Animated number component
 const AnimatedNumber: React.FC<{ value: number; suffix?: string; duration?: number }> = ({ 
@@ -70,10 +71,29 @@ interface MoodAnalyticsData {
 
 export const Analytics: React.FC = () => {
   const [loading, setLoading] = useState(true);
+  const [realStats, setRealStats] = useState<any>(null);
   const [selectedTimeRange, setSelectedTimeRange] = useState<'week' | 'month' | 'all'>('week');
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   
+  // Fetch real backend analytics
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await apiFetch('api/analytics/summary');
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success) setRealStats(result.data);
+        }
+      } catch (err) {
+        console.warn('Failed to fetch real analytics, falling back to local calculation');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
   // Persona and mood integration
   const persona = usePersonaSnapshot();
   const { games } = useLibraryStore();
@@ -123,8 +143,16 @@ export const Analytics: React.FC = () => {
       return inTimeRange && matchesMood && matchesGenre;
     });
 
-    // Enhanced mood trends from persona data
-    const moodTrends = [
+    // Enhanced mood trends from real data
+    // Use real stats if available, otherwise use filtered library games
+    const moodTrends = realStats ? [
+      {
+        date: new Date().toLocaleDateString(),
+        mood: realStats.favoriteMood,
+        confidence: 0.8,
+        sessionLength: realStats.averageSessionLength
+      }
+    ] : [
       {
         date: new Date().toLocaleDateString(),
         mood: persona.mood?.moodId || 'chill',
@@ -133,12 +161,12 @@ export const Analytics: React.FC = () => {
       }
     ];
 
-    // Gaming patterns from persona signals
+    // Gaming patterns from real backend data or persona fallback
     const gamingPatterns = {
-      totalPlaytime: filteredGames.reduce((sum: number, game: any) => sum + (game.hoursPlayed || 0), 0),
-      averageSessionLength: 60,
-      mostPlayedMood: persona.mood?.moodId || 'chill',
-      moodDistribution: {
+      totalPlaytime: realStats?.totalPlaytime ?? filteredGames.reduce((sum: number, game: any) => sum + (game.hoursPlayed || 0), 0),
+      averageSessionLength: realStats?.averageSessionLength ?? 60,
+      mostPlayedMood: realStats?.favoriteMood || persona.mood?.moodId || 'chill',
+      moodDistribution: realStats?.moodDistribution || {
         [persona.mood?.moodId || 'chill']: 35,
         competitive: 25,
         story: 20,
@@ -369,11 +397,14 @@ export const Analytics: React.FC = () => {
       `You've experienced ${mood} mood ${count} times (${Math.round(percentage)}% of your sessions).`,
       <div className="space-y-4">
         <div className="p-4 bg-gray-800/50 rounded-lg">
-          <h4 className="text-gaming-primary font-medium mb-2">Top Games in {mood} Mood</h4>
+          <h4 className="text-gaming-primary font-medium mb-2">Your Most Played Games</h4>
           <div className="space-y-1">
-            <div className="text-gray-300">• Zen Puzzle Master (12 sessions)</div>
-            <div className="text-gray-300">• Creative Builder (8 sessions)</div>
-            <div className="text-gray-300">• Story Explorer (6 sessions)</div>
+            {(realStats?.topGames || []).map((g: any, i: number) => (
+              <div key={i} className="text-gray-300">• {g.title} ({g.hours}h played)</div>
+            ))}
+            {(!realStats?.topGames || realStats.topGames.length === 0) && (
+              <div className="text-gray-500 italic">No games analyzed for this mood yet</div>
+            )}
           </div>
         </div>
         <div className="p-4 bg-gray-800/50 rounded-lg">
@@ -407,11 +438,11 @@ export const Analytics: React.FC = () => {
           <p className="text-gray-300">Average {genre} sessions last {analyticsData?.gamingPatterns.averageSessionLength || 60} minutes</p>
         </div>
         <div className="p-4 bg-gray-800/50 rounded-lg">
-          <h4 className="text-gaming-primary font-medium mb-2">Top {genre} Games</h4>
+          <h4 className="text-gaming-primary font-medium mb-2">Most Played in Library</h4>
           <div className="space-y-1">
-            <div className="text-gray-300">• Game Title 1 (most played)</div>
-            <div className="text-gray-300">• Game Title 2 (second)</div>
-            <div className="text-gray-300">• Game Title 3 (third)</div>
+            {(realStats?.topGames || []).map((g: any, i: number) => (
+              <div key={i} className="text-gray-300">• {g.title} ({g.hours}h)</div>
+            ))}
           </div>
         </div>
       </div>

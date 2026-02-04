@@ -65,7 +65,7 @@ router.get('/callback/steam', async (req, res) => {
         // Build frontend redirect URL with all required parameters
         const frontendUrl = process.env.NODE_ENV === 'production'
             ? 'https://gamepilot.com'
-            : 'http://localhost:3001';
+            : 'http://localhost:3002'; // Redirect to WEB port
         const callbackUrl = new URL(`${frontendUrl}/auth/callback/steam`);
         callbackUrl.searchParams.set('sessionToken', sessionToken);
         callbackUrl.searchParams.set('userId', user.id);
@@ -86,7 +86,7 @@ router.get('/callback/steam', async (req, res) => {
         // Redirect to frontend with error
         const frontendUrl = process.env.NODE_ENV === 'production'
             ? 'https://gamepilot.com'
-            : 'http://localhost:3001';
+            : 'http://localhost:3002'; // Redirect to WEB port
         res.redirect(`${frontendUrl}/auth/callback/steam?loginError=steam_callback_error`);
     }
 });

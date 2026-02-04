@@ -4,9 +4,8 @@ const express_1 = require("express");
 const discordClient_1 = require("../discord/discordClient");
 const integrationAdapter_1 = require("../adapters/integrationAdapter");
 const identityService_1 = require("../identity/identityService");
+const database_1 = require("../services/database");
 const router = (0, express_1.Router)();
-// Mock storage for user integrations (in production, this would be a database)
-const userIntegrations = new Map();
 // GET /api/discord/profile
 // Now supports both legacy and canonical UserIntegration responses
 router.get('/profile', async (req, res) => {
@@ -23,19 +22,17 @@ router.get('/profile', async (req, res) => {
         // If user is authenticated, also return canonical integration data
         if (canonicalUser) {
             console.log('🔄 Converting to canonical UserIntegration for authenticated user');
-            // Get or create canonical integration
-            let userIntegration = userIntegrations.get(canonicalUser.id)?.find(i => i.platform === 'discord');
+            // Get canonical integration from REAL database
+            let userIntegration = await database_1.databaseService.getIntegration(canonicalUser.id, 'discord');
             if (!userIntegration) {
-                // Create new canonical integration
+                // Create new canonical integration placeholder
                 userIntegration = await (0, discordClient_1.getDiscordIntegration)(canonicalUser.id);
-                // Store the integration
-                const existingIntegrations = userIntegrations.get(canonicalUser.id) || [];
-                existingIntegrations.push(userIntegration);
-                userIntegrations.set(canonicalUser.id, existingIntegrations);
-                console.log('✅ Created new canonical Discord integration for user:', canonicalUser.id);
+                // Save to database
+                await database_1.databaseService.createIntegration(userIntegration);
+                console.log('✅ Created new canonical Discord integration in DB for user:', canonicalUser.id);
             }
             else {
-                console.log('✅ Found existing canonical Discord integration for user:', canonicalUser.id);
+                console.log('✅ Found existing canonical Discord integration in DB for user:', canonicalUser.id);
             }
             // Return enhanced response with both legacy and canonical data
             return res.json({
@@ -110,12 +107,14 @@ router.post('/connect', identityService_1.authenticateToken, async (req, res) =>
                 message: validation.errors.join(', ')
             });
         }
-        // Store the integration
-        const existingIntegrations = userIntegrations.get(canonicalUser.id) || [];
-        // Remove existing Discord integration if any
-        const filteredIntegrations = existingIntegrations.filter(i => i.platform !== 'discord');
-        filteredIntegrations.push(discordIntegration);
-        userIntegrations.set(canonicalUser.id, filteredIntegrations);
+        // Save to real database
+        const existing = await database_1.databaseService.getIntegration(canonicalUser.id, 'discord');
+        if (existing) {
+            await database_1.databaseService.updateIntegration(existing.id, discordIntegration);
+        }
+        else {
+            await database_1.databaseService.createIntegration(discordIntegration);
+        }
         console.log('✅ Discord account connected successfully');
         console.log('   Integration ID:', discordIntegration.id);
         res.status(201).json({
@@ -156,7 +155,8 @@ router.get('/guilds', identityService_1.authenticateToken, async (req, res) => {
             });
         }
         // Check if user has Discord integration
-        const userIntegration = userIntegrations.get(canonicalUser.id)?.find(i => i.platform === 'discord');
+        const userIntegrationsList = await database_1.databaseService.getUserIntegrations(canonicalUser.id);
+        const userIntegration = userIntegrationsList.find((i) => i.platform === 'discord');
         if (!userIntegration || !userIntegration.isActive) {
             console.log('❌ No active Discord integration found');
             return res.status(403).json({
@@ -170,11 +170,11 @@ router.get('/guilds', identityService_1.authenticateToken, async (req, res) => {
         // Update last sync time
         const updatedIntegration = (0, discordClient_1.updateDiscordStatus)(userIntegration, 'active');
         // Update stored integration
-        const integrations = userIntegrations.get(canonicalUser.id) || [];
-        const integrationIndex = integrations.findIndex(i => i.id === updatedIntegration.id);
+        const integrations = await database_1.databaseService.getUserIntegrations(canonicalUser.id);
+        const integrationIndex = integrations.findIndex((i) => i.id === updatedIntegration.id);
         if (integrationIndex !== -1) {
             integrations[integrationIndex] = updatedIntegration;
-            userIntegrations.set(canonicalUser.id, integrations);
+            await database_1.databaseService.updateIntegration(updatedIntegration.id, updatedIntegration);
         }
         console.log('✅ Retrieved', guilds.length, 'Discord guilds');
         res.json({
@@ -209,7 +209,8 @@ router.get('/activity', identityService_1.authenticateToken, async (req, res) =>
             });
         }
         // Check if user has Discord integration
-        const userIntegration = userIntegrations.get(canonicalUser.id)?.find(i => i.platform === 'discord');
+        const userIntegrationsList = await database_1.databaseService.getUserIntegrations(canonicalUser.id);
+        const userIntegration = userIntegrationsList.find((i) => i.platform === 'discord');
         if (!userIntegration || !userIntegration.isActive) {
             console.log('❌ No active Discord integration found');
             return res.status(403).json({
@@ -260,8 +261,8 @@ router.post('/refresh', identityService_1.authenticateToken, async (req, res) =>
             });
         }
         // Get user's Discord integration
-        const userIntegrationsList = userIntegrations.get(canonicalUser.id) || [];
-        const discordIntegration = userIntegrationsList.find(i => i.platform === 'discord');
+        const userIntegrationsList = await database_1.databaseService.getUserIntegrations(canonicalUser.id) || [];
+        const discordIntegration = userIntegrationsList.find((i) => i.platform === 'discord');
         if (!discordIntegration) {
             return res.status(404).json({
                 error: 'Discord integration not found',
@@ -276,10 +277,10 @@ router.post('/refresh', identityService_1.authenticateToken, async (req, res) =>
             expiresAt: expiresAt ? new Date(expiresAt) : new Date(Date.now() + 3600000) // Default 1 hour
         });
         // Update stored integration
-        const integrationIndex = userIntegrationsList.findIndex(i => i.id === updatedIntegration.id);
+        const integrationIndex = userIntegrationsList.findIndex((i) => i.id === updatedIntegration.id);
         if (integrationIndex !== -1) {
             userIntegrationsList[integrationIndex] = updatedIntegration;
-            userIntegrations.set(canonicalUser.id, userIntegrationsList);
+            await database_1.databaseService.updateIntegration(updatedIntegration.id, updatedIntegration);
         }
         console.log('✅ Discord tokens refreshed successfully');
         res.json({
@@ -322,8 +323,8 @@ router.post('/status', identityService_1.authenticateToken, async (req, res) => 
             });
         }
         // Get user's Discord integration
-        const userIntegrationsList = userIntegrations.get(canonicalUser.id) || [];
-        const discordIntegration = userIntegrationsList.find(i => i.platform === 'discord');
+        const userIntegrationsList = await database_1.databaseService.getUserIntegrations(canonicalUser.id) || [];
+        const discordIntegration = userIntegrationsList.find((i) => i.platform === 'discord');
         if (!discordIntegration) {
             return res.status(404).json({
                 error: 'Discord integration not found',
@@ -334,10 +335,10 @@ router.post('/status', identityService_1.authenticateToken, async (req, res) => 
         // Update status using canonical model
         const updatedIntegration = (0, discordClient_1.updateDiscordStatus)(discordIntegration, status, errorCount);
         // Update stored integration
-        const integrationIndex = userIntegrationsList.findIndex(i => i.id === updatedIntegration.id);
+        const integrationIndex = userIntegrationsList.findIndex((i) => i.id === updatedIntegration.id);
         if (integrationIndex !== -1) {
             userIntegrationsList[integrationIndex] = updatedIntegration;
-            userIntegrations.set(canonicalUser.id, userIntegrationsList);
+            await database_1.databaseService.updateIntegration(updatedIntegration.id, updatedIntegration);
         }
         console.log('✅ Discord integration status updated successfully');
         res.json({
@@ -374,8 +375,8 @@ router.delete('/disconnect', identityService_1.authenticateToken, async (req, re
             });
         }
         // Get user's Discord integration
-        const userIntegrationsList = userIntegrations.get(canonicalUser.id) || [];
-        const discordIntegration = userIntegrationsList.find(i => i.platform === 'discord');
+        const userIntegrationsList = await database_1.databaseService.getUserIntegrations(canonicalUser.id) || [];
+        const discordIntegration = userIntegrationsList.find((i) => i.platform === 'discord');
         if (!discordIntegration) {
             return res.status(404).json({
                 error: 'Discord integration not found',
@@ -384,8 +385,7 @@ router.delete('/disconnect', identityService_1.authenticateToken, async (req, re
         }
         console.log('🔌 Disconnecting Discord integration:', discordIntegration.id);
         // Remove Discord integration from user's integrations
-        const filteredIntegrations = userIntegrationsList.filter(i => i.platform !== 'discord');
-        userIntegrations.set(canonicalUser.id, filteredIntegrations);
+        await database_1.databaseService.deleteIntegration(discordIntegration.id);
         console.log('✅ Discord account disconnected successfully');
         res.json({
             success: true,

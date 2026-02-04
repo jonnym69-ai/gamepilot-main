@@ -35,13 +35,34 @@ export declare class PersonaService {
     private updateBehavioralPatterns;
     private recomputePersona;
     private buildPersonaState;
+    /**
+     * Fetch all gaming data for a user to power the Identity Engine
+     */
     private getUserGamingData;
+    /**
+     * Map raw Identity Engine traits to User-facing Persona traits
+     */
     private mapIdentityTraitsToPersonaTraits;
+    /**
+     * Infer current mood based on recent gaming activity
+     */
     private inferCurrentMood;
+    /**
+     * Infer current intent based on traits and mood signals
+     */
     private inferCurrentIntent;
+    /**
+     * Calculate mood intensity (1-10)
+     */
     private calculateMoodIntensity;
+    /**
+     * Extract behavioral patterns from historical gaming data
+     */
     private extractBehavioralPatterns;
     private buildPersonaHistory;
+    /**
+     * Extract mood signals from user gaming data
+     */
     private extractMoodSignals;
     private countDataPoints;
     private buildRecommendationContext;

@@ -709,13 +709,22 @@ class IdentityService {
             // Delete user password from database
             await database_1.databaseService.deletePassword(userId);
             console.log('✅ User password deleted');
-            // Delete user from database (not implemented yet)
-            // TODO: Implement databaseService.deleteUser(userId)
-            console.log('✅ User account deletion completed (password and integrations removed)');
-            return {
-                success: true,
-                message: 'Account and all associated data deleted successfully'
-            };
+            // Real budget-friendly deletion logic
+            const success = await database_1.databaseService.deleteUser(userId);
+            if (success) {
+                console.log('✅ User account and data deleted successfully from database');
+                return {
+                    success: true,
+                    message: 'Account and all associated data deleted successfully'
+                };
+            }
+            else {
+                console.error('❌ Failed to delete user from database record');
+                return {
+                    success: false,
+                    message: 'User record deletion failed'
+                };
+            }
         }
         catch (error) {
             console.error('❌ Error during account deletion:', error);

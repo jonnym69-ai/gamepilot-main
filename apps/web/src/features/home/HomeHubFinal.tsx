@@ -987,13 +987,6 @@ export function HomeHubFinal() {
             </div>
           )}
         </motion.section>
-                      {game.lastPlayed ? new Date(game.lastPlayed).toLocaleDateString() : 'Never'}
-                    </span>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </section>
 
         {/* NEW: I'm Not Sure What To Play */}
         <section className="mb-8">

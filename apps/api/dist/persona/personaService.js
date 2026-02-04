@@ -125,7 +125,7 @@ class PersonaService {
                 lastUpdated: new Date(),
                 traits: this.mapIdentityTraitsToPersonaTraits(identityCore.traits),
                 currentMood: this.inferCurrentMood(identityCore.moodSignals),
-                currentIntent: this.inferCurrentIntent(identityCore.traits, identityCore.moodSignals),
+                currentIntent: this.inferCurrentIntent(this.mapIdentityTraitsToPersonaTraits(identityCore.traits), identityCore.moodSignals),
                 moodIntensity: this.calculateMoodIntensity(identityCore.moodSignals),
                 patterns: this.extractBehavioralPatterns(userData),
                 history: this.buildPersonaHistory(userId),
@@ -369,50 +369,157 @@ class PersonaService {
             dataFreshness: this.calculateDataFreshness(persona.lastAnalysisDate)
         };
     }
-    // Placeholder implementations for complex methods
+    /**
+     * Fetch all gaming data for a user to power the Identity Engine
+     */
     async getUserGamingData(userId) {
-        // Would fetch from database
+        console.log('📊 Fetching real gaming data for persona analysis:', userId);
+        // Fetch games from database
+        const games = await database_1.databaseService.getUserGames(userId);
+        const sessions = await database_1.databaseService.getGameSessionHistory(userId);
+        // Transform into Identity Engine format
+        const steamGames = games.filter(g => g.appId);
+        const playtime = {};
+        const genres = {};
+        games.forEach(g => {
+            const id = g.appId?.toString() || g.id;
+            playtime[id] = g.hoursPlayed || 0;
+            g.genres.forEach((genre) => {
+                const genreName = typeof genre === 'string' ? genre : genre.name;
+                genres[genreName] = (genres[genreName] || 0) + 1;
+            });
+        });
         return {
             steam: {
-                games: [],
-                playtime: {},
-                genres: {},
-                achievements: {},
-                sessions: []
+                games: games.map(g => ({
+                    appId: g.appId,
+                    name: g.title,
+                    playtimeForever: (g.hoursPlayed || 0) * 60,
+                    genres: g.genres.map((gen) => typeof gen === 'string' ? gen : gen.name)
+                })),
+                playtime,
+                genres,
+                achievements: {}, // TODO: Fetch real achievements
+                sessions: sessions.map(s => ({
+                    gameId: s.gameId,
+                    duration: s.duration || 0,
+                    timestamp: s.startedAt
+                }))
             }
         };
     }
+    /**
+     * Map raw Identity Engine traits to User-facing Persona traits
+     */
     mapIdentityTraitsToPersonaTraits(traits) {
-        // Map IdentityCore traits to PersonaTraits
+        // Determine archetype based on highest score
+        const scores = [
+            { id: 'Achiever', score: traits.completionist },
+            { id: 'Explorer', score: traits.explorer },
+            { id: 'Competitor', score: traits.competitor },
+            { id: 'Strategist', score: traits.strategist },
+            { id: 'Casual', score: traits.adventurer }
+        ];
+        const topArchetype = scores.sort((a, b) => b.score - a.score)[0];
         return {
-            archetypeId: 'Casual',
-            intensity: 'Medium',
-            pacing: 'Flow',
-            riskProfile: 'Balanced',
-            socialStyle: 'Solo',
-            confidence: 0.5
+            archetypeId: topArchetype.id,
+            intensity: traits.competitor > 0.6 ? 'High' : traits.adventurer > 0.6 ? 'Low' : 'Medium',
+            pacing: traits.strategist > 0.6 ? 'Marathon' : 'Flow',
+            riskProfile: traits.explorer > 0.6 ? 'Experimental' : 'Balanced',
+            socialStyle: traits.competitor > 0.5 ? 'Competitive' : 'Solo',
+            confidence: Math.max(...scores.map(s => s.score))
         };
     }
+    /**
+     * Infer current mood based on recent gaming activity
+     */
     inferCurrentMood(moodSignals) {
+        // If we have recent data points, we can infer mood
+        // For now, look at session pattern and genre shift
+        if (moodSignals.sessionPattern > 120)
+            return 'focused'; // Long sessions = focused
+        if (moodSignals.playtimeSpike > 0.5)
+            return 'energetic'; // Sudden surge in play = energetic
+        if (moodSignals.genreShift > 0.7)
+            return 'curious'; // Playing new types of games = curious
         return 'neutral';
     }
+    /**
+     * Infer current intent based on traits and mood signals
+     */
     inferCurrentIntent(traits, moodSignals) {
+        if (traits.intensity === 'High' && moodSignals.playtimeSpike > 0.3)
+            return 'challenge';
+        if (traits.pacing === 'Burst')
+            return 'challenge';
+        if (moodSignals.genreShift > 0.5)
+            return 'exploration';
         return 'neutral';
     }
+    /**
+     * Calculate mood intensity (1-10)
+     */
     calculateMoodIntensity(moodSignals) {
-        return 5;
+        const base = 5;
+        const spikeAdjustment = Math.floor(moodSignals.playtimeSpike * 5);
+        return Math.min(10, Math.max(1, base + spikeAdjustment));
     }
+    /**
+     * Extract behavioral patterns from historical gaming data
+     */
     extractBehavioralPatterns(userData) {
-        return this.getDefaultBehavioralPatterns();
+        const games = userData.steam?.games || [];
+        const sessions = userData.steam?.sessions || [];
+        const recentGames = games.slice(0, 10).map((g) => ({
+            gameId: g.appId?.toString() || 'unknown',
+            gameName: g.name,
+            sessionCount: sessions.filter((s) => s.gameId === g.appId?.toString()).length,
+            totalPlaytime: g.playtimeForever / 60,
+            lastPlayed: new Date(), // Fallback
+            averageSessionLength: 0,
+            completionRate: 0
+        }));
+        return {
+            ...this.getDefaultBehavioralPatterns(),
+            recentGames,
+            completionPatterns: {
+                gamesCompleted: games.filter((g) => (g.playtimeForever / 60) > 20).length,
+                averageCompletionRate: 0.5,
+                preferredCompletionTypes: ['main_story'],
+                achievementHunting: false
+            }
+        };
     }
     buildPersonaHistory(userId) {
         return this.getDefaultPersonaHistory();
     }
+    /**
+     * Extract mood signals from user gaming data
+     */
     extractMoodSignals(userData) {
-        return {};
+        const sessions = userData.steam?.sessions || [];
+        // Calculate session pattern (avg length of recent sessions)
+        const recentSessions = sessions.slice(-5);
+        const avgLength = recentSessions.length > 0
+            ? recentSessions.reduce((sum, s) => sum + (s.duration || 0), 0) / recentSessions.length
+            : 0;
+        // Calculate playtime spike (recent vs average)
+        const allSessions = sessions;
+        const totalPlaytime = allSessions.reduce((sum, s) => sum + (s.duration || 0), 0);
+        const avgPlaytime = allSessions.length > 0 ? totalPlaytime / allSessions.length : 0;
+        const spike = avgPlaytime > 0 ? (avgLength / avgPlaytime) - 1 : 0;
+        return {
+            sessionPattern: avgLength,
+            genreShift: 0, // TODO: Implement genre shift detection
+            playtimeSpike: Math.max(0, Math.min(1, spike)),
+            returnFrequency: 0,
+            abandonmentRate: 0
+        };
     }
     countDataPoints(userData) {
-        return 0;
+        const gameCount = userData.steam?.games?.length || 0;
+        const sessionCount = userData.steam?.sessions?.length || 0;
+        return gameCount + sessionCount;
     }
     buildRecommendationContext(identityCore) {
         return this.getDefaultRecommendationContext();

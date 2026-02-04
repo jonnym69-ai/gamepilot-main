@@ -6,6 +6,8 @@ import { detectTimeOfDay } from '../utils/contextualEngine';
 import { trackEvent } from '../utils/analytics';
 import { useToast } from './ui/ToastProvider';
 import { launchGame } from '../utils/launchGame';
+import { TimeSelector } from './ui/TimeSelector';
+import type { SessionLength } from '../utils/contextualEngine';
 
 interface WhatToPlayNowProps {
   onClose?: () => void;
@@ -31,9 +33,10 @@ export const WhatToPlayNow: React.FC<WhatToPlayNowProps> = ({
   const [isSpinning, setIsSpinning] = useState(false);
   const [spinningGames, setSpinningGames] = useState<any[]>([]);
   const [finalGame, setFinalGame] = useState<GameRecommendation | null>(null);
+  const [selectedDuration, setSelectedDuration] = useState<SessionLength | null>(null);
 
   // Generate recommendations
-  const generateRecommendations = async (excludeIds: Set<string> = new Set()) => {
+  const generateRecommendations = async (excludeIds: Set<string> = new Set(), durationOverride?: SessionLength) => {
     setIsLoading(true);
 
     // Filter out invalid games
@@ -53,17 +56,19 @@ export const WhatToPlayNow: React.FC<WhatToPlayNowProps> = ({
         return;
       }
 
+      const activeDuration = durationOverride || selectedDuration || 'medium';
+
       // Track analytics
       trackEvent("what_to_play_opened", {
         timeOfDay: detectTimeOfDay(),
-        selectedSessionLength: 'auto',
+        selectedSessionLength: activeDuration,
         selectedMoods: 'auto'
       });
 
       // Build contextual filters from current context
       const contextualFilters = {
         selectedMoods: [], // Will be derived from persona
-        selectedSessionLength: 'medium' as any, // Will be derived from persona
+        selectedSessionLength: activeDuration,
         timeOfDay: detectTimeOfDay(),
         excludeIds: Array.from(excludeIds)
       };
@@ -181,14 +186,19 @@ export const WhatToPlayNow: React.FC<WhatToPlayNowProps> = ({
     setIsSpinning(true);
     setFinalGame(null);
     
-    // Get random games for the slot machine animation
+    // Get games that match current criteria for the slot machine animation
+    const matchingGames = recommendations.map(r => r.game).filter(Boolean);
     const validGames = games?.filter((g: any) => g && g.id) || [];
-    const randomGames = [];
-    for (let i = 0; i < 10; i++) {
+    
+    // Mix matching games with some random ones for visual variety, but keep matching games prominent
+    const displayGames = [...matchingGames];
+    while (displayGames.length < 10 && validGames.length > 0) {
       const randomGame = validGames[Math.floor(Math.random() * validGames.length)];
-      if (randomGame) randomGames.push(randomGame);
+      if (!displayGames.find(g => g.id === randomGame.id)) {
+        displayGames.push(randomGame);
+      }
     }
-    setSpinningGames(randomGames);
+    setSpinningGames(displayGames.sort(() => Math.random() - 0.5));
 
     // Generate actual recommendations
     const newSuggestedIds = new Set(suggestedGameIds);
@@ -295,6 +305,18 @@ export const WhatToPlayNow: React.FC<WhatToPlayNowProps> = ({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
+      </div>
+
+      {/* Duration Selection */}
+      <div className="px-8 pt-4 pb-2">
+        <p className="text-gray-400 text-sm mb-3 font-semibold uppercase tracking-wider">How much time do you have?</p>
+        <TimeSelector 
+          value={selectedDuration} 
+          onChange={(val) => {
+            setSelectedDuration(val);
+            generateRecommendations(new Set(), val);
+          }} 
+        />
       </div>
 
       {/* Primary Recommendation */}

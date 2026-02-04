@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_1 = __importDefault(require("./routes/auth"));
+const steamAuth_1 = __importDefault(require("./routes/steamAuth"));
 const games_1 = __importDefault(require("./routes/games"));
 const moodPersonaSimple_1 = __importDefault(require("./routes/moodPersonaSimple"));
 // import diagnosticsRoutes from './routes/diagnostics'
@@ -14,6 +15,7 @@ const session_1 = __importDefault(require("./routes/session"));
 const home_1 = __importDefault(require("./routes/home"));
 const persona_1 = __importDefault(require("./routes/persona"));
 const recommendations_1 = __importDefault(require("./routes/recommendations"));
+const analytics_1 = __importDefault(require("./routes/analytics"));
 const launcher_1 = __importDefault(require("./routes/launcher"));
 const feedback_1 = __importDefault(require("./routes/feedback"));
 const health_1 = __importDefault(require("./routes/health"));
@@ -22,6 +24,7 @@ const router = (0, express_1.Router)();
 console.log('🔧 Loading API routes...');
 // Register all route modules
 router.use('/auth', auth_1.default);
+router.use('/auth', steamAuth_1.default); // Combine steam auth with main auth
 console.log('✅ Auth routes loaded');
 router.use('/games', games_1.default);
 console.log('✅ Games routes loaded');
@@ -504,7 +507,8 @@ console.log('✅ Home routes loaded');
 router.use('/persona', persona_1.default);
 console.log('✅ Persona routes loaded');
 router.use('/recommendations', recommendations_1.default);
-console.log('✅ Recommendation routes loaded');
+router.use('/analytics', analytics_1.default);
+console.log('✅ Recommendation and Analytics routes loaded');
 router.use('/launcher', launcher_1.default);
 console.log('✅ Launcher routes loaded');
 router.use('/feedback', feedback_1.default);

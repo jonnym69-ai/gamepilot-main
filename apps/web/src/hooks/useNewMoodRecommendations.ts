@@ -1,7 +1,7 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { MOODS, type MoodId } from '@gamepilot/static-data'
 import type { Game } from '../types'
-import { deriveMoodFromGame } from '../utils/moodMapping'
+import { calculateEnhancedMoodScore, enhanceGameMoods } from '../utils/enhancedMoodTagging'
 
 /**
  * New Mood-based recommendation hook using the unified mood system
@@ -29,39 +29,10 @@ export function useNewMoodRecommendations({ games, onRecommendationsChange }: Us
     isLoading: false
   })
 
-  // Simple mood scoring using the new deriveMoodFromGame system
+  // Enhanced mood scoring using the new enhanced system
   const calculateMoodScore = useCallback((game: Game, moodId: MoodId, intensity: number): number => {
-    let score = 50
-
-    // Use the new mood system - deriveMoodFromGame returns single mood assignment
-    const derivedMood = deriveMoodFromGame(game)
-    
-    // Perfect match if derived mood matches selected mood
-    if (derivedMood === moodId) {
-      score += 100 // Perfect match
-    } else {
-      // Check if moods are compatible via associated genres
-      const selectedMood = MOODS.find(m => m.id === moodId)
-      const derivedMoodObj = MOODS.find(m => m.id === derivedMood)
-      
-      if (selectedMood && derivedMoodObj) {
-        // Check if they share associated genres
-        const sharedGenres = selectedMood.associatedGenres.filter(genre => 
-          derivedMoodObj.associatedGenres.includes(genre)
-        )
-        if (sharedGenres.length > 0) {
-          score += 75 // Compatible mood via shared genres
-        } else {
-          score += 25 // Some compatibility
-        }
-      }
-    }
-    
-    // Apply intensity modifier
-    score = score * intensity
-    
-    return score
-  }, [])
+    return calculateEnhancedMoodScore(game, moodId, state.secondaryMood || null, intensity)
+  }, [state.secondaryMood])
 
   const selectMood = useCallback(async (primaryMood: MoodId, secondaryMood?: MoodId) => {
     setState(prev => ({ ...prev, isLoading: true, error: undefined }))
@@ -72,8 +43,27 @@ export function useNewMoodRecommendations({ games, onRecommendationsChange }: Us
         throw new Error(`Primary mood not found: ${primaryMood}`)
       }
 
-      // Calculate scores for all games
-      const gameScores = games.map(game => {
+      // Enhanced mood filtering with better scoring
+      const filteredGames = useMemo(() => {
+        if (!primaryMood) return games
+        
+        // First enhance all games with better mood tags
+        const enhancedGames = enhanceGameMoods(games)
+        
+        // Score and filter games based on mood compatibility
+        const scoredGames = enhancedGames.map(game => ({
+          game,
+          score: calculateMoodScore(game, primaryMood, state.intensity)
+        }))
+        
+        // Sort by score and return top recommendations
+        return scoredGames
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 12) // Top 12 recommendations
+          .map(item => item.game)
+      }, [games, primaryMood, state.intensity, calculateMoodScore])
+
+      const enhancedRecommendations = filteredGames.map((game: Game) => {
         let score = calculateMoodScore(game, primaryMood, state.intensity)
         let reasoning = `Matches ${primary.name.toLowerCase()} mood`
 
@@ -94,9 +84,9 @@ export function useNewMoodRecommendations({ games, onRecommendationsChange }: Us
       })
 
       // Sort by score and filter
-      const recommendations = gameScores
-        .filter(game => game.moodScore > 40)
-        .sort((a, b) => b.moodScore - a.moodScore)
+      const recommendations = enhancedRecommendations
+        .filter((game: any) => game.moodScore > 40)
+        .sort((a: any, b: any) => b.moodScore - a.moodScore)
         .slice(0, 10)
 
       setState(prev => ({

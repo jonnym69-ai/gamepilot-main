@@ -60,6 +60,11 @@ export declare class DatabaseService {
     getGameByTitle(title: string): Promise<Game | null>;
     updateGame(id: string, updates: Partial<Game>): Promise<Game>;
     deleteGame(id: string): Promise<boolean>;
+    /**
+     * Delete user and all associated data (GDPR compliant cleanup)
+     * Budget-friendly: Uses SQLite cascading and manual cleanup
+     */
+    deleteUser(id: string): Promise<boolean>;
     addUserGame(userId: string, gameId: string, gameData?: Partial<{
         playStatus: string;
         hoursPlayed: number;
