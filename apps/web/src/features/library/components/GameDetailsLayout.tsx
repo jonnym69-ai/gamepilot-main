@@ -6,6 +6,8 @@ import { emulatorService } from '../../../services/emulatorService'
 import { emulatorLauncher } from '../../../services/emulatorLauncher'
 import { useToast } from '../../../components/ui/ToastProvider'
 import type { Game } from '@gamepilot/types'
+import { MOODS, type MoodId } from '@gamepilot/static-data'
+import { getEnhancedMoods } from '../../../utils/enhancedMoodTagging'
 import './GameDetailsLayout.css'
 
 // Import persona components
@@ -187,8 +189,9 @@ export const GameDetailsLayout: React.FC<GameDetailsLayoutProps> = ({ game }) =>
     return new Date(dateString).toLocaleDateString()
   }
 
-  // Get mood tags for game (using tags directly)
-  const gameMoods: string[] = game?.tags || []
+  // Get enhanced moods for game
+  const gameMoods = getEnhancedMoods(game)
+  const gameMoodData = gameMoods.map(moodId => MOODS.find(m => m.id === moodId)).filter((mood): mood is Exclude<typeof mood, undefined> => mood !== undefined)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gaming-dark via-gray-900 to-gaming-darker">
@@ -509,25 +512,43 @@ export const GameDetailsLayout: React.FC<GameDetailsLayoutProps> = ({ game }) =>
               </h2>
               
               <div className="space-y-6">
-                {/* Mood Tags */}
+                {/* Enhanced Mood Tags */}
                 <div>
-                  <h3 className="text-xl font-semibold text-white mb-4">Current Mood Tags</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                    <span className="text-2xl">🎭</span>
+                    Game Moods
+                  </h3>
                   <div className="flex flex-wrap gap-3">
-                    {gameMoods.length > 0 ? (
-                      gameMoods.map((mood) => (
-                        <span key={mood} className="px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-full text-sm text-purple-200 backdrop-blur-sm">
-                          {mood === 'Chill' && '😌 Chill'}
-                          {mood === 'Competitive' && '🏆 Competitive'}
-                          {mood === 'Story' && '📖 Story'}
-                          {mood === 'Creative' && '🎨 Creative'}
-                          {mood === 'Social' && '👥 Social'}
-                          {mood === 'Dark' && '🌙 Dark'}
-                          {mood === 'Fast-Paced' && '⚡ Fast-Paced'}
-                          {mood}
-                        </span>
+                    {gameMoodData.length > 0 ? (
+                      gameMoodData.map((mood, index) => (
+                        <motion.div
+                          key={mood.id}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: index * 0.1, duration: 0.3 }}
+                          className={`px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm border-2 transition-all duration-300 hover:scale-105 ${
+                            mood.id === 'competitive' ? 'bg-gradient-to-r from-red-500/30 to-orange-500/30 border-red-400/50 text-red-200 hover:from-red-500/40 hover:to-orange-500/40' :
+                            mood.id === 'chill' ? 'bg-gradient-to-r from-blue-500/30 to-cyan-500/30 border-blue-400/50 text-blue-200 hover:from-blue-500/40 hover:to-cyan-500/40' :
+                            mood.id === 'story' ? 'bg-gradient-to-r from-purple-500/30 to-pink-500/30 border-purple-400/50 text-purple-200 hover:from-purple-500/40 hover:to-pink-500/40' :
+                            mood.id === 'creative' ? 'bg-gradient-to-r from-green-500/30 to-emerald-500/30 border-green-400/50 text-green-200 hover:from-green-500/40 hover:to-emerald-500/40' :
+                            mood.id === 'social' ? 'bg-gradient-to-r from-teal-500/30 to-cyan-500/30 border-teal-400/50 text-teal-200 hover:from-teal-500/40 hover:to-cyan-500/40' :
+                            mood.id === 'focused' ? 'bg-gradient-to-r from-indigo-500/30 to-purple-500/30 border-indigo-400/50 text-indigo-200 hover:from-indigo-500/40 hover:to-purple-500/40' :
+                            mood.id === 'energetic' ? 'bg-gradient-to-r from-yellow-500/30 to-orange-500/30 border-yellow-400/50 text-yellow-200 hover:from-yellow-500/40 hover:to-orange-500/40' :
+                            mood.id === 'exploratory' ? 'bg-gradient-to-r from-emerald-500/30 to-teal-500/30 border-emerald-400/50 text-emerald-200 hover:from-emerald-500/40 hover:to-teal-500/40' :
+                            'bg-gradient-to-r from-gray-500/30 to-slate-500/30 border-gray-400/50 text-gray-200 hover:from-gray-500/40 hover:to-slate-500/40'
+                          }`}
+                        >
+                          <span className="flex items-center gap-1">
+                            <span className="text-lg">{mood.emoji}</span>
+                            <span>{mood.name}</span>
+                          </span>
+                        </motion.div>
                       ))
                     ) : (
-                      <span className="text-gray-400">No mood tags assigned</span>
+                      <div className="text-gray-400 italic">
+                        <span className="text-2xl mr-2">🤔</span>
+                        No mood tags assigned yet
+                      </div>
                     )}
                   </div>
                 </div>
@@ -537,14 +558,15 @@ export const GameDetailsLayout: React.FC<GameDetailsLayoutProps> = ({ game }) =>
                   <h3 className="text-xl font-semibold text-white mb-4">What this game says about you</h3>
                   <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/50">
                     <p className="text-gray-300 leading-relaxed">
-                      {gameMoods.includes('Competitive') && "You're driven by achievement and enjoy testing your skills against others. "}
-                      {gameMoods.includes('Story') && "You appreciate deep narratives and emotional storytelling experiences. "}
-                      {gameMoods.includes('Creative') && "You love self-expression and building unique experiences. "}
-                      {gameMoods.includes('Social') && "You value connection and shared experiences with others. "}
-                      {gameMoods.includes('Chill') && "You prefer relaxed, stress-free gaming sessions. "}
-                      {gameMoods.includes('Dark') && "You're drawn to mysterious and atmospheric experiences. "}
-                      {gameMoods.includes('Fast-Paced') && "You thrive on adrenaline and quick decision-making. "}
-                      {!gameMoods.length && "This game's personality is waiting to be discovered through your playstyle."}
+                      {gameMoodData.some(mood => mood.id === 'competitive') && "You're driven by achievement and enjoy testing your skills against others. "}
+                      {gameMoodData.some(mood => mood.id === 'story') && "You appreciate deep narratives and emotional storytelling experiences. "}
+                      {gameMoodData.some(mood => mood.id === 'creative') && "You love self-expression and building unique experiences. "}
+                      {gameMoodData.some(mood => mood.id === 'social') && "You value connection and shared experiences with others. "}
+                      {gameMoodData.some(mood => mood.id === 'chill') && "You prefer relaxed, stress-free gaming sessions. "}
+                      {gameMoodData.some(mood => mood.id === 'focused') && "You enjoy strategic thinking and deep concentration. "}
+                      {gameMoodData.some(mood => mood.id === 'energetic') && "You thrive on adrenaline and high-energy gameplay. "}
+                      {gameMoodData.some(mood => mood.id === 'exploratory') && "You love discovering new worlds and uncovering secrets. "}
+                      {gameMoodData.length === 0 && "This game's personality is waiting to be discovered through your playstyle."}
                     </p>
                   </div>
                 </div>
