@@ -144,7 +144,7 @@ export const MOOD_FILTERS: readonly MoodFilterConfig[] = [
     excludedFeatures: ['single-player', 'solo-only'],
     
     matches: (game: Game) => hasMultiplayerFeatures(game),
-    scoreReason: (game: Game) => 'Multiplayer/cooperative gameplay'
+    scoreReason: () => 'Multiplayer/cooperative gameplay'
   },
   
   {
@@ -160,7 +160,7 @@ export const MOOD_FILTERS: readonly MoodFilterConfig[] = [
     excludedFeatures: ['casual', 'relaxing', 'cozy'],
     
     matches: (game: Game) => hasCompetitiveFeatures(game),
-    scoreReason: (game: Game) => 'Competitive skill-based gameplay'
+    scoreReason: () => 'Competitive skill-based gameplay'
   },
   
   {
@@ -183,7 +183,7 @@ export const MOOD_FILTERS: readonly MoodFilterConfig[] = [
       const hasStoryFeatures = checkStoryFeatures(game)
       return hasStoryGenre || hasStoryFeatures
     },
-    scoreReason: (game: Game) => 'Story-driven narrative experience'
+    scoreReason: () => 'Story-driven narrative experience'
   },
   
   {
@@ -206,7 +206,7 @@ export const MOOD_FILTERS: readonly MoodFilterConfig[] = [
       const hasAdventureFeatures = checkAdventureFeatures(game)
       return hasAdventureGenre || hasAdventureFeatures
     },
-    scoreReason: (game: Game) => 'Exploration-focused adventure'
+    scoreReason: () => 'Exploration-focused adventure'
   },
   
   {
@@ -231,7 +231,7 @@ export const MOOD_FILTERS: readonly MoodFilterConfig[] = [
       
       return (hasChillGenre || hasRelaxingFeatures) && !hasCompetitiveElements
     },
-    scoreReason: (game: Game) => 'Relaxing, low-pressure gameplay'
+    scoreReason: () => 'Relaxing, low-pressure gameplay'
   },
   
   {
@@ -254,7 +254,7 @@ export const MOOD_FILTERS: readonly MoodFilterConfig[] = [
       const hasCreativeFeatures = checkCreativeFeatures(game)
       return hasCreativeGenre || hasCreativeFeatures
     },
-    scoreReason: (game: Game) => 'Creative building and expression'
+    scoreReason: () => 'Creative building and expression'
   }
 ] as const
 

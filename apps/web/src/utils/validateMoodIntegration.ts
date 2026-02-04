@@ -6,13 +6,7 @@
  */
 
 import type { Game } from '@gamepilot/types'
-import { 
-  filterGamesByMood, 
-  getMoodRecommendation, 
-  MoodFilterId, 
-  MOOD_FILTERS,
-  validateMoodSystem
-} from './moodFilterSystem'
+import { getMoodRecommendation, MoodFilterId, MOOD_FILTERS, validateMoodSystem, filterGamesByMood } from './moodFilterSystem'
 
 // Validation results interface
 export interface ValidationResult {
@@ -128,7 +122,7 @@ function analyzeMoodAccuracy(games: Game[], moodId: MoodFilterId) {
   games.forEach(game => {
     const genres = game.genres?.map(g => g.name.toLowerCase()) || []
     const tags = game.tags?.map(t => t.toLowerCase()) || []
-    const title = game.title.toLowerCase()
+    // const title = game.title.toLowerCase()
     
     switch (moodId) {
       case 'social':

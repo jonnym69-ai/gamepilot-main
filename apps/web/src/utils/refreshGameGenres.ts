@@ -22,25 +22,25 @@ export function refreshGameGenres() {
       updatedCount++
       
       // Create a mock Steam game object from the existing game
-      const steamGame = {
-        appid: game.appId || parseInt(game.id.replace('steam-', '')),
-        name: game.title,
-        playtime_forever: (game.hoursPlayed || 0) * 60, // Convert back to minutes
-        // Add other fields that the adapter might need
-        shortDescription: game.description,
-        developer: game.developer,
-        publisher: game.publisher,
-        releaseDate: game.releaseDate?.toISOString(),
-        lastPlayed: game.lastPlayed?.toISOString(),
-        achievements: game.achievements
-      }
+      // const steamGame = {
+      //   appid: game.appId || parseInt(game.id.replace('steam-', '')),
+      //   name: game.title,
+      //   playtime_forever: (game.hoursPlayed || 0) * 60, // Convert back to minutes
+      //   // Add other fields that the adapter might need
+      //   shortDescription: game.description,
+      //   developer: game.developer,
+      //   publisher: game.publisher,
+      //   releaseDate: game.releaseDate?.toISOString(),
+      //   lastPlayed: game.lastPlayed?.toISOString(),
+      //   achievements: game.achievements
+      // }
       
       try {
         // Mock the adapter functionality for now - TODO: Use real adapter
         const updatedGame = {
           ...game,
           genres: [{ id: 'action', name: 'Action', color: 'red', subgenres: [] }], // Mock genre
-          tags: game.tags || []
+          // const tags = game.tags?.map(t => t.toLowerCase()) || []
         }
         
         console.log(`✅ Updated: ${game.title}`)
@@ -53,6 +53,7 @@ export function refreshGameGenres() {
         }
       } catch (error) {
         console.error(`❌ Failed to update ${game.title}:`, error)
+        // const title = game.title.toLowerCase()
         return game
       }
     }
