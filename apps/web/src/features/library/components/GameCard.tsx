@@ -260,7 +260,7 @@ export const GameCard: React.FC<GameCardProps> = ({
               </div>
               {/* Enhanced Status and Playtime */}
               <div className="flex items-center gap-2 flex-shrink-0">
-                {game.playStatus && (
+                {game.playStatus && game.playStatus !== 'backlog' && (
                   <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gradient-to-r from-gray-900/80 to-gray-800/80 backdrop-blur-sm rounded-lg border border-gray-600/40 shadow-sm">
                     <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${getStatusColor(game.playStatus)} animate-pulse`} />
                     <span className="text-xs text-white font-semibold capitalize">
