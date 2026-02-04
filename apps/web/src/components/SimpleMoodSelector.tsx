@@ -78,20 +78,6 @@ export function SimpleMoodSelector({ onMoodChange, className = '', variant = 'co
     return `${baseClasses} ${sizeClasses} ${activeClasses} ${mood.color}`
   }
 
-  const getEnergyIndicator = (energyLevel: number) => {
-    const filledBars = Math.ceil(energyLevel / 2)
-    return (
-      <div className="flex gap-0.5 mt-1">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div
-            key={i}
-            className={`w-1 h-1 rounded-full ${i < filledBars ? 'bg-white/80' : 'bg-white/20'}`}
-          />
-        ))}
-      </div>
-    )
-  }
-
   const primaryMoodData = primaryMood ? MOODS.find(m => m.id === primaryMood) : undefined
   const secondaryMoodData = secondaryMood ? MOODS.find(m => m.id === secondaryMood) : undefined
 

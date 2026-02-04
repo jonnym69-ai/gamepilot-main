@@ -366,7 +366,7 @@ export const SeasonTimeline: React.FC<SeasonTimelineProps> = ({
       </div>
 
       <div className="timeline season-timeline">
-        {reports.map((report, index) => (
+        {reports.map((report, _index) => (
           <SeasonItem
             key={report.id}
             report={report}

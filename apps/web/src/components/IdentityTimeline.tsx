@@ -68,7 +68,7 @@ export const IdentityTimeline: React.FC<TimelineProps> = ({
       </div>
 
       <div className="timeline">
-        {snapshots.map((snapshot, index) => (
+        {snapshots.map((snapshot, _index) => (
           <div key={snapshot.id} className="timeline-item">
             <div className="timeline-dot">
               <div className="timeline-dot-inner" />

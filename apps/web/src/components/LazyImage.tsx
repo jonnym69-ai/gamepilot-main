@@ -16,8 +16,7 @@ export function LazyImage({
   alt, 
   className = '',
   onLoad,
-  onError,
-  objectFit = 'cover'
+  onError
 }: LazyImageProps) {
   const [isLoaded, setIsLoaded] = useState(false)
   const [isInView, setIsInView] = useState(false)

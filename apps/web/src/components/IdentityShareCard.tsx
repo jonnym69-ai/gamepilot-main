@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import type { PersonaContext } from '../utils/contextualEngine';
 import type { ContextualMatch } from '../utils/contextualEngine';
 
