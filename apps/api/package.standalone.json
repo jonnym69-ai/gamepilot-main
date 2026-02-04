@@ -15,9 +15,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@gamepilot/shared": "file:../../packages/shared",
-    "@gamepilot/types": "file:../../packages/types", 
-    "@gamepilot/static-data": "file:../../packages/static-data",
     "@sentry/node": "^10.36.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/nodemailer": "^7.0.9",
