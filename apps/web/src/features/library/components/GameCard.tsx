@@ -3,11 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import type { PlayStatus } from '@gamepilot/types'
 import type { Game } from '@gamepilot/types'
-import { MOODS, type MoodId } from '@gamepilot/static-data'
+import { MOODS } from '@gamepilot/static-data'
 import { getHighQualityGameImage } from "../../../utils/gameImageUtils";
 import { useLibraryStore } from '../../../stores/useLibraryStore'
 import { LazyImage } from '../../../components/LazyImage'
-import { useDragAndDrop, useDragStyles } from '../../../hooks/useDragAndDrop'
 import { deriveMoodFromGame } from '../../../utils/moodMapping'
 
 interface GameCardProps {
@@ -15,66 +14,34 @@ interface GameCardProps {
   isSelected?: boolean
   isSelectable?: boolean
   onSelect?: (game: Game, selected: boolean) => void
-  capsuleImage?: string
   currentSession?: { gameId: string; startedAt: number } | null
-  onEdit?: (game: Game) => void
-  onDelete?: (game: Game) => void
   onLaunch?: (game: Game) => void
-  index?: number
-  onReorder?: (fromIndex: number, toIndex: number) => void
-  isDraggable?: boolean
-  isLaunching?: boolean
 }
 
-export const GameCard: React.FC<GameCardProps> = ({ 
-  game, 
-  isSelected = false, 
-  isSelectable = false, 
-  onSelect, 
-  capsuleImage,
-  currentSession,
-  onEdit,
-  onDelete,
-  onLaunch,
-  index,
-  onReorder,
-  isDraggable = false,
-  isLaunching = false
-}) => {
+export function GameCard({ game, isSelected, isSelectable, onSelect, currentSession, onLaunch }: GameCardProps) {
   const navigate = useNavigate()
   const { actions } = useLibraryStore()
   const [isHovered, setIsHovered] = useState(false)
   const [isInSession, setIsInSession] = useState(false)
+  const [isLaunching, setIsLaunching] = useState(false)
   
   // Check if game is currently in a session
   useEffect(() => {
     setIsInSession(currentSession?.gameId === game.id)
   }, [currentSession, game.id])
 
-  // Drag and drop functionality
-  const { 
-    isDragging, 
-    dragHandlers, 
-    dropHandlers, 
-    isDragOver, 
-    previewRef 
-  } = useDragAndDrop({
-    id: game.id,
-    index,
-    type: 'game',
-    onReorder,
-    isDraggable
-  })
-
-  const dragStyles = useDragStyles({ isDragging, isDragOver })
-
   const handleDetailsClick = () => {
     navigate(`/library/game/${game.id}`)
   }
 
   const handleLaunchClick = async () => {
-    if (onLaunch) {
-      onLaunch(game)
+    if (isLaunching || !onLaunch) return
+    
+    setIsLaunching(true)
+    try {
+      await onLaunch(game)
+    } finally {
+      setIsLaunching(false)
     }
   }
 
@@ -133,10 +100,7 @@ export const GameCard: React.FC<GameCardProps> = ({
         isSelected 
           ? 'border-gaming-primary shadow-gaming-primary/50' 
           : 'border-gray-700/50 hover:border-gray-600/50'
-      } ${dragStyles}`}
-      {...dragHandlers}
-      {...dropHandlers}
-      ref={previewRef}
+      }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -188,7 +152,7 @@ export const GameCard: React.FC<GameCardProps> = ({
         )}
 
         {/* New Visual Status Badge */}
-        {game.playStatus && (
+        {game.playStatus && game.playStatus !== 'backlog' && (
           <div className="absolute top-3 right-3 z-10">
             <div className={`px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-lg backdrop-blur-sm border ${getStatusBadgeStyles(game.playStatus)}`}>
               {getStatusIcon(game.playStatus)} {game.playStatus.toUpperCase()}
@@ -403,24 +367,15 @@ export const GameCard: React.FC<GameCardProps> = ({
                 </button>
               )}
               
-              {/* Edit/Delete buttons for bulk mode */}
+              {/* Edit buttons for bulk mode */}
               {isSelectable && (
-                <>
-                  <button
-                    onClick={() => onSelect?.(game, true)}
-                    className="px-3 py-3 bg-gradient-to-r from-blue-600/90 to-blue-700/90 text-white rounded-xl text-sm font-bold hover:opacity-90 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-blue-600/40 border border-blue-500/30 backdrop-blur-sm"
-                    title="Edit game"
-                  >
-                    <span className="text-base">✏️</span>
-                  </button>
-                  <button
-                    onClick={() => onDelete?.(game)}
-                    className="px-3 py-3 bg-gradient-to-r from-red-600/90 to-red-700/90 text-white rounded-xl text-sm font-bold hover:opacity-90 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/40 border border-red-500/30 backdrop-blur-sm"
-                    title="Delete game"
-                  >
-                    <span className="text-base">🗑️</span>
-                  </button>
-                </>
+                <button
+                  onClick={() => onSelect?.(game, true)}
+                  className="px-3 py-3 bg-gradient-to-r from-blue-600/90 to-blue-700/90 text-white rounded-xl text-sm font-bold hover:opacity-90 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-blue-600/40 border border-blue-500/30 backdrop-blur-sm"
+                  title="Select game"
+                >
+                  <span className="text-base">✓</span>
+                </button>
               )}
             </div>
           </div>
