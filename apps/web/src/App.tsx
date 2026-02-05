@@ -148,8 +148,8 @@ function AppContent({ isAuthenticated, user, isLoading, initializeAuth }: any) {
 
   return (
     <ErrorBoundary>
-      <ToastProvider>
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <ToastProvider>
           <div className="min-h-screen">
             {/* Navigation - Always show since it handles both auth states */}
             <Navigation 
@@ -157,8 +157,8 @@ function AppContent({ isAuthenticated, user, isLoading, initializeAuth }: any) {
               user={user}
             />
         
-        {/* Main Content with Mobile Layout */}
-        <Routes>
+          {/* Main Content with Mobile Layout */}
+          <Routes>
           {/* Public routes - no MobileLayout wrapper */}
           <Route path="/login" element={
             <PageErrorBoundary>
@@ -312,8 +312,8 @@ function AppContent({ isAuthenticated, user, isLoading, initializeAuth }: any) {
         {/* Help Button - Always visible */}
         <HelpButton />
         </div>
-      </QueryClientProvider>
-    </ToastProvider>
+      </ToastProvider>
+    </QueryClientProvider>
   </ErrorBoundary>
 )
 }
