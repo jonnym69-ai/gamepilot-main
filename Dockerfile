@@ -21,6 +21,7 @@ COPY . .
 # Build only API dependencies
 RUN cd packages/types && npm install && npm run build
 RUN cd packages/static-data && npm install && npm run build
+RUN cd packages/identity-engine && npm install && npm run build
 RUN cd packages/shared && npm install && npm run build
 
 # Build the API
