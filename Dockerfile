@@ -11,8 +11,8 @@ RUN npm install --only=production
 # Copy API source code and embedded shared package
 COPY apps/api .
 
-# Build shared package from monorepo
-RUN cd packages/shared && npm install && npm run build
+# Copy shared package (already built)
+COPY packages/shared ./node_modules/@gamepilot/shared
 
 # Expose port
 EXPOSE 3001
