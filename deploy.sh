@@ -95,15 +95,9 @@ backup_current() {
 install_dependencies() {
     info "Installing production dependencies..."
     
-    # API dependencies
-    cd "$API_DIR"
-    npm ci --production
-    success "API dependencies installed"
-    
-    # Web dependencies
-    cd "$WEB_DIR"
-    npm ci --production
-    success "Web dependencies installed"
+    # Root level installation handles workspaces correctly
+    npm install --production
+    success "Dependencies installed via workspaces"
     
     cd "$PROJECT_ROOT"
 }
@@ -112,14 +106,11 @@ install_dependencies() {
 build_applications() {
     info "Building applications for production..."
     
-    # Build API
-    cd "$API_DIR"
-    npm run build
+    # Use workspace build commands from root
+    npm run build:api
     success "API built successfully"
     
-    # Build Web
-    cd "$WEB_DIR"
-    npm run build
+    npm run build:web
     success "Web built successfully"
     
     cd "$PROJECT_ROOT"
