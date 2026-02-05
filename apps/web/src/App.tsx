@@ -10,6 +10,7 @@ import { Identity } from './pages/Identity'
 import { Integrations } from './features/integrations/Integrations'
 import { Analytics } from './pages/Analytics'
 import { InsightsDashboard } from './pages/InsightsDashboard'
+import { Donate } from './pages/Donate'
 import { useAuth } from './store/authStore'
 import { useLibraryStore } from './stores/useLibraryStore'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -162,11 +163,14 @@ function AppContent({ isAuthenticated, user, isLoading, initializeAuth }: any) {
           <Route path="/login" element={
             <PageErrorBoundary>
               <Login />
-            </PageErrorBoundary>
-          } />
           <Route path="/register" element={
             <PageErrorBoundary>
               <Register />
+            </PageErrorBoundary>
+          } />
+          <Route path="/login" element={
+            <PageErrorBoundary>
+              <Login />
             </PageErrorBoundary>
           } />
           <Route path="/auth/callback/steam" element={
@@ -174,16 +178,22 @@ function AppContent({ isAuthenticated, user, isLoading, initializeAuth }: any) {
               <SteamCallback />
             </PageErrorBoundary>
           } />
+          <Route path="/donate" element={
+            <PageErrorBoundary>
+              <Donate />
+            </PageErrorBoundary>
+          } />
           
           {/* Protected routes - wrapped with MobileLayout */}
           <Route path="/" element={
             <ProtectedRoute>
               <PageErrorBoundary>
-                <MobileLayout showNavigation={false}>
-                  <CustomisationProvider>
-                    <Home />
-                  </CustomisationProvider>
-                </MobileLayout>
+                <AppContent 
+                  isAuthenticated={isAuthenticated} 
+                  user={user} 
+                  isLoading={isLoading} 
+                  initializeAuth={initializeAuth} 
+                />
               </PageErrorBoundary>
             </ProtectedRoute>
           } />
