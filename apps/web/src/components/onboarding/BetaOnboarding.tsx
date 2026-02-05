@@ -214,6 +214,53 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
       )
     },
     {
+      id: 'support',
+      title: 'Support & Follow Us 🚀',
+      description: 'Help us grow GamePilot and stay connected with our community!',
+      content: (
+        <div className="space-y-4">
+          <div className="text-center">
+            <div className="text-5xl mb-4">💜</div>
+            <p className="text-gray-300 mb-4">
+              Support our development and follow our journey as we build the ultimate game discovery platform!
+            </p>
+          </div>
+          <div className="bg-gray-800 rounded-lg p-4">
+            <h4 className="text-white font-semibold mb-4">Support Our Development</h4>
+            <div className="grid grid-cols-1 gap-3 mb-4">
+              <button
+                onClick={() => window.open('https://patreon.com/GamePilot?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink', '_blank')}
+                className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
+              >
+                <span className="text-xl">🧡</span>
+                <span>Support on Patreon</span>
+              </button>
+              <button
+                onClick={() => window.open('https://www.crowdfunder.co.uk/p/qr/VlDoA4dy?utm_campaign=sharemodal&utm_medium=referral&utm_source=shortlink', '_blank')}
+                className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
+              >
+                <span className="text-xl">💰</span>
+                <span>Back on Crowdfundr</span>
+              </button>
+            </div>
+            <h4 className="text-white font-semibold mb-3">Follow Our Journey</h4>
+            <div className="space-y-2">
+              <button
+                onClick={() => window.open('https://youtube.com/@gamepilot-dev?si=lhi91Ro2rz0eDbV5', '_blank')}
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
+              >
+                <span className="text-xl">📺</span>
+                <span>Subscribe on YouTube</span>
+              </button>
+            </div>
+          </div>
+          <div className="text-center text-sm text-gray-400 mt-4">
+            <p>Every support helps us build better features and reach more gamers! 🎮</p>
+          </div>
+        </div>
+      )
+    },
+    {
       id: 'complete',
       title: 'You\'re All Set! 🎉',
       description: 'Welcome to the GamePilot beta. Let\'s discover some amazing games!',
