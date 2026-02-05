@@ -4,11 +4,13 @@
     "declaration": true,
     "emitDeclarationOnly": false,
     "target": "ES2015",
-    "module": "ESNext",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src"]
 }

@@ -3,7 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const database_1 = require("../services/database");
 const identityService_1 = require("../identity/identityService");
+const zod_1 = require("zod");
 const router = (0, express_1.Router)();
+const eventSchema = zod_1.z.object({
+    name: zod_1.z.string(),
+    payload: zod_1.z.record(zod_1.z.any()).optional(),
+    url: zod_1.z.string().optional()
+});
 /**
  * GET /api/analytics/summary
  * Get real gaming statistics from the database
@@ -55,6 +61,53 @@ router.get('/summary', identityService_1.authenticateToken, async (req, res) => 
     catch (error) {
         console.error('❌ Analytics Error:', error);
         res.status(500).json({ error: 'Failed to fetch analytics' });
+    }
+});
+/**
+ * POST /api/analytics/events
+ * Log a user event
+ */
+router.post('/events', identityService_1.authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId)
+            return res.status(401).json({ error: 'Unauthorized' });
+        const validation = eventSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ error: 'Invalid event data', details: validation.error.errors });
+        }
+        const { name, payload, url } = validation.data;
+        const id = `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        await database_1.databaseService.runQuery('INSERT INTO user_events (id, userId, name, payload, url) VALUES (?, ?, ?, ?, ?)', [id, userId, name, JSON.stringify(payload || {}), url || '']);
+        res.json({ success: true, id });
+    }
+    catch (error) {
+        console.error('❌ Log Event Error:', error);
+        res.status(500).json({ error: 'Failed to log event' });
+    }
+});
+/**
+ * GET /api/analytics/events
+ * Get recent user events
+ */
+router.get('/events', identityService_1.authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId)
+            return res.status(401).json({ error: 'Unauthorized' });
+        const limit = parseInt(req.query.limit) || 50;
+        const events = await database_1.databaseService.getAll('SELECT * FROM user_events WHERE userId = ? ORDER BY timestamp DESC LIMIT ?', [userId, limit]);
+        res.json({
+            success: true,
+            data: events.map(e => ({
+                ...e,
+                payload: JSON.parse(e.payload || '{}')
+            }))
+        });
+    }
+    catch (error) {
+        console.error('❌ Get Events Error:', error);
+        res.status(500).json({ error: 'Failed to fetch events' });
     }
 });
 exports.default = router;

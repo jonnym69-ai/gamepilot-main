@@ -73,8 +73,28 @@ exports.updatePreferencesSchema = zod_1.z.object({
         compactMode: zod_1.z.boolean().optional(),
         showGameCovers: zod_1.z.boolean().optional(),
         animateTransitions: zod_1.z.boolean().optional(),
-        showRatings: zod_1.z.boolean().optional()
-    }).optional()
+        showRatings: zod_1.z.boolean().optional(),
+        accentColor: zod_1.z.string().optional(),
+        backgroundMode: zod_1.z.enum(['solid', 'gradient', 'image']).optional(),
+        backgroundImageUrl: zod_1.z.string().url().optional().or(zod_1.z.literal('')),
+        animationLevel: zod_1.z.enum(['low', 'medium', 'high']).optional(),
+        density: zod_1.z.enum(['compact', 'comfortable']).optional(),
+        lightingMode: zod_1.z.enum(['none', 'mood', 'rgb-sync']).optional(),
+        borderRadius: zod_1.z.number().min(0).max(50).optional(),
+        borderWidth: zod_1.z.number().min(0).max(10).optional(),
+        shadowIntensity: zod_1.z.number().min(0).max(100).optional(),
+        glassOpacity: zod_1.z.number().min(0).max(100).optional(),
+        fontFamily: zod_1.z.string().optional(),
+        fontSize: zod_1.z.string().optional(),
+        fontWeight: zod_1.z.number().min(100).max(900).optional(),
+        animationStyle: zod_1.z.string().optional(),
+        hoverEffects: zod_1.z.boolean().optional(),
+        loadingAnimations: zod_1.z.boolean().optional(),
+        soundTheme: zod_1.z.string().optional(),
+        soundEnabled: zod_1.z.boolean().optional(),
+        volume: zod_1.z.number().min(0).max(100).optional()
+    }).optional(),
+    perPageCustomisation: zod_1.z.record(zod_1.z.any()).optional()
 });
 exports.updatePrivacySchema = zod_1.z.object({
     profileVisibility: zod_1.z.enum(['public', 'friends', 'private']).optional(),

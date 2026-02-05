@@ -394,6 +394,19 @@ class DatabaseService {
       CREATE INDEX IF NOT EXISTS idx_personas_user_id ON personas(userId);
       CREATE INDEX IF NOT EXISTS idx_personas_updated ON personas(lastUpdated);
     `);
+        // User events table for insights
+        await this.db.exec(`
+      CREATE TABLE IF NOT EXISTS user_events (
+        id TEXT PRIMARY KEY,
+        userId TEXT NOT NULL,
+        name TEXT NOT NULL,
+        payload TEXT, -- JSON
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        url TEXT,
+        FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE
+      )
+    `);
+        await this.db.exec(`CREATE INDEX IF NOT EXISTS idx_user_events_user_id ON user_events(userId)`);
     }
     // User operations
     async createUser(user) {
@@ -450,8 +463,27 @@ class DatabaseService {
                 compactMode: false,
                 showGameCovers: true,
                 animateTransitions: true,
-                showRatings: true
-            }
+                showRatings: true,
+                accentColor: '#3b82f6',
+                backgroundMode: 'gradient',
+                animationLevel: 'medium',
+                density: 'comfortable',
+                lightingMode: 'none',
+                borderRadius: 12,
+                borderWidth: 1,
+                shadowIntensity: 50,
+                glassOpacity: 80,
+                fontFamily: 'inter',
+                fontSize: 'base',
+                fontWeight: 400,
+                animationStyle: 'smooth',
+                hoverEffects: true,
+                loadingAnimations: true,
+                soundTheme: 'minimal',
+                soundEnabled: false,
+                volume: 50
+            },
+            perPageCustomisation: {}
         };
         const defaultSocial = {
             friends: [],
