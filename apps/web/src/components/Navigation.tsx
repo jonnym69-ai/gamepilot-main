@@ -53,6 +53,7 @@ export const Navigation: React.FC<NavigationProps> = ({
     { path: '/integrations', label: 'Integrations', icon: '🔗' },
     { path: '/customisation', label: 'Customisation', icon: '🎨' },
     { path: '/settings', label: 'Settings', icon: '⚙️' },
+    { path: '/donate', label: 'Support', icon: '💝' },
   ]
 
   const isActive = (path: string) => {
