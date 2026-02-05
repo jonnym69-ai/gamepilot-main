@@ -1,4 +1,7 @@
-export const TAGS = [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TAGS = void 0;
+exports.TAGS = [
     // Gameplay tags
     {
         id: 'cozy',

@@ -1,8 +1,11 @@
+"use strict";
 // Enhanced Mood System - User-Selectable Moods
 // 
 // These moods are distinct from genres and represent emotional/mental states
 // that influence game preferences and recommendation scoring.
-export const ENHANCED_MOODS = [
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MOOD_COMBINATIONS = exports.ENHANCED_MOODS = void 0;
+exports.ENHANCED_MOODS = [
     {
         // Low-Energy: Relaxed, minimal cognitive load
         id: 'low-energy',
@@ -343,7 +346,7 @@ export const ENHANCED_MOODS = [
 /**
  * Pre-defined mood combinations that work well together
  */
-export const MOOD_COMBINATIONS = [
+exports.MOOD_COMBINATIONS = [
     {
         primaryMood: 'low-energy',
         secondaryMood: 'creative',

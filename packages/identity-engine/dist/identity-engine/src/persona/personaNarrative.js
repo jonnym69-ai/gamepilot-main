@@ -1,10 +1,14 @@
+"use strict";
 // GamePilot Persona Narrative Layer
 // Transforms PersonaTraits + MoodState into narrative identity summaries
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.buildPersonaNarrative = buildPersonaNarrative;
+exports.getNarrativeStyle = getNarrativeStyle;
 /**
  * Builds a narrative summary from persona traits and mood state
  * Uses deterministic template assembly - no AI or randomness
  */
-export function buildPersonaNarrative(input) {
+function buildPersonaNarrative(input) {
     const { traits, mood } = input;
     // Determine narrative tone based on mood
     const tone = determineNarrativeTone(mood);
@@ -115,7 +119,7 @@ function getMoodDescription(moodId) {
 /**
  * Helper function to get narrative style based on intensity
  */
-export function getNarrativeStyle(intensity) {
+function getNarrativeStyle(intensity) {
     switch (intensity) {
         case "Low":
             return "concise";

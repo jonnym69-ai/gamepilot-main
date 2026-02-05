@@ -1,7 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.calculateSessionResonance = calculateSessionResonance;
+exports.analyzeSessionResonance = analyzeSessionResonance;
 /**
  * Calculate session resonance based on predicted vs actual mood
  */
-export function calculateSessionResonance(sessionId, userId, forecastResult, actualMood, sessionData) {
+function calculateSessionResonance(sessionId, userId, forecastResult, actualMood, sessionData) {
     // Calculate base resonance score
     const moodMatch = forecastResult.primaryForecast.predictedMood === actualMood ? 1 : 0;
     const confidenceAlignment = forecastResult.primaryForecast.confidence;
@@ -33,7 +37,7 @@ export function calculateSessionResonance(sessionId, userId, forecastResult, act
 /**
  * Analyze session resonance patterns over time
  */
-export function analyzeSessionResonance(resonanceData) {
+function analyzeSessionResonance(resonanceData) {
     if (resonanceData.length === 0) {
         return {
             totalSessions: 0,

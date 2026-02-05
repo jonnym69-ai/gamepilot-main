@@ -1,6 +1,20 @@
+"use strict";
 // GamePilot Enhanced Persona Engine
 // Safe, additive improvements to the existing Persona Engine
 // Adds temporal patterns, session context, compound moods, and feedback loops
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.recordMoodEvent = recordMoodEvent;
+exports.recordSessionStart = recordSessionStart;
+exports.recordSessionEnd = recordSessionEnd;
+exports.recordRecommendationFeedback = recordRecommendationFeedback;
+exports.getTemporalMoodPatterns = getTemporalMoodPatterns;
+exports.getCompoundMoodSuggestions = getCompoundMoodSuggestions;
+exports.getSessionMoodDelta = getSessionMoodDelta;
+exports.moodEventToUserMoodEntry = moodEventToUserMoodEntry;
+exports.userMoodEntryToMoodEvent = userMoodEntryToMoodEvent;
+exports.migrateMoodHistory = migrateMoodHistory;
+exports.demigrateMoodHistory = demigrateMoodHistory;
+exports.validateMoodEvent = validateMoodEvent;
 // ============================================================================
 // HELPER FUNCTIONS (Safe, Non-Destructive)
 // ============================================================================
@@ -16,7 +30,7 @@
  * @param sessionContext - Optional session context
  * @returns MoodEvent object with full temporal data
  */
-export function recordMoodEvent(moodId, intensity, moodTags = [], context, gameId, sessionContext) {
+function recordMoodEvent(moodId, intensity, moodTags = [], context, gameId, sessionContext) {
     const now = new Date();
     return {
         // Core mood data (compatible with UserMoodEntry)
@@ -48,7 +62,7 @@ export function recordMoodEvent(moodId, intensity, moodTags = [], context, gameI
  * @param preMood - Mood before starting the session
  * @returns SessionEvent object for tracking
  */
-export function recordSessionStart(sessionId, gameId, preMood) {
+function recordSessionStart(sessionId, gameId, preMood) {
     return {
         sessionId,
         startTime: new Date(),
@@ -67,7 +81,7 @@ export function recordSessionStart(sessionId, gameId, preMood) {
  * @param postMood - Mood after ending the session
  * @returns Completed SessionEvent with mood delta calculated
  */
-export function recordSessionEnd(sessionEvent, postMood) {
+function recordSessionEnd(sessionEvent, postMood) {
     const endTime = new Date();
     const duration = sessionEvent.startTime ?
         Math.round((endTime.getTime() - sessionEvent.startTime.getTime()) / (1000 * 60)) :
@@ -94,7 +108,7 @@ export function recordSessionEnd(sessionEvent, postMood) {
  * @param confidence - System confidence in the recommendation
  * @returns RecommendationFeedback object
  */
-export function recordRecommendationFeedback(recommendationId, moodAtTime, feedback, gameId, confidence = 0.5) {
+function recordRecommendationFeedback(recommendationId, moodAtTime, feedback, gameId, confidence = 0.5) {
     return {
         recommendationId,
         moodAtTime,
@@ -114,7 +128,7 @@ export function recordRecommendationFeedback(recommendationId, moodAtTime, feedb
  * @param moodEvents - Array of mood events to analyze
  * @returns Temporal mood patterns and insights
  */
-export function getTemporalMoodPatterns(moodEvents) {
+function getTemporalMoodPatterns(moodEvents) {
     if (!moodEvents || moodEvents.length === 0) {
         return { bestHours: [], worstHours: [], dayTrends: {} };
     }
@@ -160,7 +174,7 @@ export function getTemporalMoodPatterns(moodEvents) {
  * @param moodEvents - Array of mood events to analyze
  * @returns Array of compound mood suggestions with frequency data
  */
-export function getCompoundMoodSuggestions(moodEvents) {
+function getCompoundMoodSuggestions(moodEvents) {
     if (!moodEvents || moodEvents.length === 0) {
         return [];
     }
@@ -200,7 +214,7 @@ export function getCompoundMoodSuggestions(moodEvents) {
  * @param sessionEvents - Array of completed session events
  * @returns Session mood analysis with deltas and patterns
  */
-export function getSessionMoodDelta(sessionEvents) {
+function getSessionMoodDelta(sessionEvents) {
     const completedSessions = sessionEvents.filter(session => session.preMood && session.postMood && session.sessionDuration);
     if (completedSessions.length === 0) {
         return { averageMoodDelta: 0, positiveSessionRatio: 0, sessionDurationImpact: 0 };
@@ -238,7 +252,7 @@ function getWeekOfYear(date) {
  * Converts MoodEvent to UserMoodEntry for backwards compatibility
  * Allows seamless integration with existing mood system
  */
-export function moodEventToUserMoodEntry(moodEvent) {
+function moodEventToUserMoodEntry(moodEvent) {
     return {
         moodId: moodEvent.moodId,
         intensity: moodEvent.intensity,
@@ -251,7 +265,7 @@ export function moodEventToUserMoodEntry(moodEvent) {
  * Converts UserMoodEntry to MoodEvent with enhanced temporal data
  * Allows existing mood data to benefit from new features
  */
-export function userMoodEntryToMoodEvent(moodEntry) {
+function userMoodEntryToMoodEvent(moodEntry) {
     return recordMoodEvent(moodEntry.moodId, moodEntry.intensity, [], // No compound moods in legacy data
     moodEntry.context, moodEntry.gameId);
 }
@@ -259,21 +273,21 @@ export function userMoodEntryToMoodEvent(moodEntry) {
  * Converts existing UserMoodEntry array to enhanced MoodEvent array
  * Allows legacy data to benefit from new features
  */
-export function migrateMoodHistory(legacyMoods) {
+function migrateMoodHistory(legacyMoods) {
     return legacyMoods.map(mood => userMoodEntryToMoodEvent(mood));
 }
 /**
  * Converts enhanced MoodEvent array back to UserMoodEntry array
  * Allows enhanced data to work with existing systems
  */
-export function demigrateMoodHistory(enhancedMoods) {
+function demigrateMoodHistory(enhancedMoods) {
     return enhancedMoods.map(mood => moodEventToUserMoodEntry(mood));
 }
 /**
  * Validates mood event data structure
  * Ensures data integrity before processing
  */
-export function validateMoodEvent(moodEvent) {
+function validateMoodEvent(moodEvent) {
     return (moodEvent &&
         typeof moodEvent.moodId === 'string' &&
         typeof moodEvent.intensity === 'number' &&

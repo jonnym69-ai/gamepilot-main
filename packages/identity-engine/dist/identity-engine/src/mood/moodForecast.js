@@ -1,7 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.calculateMoodForecast = calculateMoodForecast;
 /**
  * Generate mood forecasts based on historical trend analysis
  */
-export function calculateMoodForecast(trendAnalysis, historicalData, forecastPeriod = 'next_month') {
+function calculateMoodForecast(trendAnalysis, historicalData, forecastPeriod = 'next_month') {
     // Determine data quality based on historical data size
     const dataPoints = historicalData.length;
     const dataQuality = dataPoints >= 20 ? 'high' : dataPoints >= 10 ? 'medium' : 'low';

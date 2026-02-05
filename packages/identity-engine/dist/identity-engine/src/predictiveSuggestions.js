@@ -1,5 +1,8 @@
-import { mlRecommendationEngine } from './mlRecommendations';
-export class PredictiveSuggestionEngine {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.predictiveSuggestionEngine = exports.PredictiveSuggestionEngine = void 0;
+const mlRecommendations_1 = require("./mlRecommendations");
+class PredictiveSuggestionEngine {
     constructor() {
         this.behaviorPatterns = new Map();
         this.predictionCache = new Map();
@@ -225,7 +228,7 @@ export class PredictiveSuggestionEngine {
     }
     predictSatisfaction(game, context, pattern) {
         // Use ML recommendation engine for satisfaction prediction
-        const mlScore = mlRecommendationEngine.predictRating(pattern.userId, game.id);
+        const mlScore = mlRecommendations_1.mlRecommendationEngine.predictRating(pattern.userId, game.id);
         // Adjust based on context
         let contextMultiplier = 1;
         if (context.availableTime) {
@@ -540,5 +543,6 @@ export class PredictiveSuggestionEngine {
         }
     }
 }
+exports.PredictiveSuggestionEngine = PredictiveSuggestionEngine;
 // Singleton instance for the application
-export const predictiveSuggestionEngine = new PredictiveSuggestionEngine();
+exports.predictiveSuggestionEngine = new PredictiveSuggestionEngine();

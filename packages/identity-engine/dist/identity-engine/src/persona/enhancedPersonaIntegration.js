@@ -1,9 +1,13 @@
+"use strict";
 // GamePilot Enhanced Persona Engine Integration Layer
 // Safe integration with existing Persona Engine without breaking changes
-import { buildPersonaSnapshot } from "./personaSnapshot";
-import { recordMoodEvent, recordSessionStart, recordSessionEnd, recordRecommendationFeedback, getTemporalMoodPatterns, getCompoundMoodSuggestions, getSessionMoodDelta } from "./enhancedPersonaEngine";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EnhancedPersonaEngine = exports.DEFAULT_ENHANCED_CONFIG = void 0;
+exports.createEnhancedPersonaEngine = createEnhancedPersonaEngine;
+const personaSnapshot_1 = require("./personaSnapshot");
+const enhancedPersonaEngine_1 = require("./enhancedPersonaEngine");
 // Default configuration - conservative and safe
-export const DEFAULT_ENHANCED_CONFIG = {
+exports.DEFAULT_ENHANCED_CONFIG = {
     enableTemporalPatterns: true,
     enableSessionTracking: true,
     enableCompoundMoods: true,
@@ -17,12 +21,12 @@ export const DEFAULT_ENHANCED_CONFIG = {
  * Enhanced Persona Engine with safe, additive improvements
  * Wraps existing persona engine without breaking changes
  */
-export class EnhancedPersonaEngine {
+class EnhancedPersonaEngine {
     constructor(config = {}) {
         this.moodHistory = [];
         this.sessionHistory = [];
         this.feedbackHistory = [];
-        this.config = { ...DEFAULT_ENHANCED_CONFIG, ...config };
+        this.config = { ...exports.DEFAULT_ENHANCED_CONFIG, ...config };
     }
     /**
      * Builds enhanced persona snapshot with additional insights
@@ -35,22 +39,22 @@ export class EnhancedPersonaEngine {
     buildEnhancedPersonaSnapshot(input, // Same type as PersonaSnapshotInput
     enhancedMoodData) {
         // Build base persona snapshot using existing engine (no changes)
-        const baseSnapshot = buildPersonaSnapshot(input);
+        const baseSnapshot = (0, personaSnapshot_1.buildPersonaSnapshot)(input);
         // Add enhanced insights if enabled and data available
         const enhancedSnapshot = {
             ...baseSnapshot
         };
         // Add temporal insights
         if (this.config.enableTemporalPatterns && enhancedMoodData?.moodEvents) {
-            enhancedSnapshot.temporalInsights = getTemporalMoodPatterns(enhancedMoodData.moodEvents);
+            enhancedSnapshot.temporalInsights = (0, enhancedPersonaEngine_1.getTemporalMoodPatterns)(enhancedMoodData.moodEvents);
         }
         // Add session insights
         if (this.config.enableSessionTracking && enhancedMoodData?.sessionEvents) {
-            enhancedSnapshot.sessionInsights = getSessionMoodDelta(enhancedMoodData.sessionEvents);
+            enhancedSnapshot.sessionInsights = (0, enhancedPersonaEngine_1.getSessionMoodDelta)(enhancedMoodData.sessionEvents);
         }
         // Add compound mood suggestions
         if (this.config.enableCompoundMoods && enhancedMoodData?.moodEvents) {
-            enhancedSnapshot.compoundMoods = getCompoundMoodSuggestions(enhancedMoodData.moodEvents);
+            enhancedSnapshot.compoundMoods = (0, enhancedPersonaEngine_1.getCompoundMoodSuggestions)(enhancedMoodData.moodEvents);
         }
         return enhancedSnapshot;
     }
@@ -59,7 +63,7 @@ export class EnhancedPersonaEngine {
      * Safe wrapper around recordMoodEvent with history management
      */
     recordMood(moodId, intensity, moodTags = [], context, gameId, sessionContext) {
-        const moodEvent = recordMoodEvent(moodId, // Type assertion for compatibility
+        const moodEvent = (0, enhancedPersonaEngine_1.recordMoodEvent)(moodId, // Type assertion for compatibility
         intensity, moodTags, context, gameId, sessionContext);
         // Add to history with size limit
         this.moodHistory.push(moodEvent);
@@ -74,7 +78,7 @@ export class EnhancedPersonaEngine {
      */
     startSession(gameId, preMood) {
         const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        const sessionEvent = recordSessionStart(sessionId, gameId, preMood);
+        const sessionEvent = (0, enhancedPersonaEngine_1.recordSessionStart)(sessionId, gameId, preMood);
         this.sessionHistory.push(sessionEvent);
         if (this.sessionHistory.length > this.config.maxHistorySize) {
             this.sessionHistory = this.sessionHistory.slice(-this.config.maxHistorySize);
@@ -89,7 +93,7 @@ export class EnhancedPersonaEngine {
         if (sessionIndex === -1)
             return null;
         const sessionEvent = this.sessionHistory[sessionIndex];
-        const completedSession = recordSessionEnd(sessionEvent, postMood);
+        const completedSession = (0, enhancedPersonaEngine_1.recordSessionEnd)(sessionEvent, postMood);
         this.sessionHistory[sessionIndex] = completedSession;
         return completedSession;
     }
@@ -97,7 +101,7 @@ export class EnhancedPersonaEngine {
      * Records recommendation feedback for learning
      */
     recordFeedback(recommendationId, moodAtTime, feedback, gameId, confidence = 0.5) {
-        const feedbackEvent = recordRecommendationFeedback(recommendationId, moodAtTime, feedback, gameId, confidence);
+        const feedbackEvent = (0, enhancedPersonaEngine_1.recordRecommendationFeedback)(recommendationId, moodAtTime, feedback, gameId, confidence);
         this.feedbackHistory.push(feedbackEvent);
         if (this.feedbackHistory.length > this.config.maxHistorySize) {
             this.feedbackHistory = this.feedbackHistory.slice(-this.config.maxHistorySize);
@@ -143,6 +147,7 @@ export class EnhancedPersonaEngine {
         this.feedbackHistory = [];
     }
 }
+exports.EnhancedPersonaEngine = EnhancedPersonaEngine;
 // ============================================================================
 // LEGACY COMPATIBILITY HELPERS
 // ============================================================================
@@ -150,7 +155,7 @@ export class EnhancedPersonaEngine {
  * Creates enhanced persona engine with sensible defaults
  * Factory function for easy instantiation
  */
-export function createEnhancedPersonaEngine(config) {
+function createEnhancedPersonaEngine(config) {
     return new EnhancedPersonaEngine(config);
 }
 // ============================================================================

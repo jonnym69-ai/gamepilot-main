@@ -1,10 +1,13 @@
-import { PlaystyleModel } from './playstyleModel';
-import { RecommendationEngine } from './recommendations';
-export class IdentityEngine {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.IdentityEngine = void 0;
+const playstyleModel_1 = require("./playstyleModel");
+const recommendations_1 = require("./recommendations");
+class IdentityEngine {
     constructor() {
         this.moodModel = {}; // Simple placeholder
-        this.playstyleModel = new PlaystyleModel();
-        this.recommendationEngine = new RecommendationEngine();
+        this.playstyleModel = new playstyleModel_1.PlaystyleModel();
+        this.recommendationEngine = new recommendations_1.RecommendationEngine();
     }
     /**
      * Compute player identity from gaming history
@@ -172,3 +175,4 @@ export class IdentityEngine {
         };
     }
 }
+exports.IdentityEngine = IdentityEngine;

@@ -1,7 +1,14 @@
+"use strict";
 // GamePilot Enhanced Persona Engine - React Hooks
 // Safe React integration for enhanced persona features
-import { useState, useEffect, useCallback } from 'react';
-import { personaEngine, buildPersonaSnapshotSafe, recordMoodEventSafe, startSessionSafe, endSessionSafe, recordFeedbackSafe, getPersonaEngineStatus, isEnhancedPersonaSnapshot, getEnhancedInsights, ENABLE_ENHANCED_PERSONA } from './safePersonaIntegration';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.usePersonaEngine = usePersonaEngine;
+exports.usePersonaSnapshot = usePersonaSnapshot;
+exports.useSessionTracking = useSessionTracking;
+exports.useEnhancedPersonaDetection = useEnhancedPersonaDetection;
+exports.usePersonaEngineFull = usePersonaEngineFull;
+const react_1 = require("react");
+const safePersonaIntegration_1 = require("./safePersonaIntegration");
 // ============================================================================
 // MAIN PERSONA ENGINE HOOK
 // ============================================================================
@@ -9,52 +16,52 @@ import { personaEngine, buildPersonaSnapshotSafe, recordMoodEventSafe, startSess
  * Main hook for accessing persona engine functionality
  * Provides safe access to both legacy and enhanced features
  */
-export function usePersonaEngine() {
-    const [engineStatus, setEngineStatus] = useState(getPersonaEngineStatus());
-    const [moodHistory, setMoodHistory] = useState([]);
-    const [sessionHistory, setSessionHistory] = useState([]);
-    const [feedbackHistory, setFeedbackHistory] = useState([]);
+function usePersonaEngine() {
+    const [engineStatus, setEngineStatus] = (0, react_1.useState)((0, safePersonaIntegration_1.getPersonaEngineStatus)());
+    const [moodHistory, setMoodHistory] = (0, react_1.useState)([]);
+    const [sessionHistory, setSessionHistory] = (0, react_1.useState)([]);
+    const [feedbackHistory, setFeedbackHistory] = (0, react_1.useState)([]);
     // Update status on mount and when feature flag changes
-    useEffect(() => {
-        setEngineStatus(getPersonaEngineStatus());
+    (0, react_1.useEffect)(() => {
+        setEngineStatus((0, safePersonaIntegration_1.getPersonaEngineStatus)());
     }, []);
     // Refresh data periodically
-    const refreshData = useCallback(() => {
-        setMoodHistory(personaEngine.getMoodHistory() || []);
-        setSessionHistory(personaEngine.getSessionHistory() || []);
-        setFeedbackHistory(personaEngine.getFeedbackHistory() || []);
+    const refreshData = (0, react_1.useCallback)(() => {
+        setMoodHistory(safePersonaIntegration_1.personaEngine.getMoodHistory() || []);
+        setSessionHistory(safePersonaIntegration_1.personaEngine.getSessionHistory() || []);
+        setFeedbackHistory(safePersonaIntegration_1.personaEngine.getFeedbackHistory() || []);
     }, []);
     // Auto-refresh data every 30 seconds if enhanced engine is active
-    useEffect(() => {
-        if (!ENABLE_ENHANCED_PERSONA)
+    (0, react_1.useEffect)(() => {
+        if (!safePersonaIntegration_1.ENABLE_ENHANCED_PERSONA)
             return;
         const interval = setInterval(refreshData, 30000);
         return () => clearInterval(interval);
     }, [refreshData]);
     // Initial data load
-    useEffect(() => {
+    (0, react_1.useEffect)(() => {
         refreshData();
     }, [refreshData]);
     // Safe wrapper functions
-    const buildSnapshot = useCallback((input) => {
-        return buildPersonaSnapshotSafe(input);
+    const buildSnapshot = (0, react_1.useCallback)((input) => {
+        return (0, safePersonaIntegration_1.buildPersonaSnapshotSafe)(input);
     }, []);
-    const recordMood = useCallback((moodId, intensity, moodTags, context, gameId) => {
-        recordMoodEventSafe(moodId, intensity, moodTags, context, gameId);
+    const recordMood = (0, react_1.useCallback)((moodId, intensity, moodTags, context, gameId) => {
+        (0, safePersonaIntegration_1.recordMoodEventSafe)(moodId, intensity, moodTags, context, gameId);
         refreshData(); // Update local state
     }, [refreshData]);
-    const startSession = useCallback((gameId, preMood) => {
-        const sessionId = startSessionSafe(gameId, preMood);
+    const startSession = (0, react_1.useCallback)((gameId, preMood) => {
+        const sessionId = (0, safePersonaIntegration_1.startSessionSafe)(gameId, preMood);
         refreshData(); // Update local state
         return sessionId;
     }, [refreshData]);
-    const endSession = useCallback((sessionId, postMood) => {
-        const session = endSessionSafe(sessionId, postMood);
+    const endSession = (0, react_1.useCallback)((sessionId, postMood) => {
+        const session = (0, safePersonaIntegration_1.endSessionSafe)(sessionId, postMood);
         refreshData(); // Update local state
         return session;
     }, [refreshData]);
-    const recordFeedback = useCallback((recommendationId, moodAtTime, feedback, gameId, confidence) => {
-        recordFeedbackSafe(recommendationId, moodAtTime, feedback, gameId, confidence);
+    const recordFeedback = (0, react_1.useCallback)((recommendationId, moodAtTime, feedback, gameId, confidence) => {
+        (0, safePersonaIntegration_1.recordFeedbackSafe)(recommendationId, moodAtTime, feedback, gameId, confidence);
         refreshData(); // Update local state
     }, [refreshData]);
     return {
@@ -77,15 +84,15 @@ export function usePersonaEngine() {
  * Hook for building and managing persona snapshots
  * Provides loading states and error handling
  */
-export function usePersonaSnapshot(input, options) {
-    const [snapshot, setSnapshot] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const buildSnapshotData = useCallback(async () => {
+function usePersonaSnapshot(input, options) {
+    const [snapshot, setSnapshot] = (0, react_1.useState)(null);
+    const [isLoading, setIsLoading] = (0, react_1.useState)(false);
+    const [error, setError] = (0, react_1.useState)(null);
+    const buildSnapshotData = (0, react_1.useCallback)(async () => {
         setIsLoading(true);
         setError(null);
         try {
-            const result = buildPersonaSnapshotSafe(input);
+            const result = (0, safePersonaIntegration_1.buildPersonaSnapshotSafe)(input);
             setSnapshot(result);
         }
         catch (err) {
@@ -97,21 +104,21 @@ export function usePersonaSnapshot(input, options) {
         }
     }, [input]);
     // Initial build
-    useEffect(() => {
+    (0, react_1.useEffect)(() => {
         if (input) {
             buildSnapshotData();
         }
     }, [input, buildSnapshotData]);
     // Auto-refresh if enabled
-    useEffect(() => {
-        if (!options?.autoRefresh || !ENABLE_ENHANCED_PERSONA)
+    (0, react_1.useEffect)(() => {
+        if (!options?.autoRefresh || !safePersonaIntegration_1.ENABLE_ENHANCED_PERSONA)
             return;
         const interval = setInterval(buildSnapshotData, options.refreshInterval || 60000);
         return () => clearInterval(interval);
     }, [options?.autoRefresh, options?.refreshInterval, buildSnapshotData]);
     // Extract enhanced insights
-    const enhancedInsights = getEnhancedInsights(snapshot);
-    const isEnhanced = isEnhancedPersonaSnapshot(snapshot);
+    const enhancedInsights = (0, safePersonaIntegration_1.getEnhancedInsights)(snapshot);
+    const isEnhanced = (0, safePersonaIntegration_1.isEnhancedPersonaSnapshot)(snapshot);
     return {
         snapshot,
         isLoading,
@@ -128,16 +135,16 @@ export function usePersonaSnapshot(input, options) {
  * Hook for managing gaming sessions
  * Provides session lifecycle management
  */
-export function useSessionTracking() {
-    const [activeSessionId, setActiveSessionId] = useState(null);
-    const [isTracking, setIsTracking] = useState(false);
+function useSessionTracking() {
+    const [activeSessionId, setActiveSessionId] = (0, react_1.useState)(null);
+    const [isTracking, setIsTracking] = (0, react_1.useState)(false);
     const { recordMood, sessionHistory } = usePersonaEngine();
-    const startSession = useCallback((gameId, preMood) => {
-        if (!ENABLE_ENHANCED_PERSONA) {
+    const startSession = (0, react_1.useCallback)((gameId, preMood) => {
+        if (!safePersonaIntegration_1.ENABLE_ENHANCED_PERSONA) {
             console.warn('Enhanced persona engine disabled, session tracking not available');
             return null;
         }
-        const sessionId = startSessionSafe(gameId, preMood);
+        const sessionId = (0, safePersonaIntegration_1.startSessionSafe)(gameId, preMood);
         if (sessionId) {
             setActiveSessionId(sessionId);
             setIsTracking(true);
@@ -148,11 +155,11 @@ export function useSessionTracking() {
         }
         return sessionId;
     }, [recordMood]);
-    const endSession = useCallback((postMood) => {
-        if (!activeSessionId || !ENABLE_ENHANCED_PERSONA) {
+    const endSession = (0, react_1.useCallback)((postMood) => {
+        if (!activeSessionId || !safePersonaIntegration_1.ENABLE_ENHANCED_PERSONA) {
             return null;
         }
-        const session = endSessionSafe(activeSessionId, postMood);
+        const session = (0, safePersonaIntegration_1.endSessionSafe)(activeSessionId, postMood);
         // Record post-session mood if provided
         if (postMood) {
             recordMood(postMood.moodId, postMood.intensity, postMood.moodTags, 'Post-session mood');
@@ -161,7 +168,7 @@ export function useSessionTracking() {
         setIsTracking(false);
         return session;
     }, [activeSessionId, recordMood]);
-    const getSessionHistory = useCallback(() => {
+    const getSessionHistory = (0, react_1.useCallback)(() => {
         return sessionHistory || [];
     }, [sessionHistory]);
     return {
@@ -179,12 +186,12 @@ export function useSessionTracking() {
  * Hook for detecting enhanced persona engine availability
  * Useful for conditional UI rendering
  */
-export function useEnhancedPersonaDetection() {
-    const [isEnhanced, setIsEnhanced] = useState(ENABLE_ENHANCED_PERSONA);
-    const [engineStatus, setEngineStatus] = useState(null);
-    useEffect(() => {
-        setIsEnhanced(ENABLE_ENHANCED_PERSONA);
-        setEngineStatus(getPersonaEngineStatus());
+function useEnhancedPersonaDetection() {
+    const [isEnhanced, setIsEnhanced] = (0, react_1.useState)(safePersonaIntegration_1.ENABLE_ENHANCED_PERSONA);
+    const [engineStatus, setEngineStatus] = (0, react_1.useState)(null);
+    (0, react_1.useEffect)(() => {
+        setIsEnhanced(safePersonaIntegration_1.ENABLE_ENHANCED_PERSONA);
+        setEngineStatus((0, safePersonaIntegration_1.getPersonaEngineStatus)());
     }, []);
     return {
         isEnhanced,
@@ -204,7 +211,7 @@ export function useEnhancedPersonaDetection() {
  * Combined hook for most common persona engine use cases
  * Provides snapshot, session tracking, and feature detection
  */
-export function usePersonaEngineFull(input, options) {
+function usePersonaEngineFull(input, options) {
     const personaEngine = usePersonaEngine();
     const snapshot = usePersonaSnapshot(input, {
         autoRefresh: options?.autoRefreshSnapshot,

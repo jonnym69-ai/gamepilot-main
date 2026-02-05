@@ -1,5 +1,9 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.analyzeSessionResonance = exports.calculateSessionResonance = exports.calculateMoodForecast = exports.GAMING_MOODS = void 0;
+exports.calculateMoodTrend = calculateMoodTrend;
 // Simple moods export for build compatibility
-export const GAMING_MOODS = [
+exports.GAMING_MOODS = [
     {
         id: 'neutral',
         name: 'Neutral',
@@ -16,7 +20,7 @@ export const GAMING_MOODS = [
 /**
  * Calculate mood trends from user mood history
  */
-export function calculateMoodTrend(moodHistory, timeframe = 'month') {
+function calculateMoodTrend(moodHistory, timeframe = 'month') {
     // Group moods by ID for trend calculation
     const moodGroups = moodHistory.reduce((groups, mood) => {
         if (!groups[mood.id]) {
@@ -86,6 +90,9 @@ export function calculateMoodTrend(moodHistory, timeframe = 'month') {
     };
 }
 // Export mood forecasting analysis
-export { calculateMoodForecast } from './mood/moodForecast';
+var moodForecast_1 = require("./mood/moodForecast");
+Object.defineProperty(exports, "calculateMoodForecast", { enumerable: true, get: function () { return moodForecast_1.calculateMoodForecast; } });
 // Export session resonance tracking
-export { calculateSessionResonance, analyzeSessionResonance } from './mood/sessionResonance';
+var sessionResonance_1 = require("./mood/sessionResonance");
+Object.defineProperty(exports, "calculateSessionResonance", { enumerable: true, get: function () { return sessionResonance_1.calculateSessionResonance; } });
+Object.defineProperty(exports, "analyzeSessionResonance", { enumerable: true, get: function () { return sessionResonance_1.analyzeSessionResonance; } });

@@ -1,5 +1,8 @@
-import { MOODS } from '@gamepilot/static-data';
-export class NeuralMoodAnalyzer {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.neuralMoodAnalyzer = exports.NeuralMoodAnalyzer = void 0;
+const static_data_1 = require("@gamepilot/static-data");
+class NeuralMoodAnalyzer {
     constructor(config = {
         learningRate: 0.01,
         momentum: 0.9,
@@ -33,7 +36,7 @@ export class NeuralMoodAnalyzer {
         const features = this.extractFeatures(recentSessions, currentTime);
         const prediction = this.forwardPass(features);
         const moodIndex = this.argmax(prediction);
-        const predictedMood = MOODS[moodIndex]?.id || 'relaxed';
+        const predictedMood = static_data_1.MOODS[moodIndex]?.id || 'relaxed';
         const confidence = prediction[moodIndex];
         return {
             predictedMood,
@@ -107,7 +110,7 @@ export class NeuralMoodAnalyzer {
     }
     initializeNeuralNetwork() {
         const inputSize = 20; // Feature vector size
-        const outputSize = MOODS.length;
+        const outputSize = static_data_1.MOODS.length;
         let prevSize = inputSize;
         this.neuralWeights = [];
         for (const layerSize of [...this.config.hiddenLayers, outputSize]) {
@@ -211,8 +214,8 @@ export class NeuralMoodAnalyzer {
         const recentMoods = sessions.slice(0, 3).map(s => s.mood);
         for (let i = 0; i < 6; i++) {
             if (i < recentMoods.length) {
-                const moodIndex = MOODS.findIndex(m => m.id === recentMoods[i]);
-                features[10 + i] = moodIndex >= 0 ? moodIndex / MOODS.length : 0;
+                const moodIndex = static_data_1.MOODS.findIndex(m => m.id === recentMoods[i]);
+                features[10 + i] = moodIndex >= 0 ? moodIndex / static_data_1.MOODS.length : 0;
             }
         }
         // Session pattern features (16-19)
@@ -223,8 +226,8 @@ export class NeuralMoodAnalyzer {
         return features;
     }
     createOutputVector(moodId) {
-        const vector = new Array(MOODS.length).fill(0);
-        const index = MOODS.findIndex(m => m.id === moodId);
+        const vector = new Array(static_data_1.MOODS.length).fill(0);
+        const index = static_data_1.MOODS.findIndex(m => m.id === moodId);
         if (index >= 0) {
             vector[index] = 1;
         }
@@ -462,5 +465,6 @@ export class NeuralMoodAnalyzer {
         }
     }
 }
+exports.NeuralMoodAnalyzer = NeuralMoodAnalyzer;
 // Singleton instance for the application
-export const neuralMoodAnalyzer = new NeuralMoodAnalyzer();
+exports.neuralMoodAnalyzer = new NeuralMoodAnalyzer();

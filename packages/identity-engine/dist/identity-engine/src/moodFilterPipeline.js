@@ -1,15 +1,18 @@
-import { ENHANCED_MOODS, MOOD_COMBINATIONS } from '@gamepilot/static-data';
-export class EnhancedMoodFilter {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EnhancedMoodFilter = void 0;
+const static_data_1 = require("@gamepilot/static-data");
+class EnhancedMoodFilter {
     /**
      * Filter games based on mood context with hybrid recommendation logic
      */
     static filterByMood(games, context) {
-        const primaryMood = ENHANCED_MOODS.find(m => m.id === context.primaryMood);
+        const primaryMood = static_data_1.ENHANCED_MOODS.find(m => m.id === context.primaryMood);
         if (!primaryMood) {
             throw new Error(`Primary mood not found: ${context.primaryMood}`);
         }
         const secondaryMood = context.secondaryMood
-            ? ENHANCED_MOODS.find(m => m.id === context.secondaryMood)
+            ? static_data_1.ENHANCED_MOODS.find(m => m.id === context.secondaryMood)
             : undefined;
         const results = {
             games: [],
@@ -89,7 +92,7 @@ export class EnhancedMoodFilter {
      */
     static calculateHybridBonus(game, primaryMood, secondaryMood) {
         // Check if this mood combination is pre-defined and compatible
-        const combination = MOOD_COMBINATIONS.find(c => (c.primaryMood === primaryMood.id && c.secondaryMood === secondaryMood.id) ||
+        const combination = static_data_1.MOOD_COMBINATIONS.find(c => (c.primaryMood === primaryMood.id && c.secondaryMood === secondaryMood.id) ||
             (c.primaryMood === secondaryMood.id && c.secondaryMood === primaryMood.id));
         if (!combination) {
             // Check compatibility dynamically
@@ -309,10 +312,10 @@ export class EnhancedMoodFilter {
      * Get recommended mood combinations based on context
      */
     static getRecommendedCombinations(primaryMood) {
-        const primary = ENHANCED_MOODS.find(m => m.id === primaryMood);
+        const primary = static_data_1.ENHANCED_MOODS.find(m => m.id === primaryMood);
         if (!primary)
             return [];
-        return MOOD_COMBINATIONS
+        return static_data_1.MOOD_COMBINATIONS
             .filter(combo => combo.primaryMood === primaryMood)
             .sort((a, b) => b.intensity - a.intensity)
             .slice(0, 3);
@@ -321,8 +324,8 @@ export class EnhancedMoodFilter {
      * Validate mood combination compatibility
      */
     static validateCombination(primaryMood, secondaryMood) {
-        const primary = ENHANCED_MOODS.find(m => m.id === primaryMood);
-        const secondary = ENHANCED_MOODS.find(m => m.id === secondaryMood);
+        const primary = static_data_1.ENHANCED_MOODS.find(m => m.id === primaryMood);
+        const secondary = static_data_1.ENHANCED_MOODS.find(m => m.id === secondaryMood);
         if (!primary || !secondary)
             return false;
         // Check if explicitly compatible
@@ -332,8 +335,9 @@ export class EnhancedMoodFilter {
         if (primary.conflictingMoods.includes(secondaryMood))
             return false;
         // Check if there's a pre-defined combination
-        const hasCombination = MOOD_COMBINATIONS.some(combo => (combo.primaryMood === primaryMood && combo.secondaryMood === secondaryMood) ||
+        const hasCombination = static_data_1.MOOD_COMBINATIONS.some(combo => (combo.primaryMood === primaryMood && combo.secondaryMood === secondaryMood) ||
             (combo.primaryMood === secondaryMood && combo.secondaryMood === primaryMood));
         return hasCombination;
     }
 }
+exports.EnhancedMoodFilter = EnhancedMoodFilter;

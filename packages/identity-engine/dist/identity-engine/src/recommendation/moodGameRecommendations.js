@@ -1,7 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.generateMoodBasedRecommendations = generateMoodBasedRecommendations;
 /**
  * Generate mood-based game recommendations using mood forecast
  */
-export function generateMoodBasedRecommendations(forecastResult, availableGames, maxRecommendations = 10) {
+function generateMoodBasedRecommendations(forecastResult, availableGames, maxRecommendations = 10) {
     const predictedMood = forecastResult.primaryForecast.predictedMood;
     const confidence = forecastResult.primaryForecast.confidence;
     // Score each game based on mood compatibility

@@ -1,4 +1,7 @@
-export var PlatformCode;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PlatformCode = void 0;
+var PlatformCode;
 (function (PlatformCode) {
     PlatformCode["STEAM"] = "steam";
     PlatformCode["XBOX"] = "xbox";
@@ -31,4 +34,4 @@ export var PlatformCode;
     PlatformCode["PPSSPP"] = "ppsspp";
     PlatformCode["CITRA"] = "citra";
     PlatformCode["DESMUME"] = "desmume";
-})(PlatformCode || (PlatformCode = {}));
+})(PlatformCode || (exports.PlatformCode = PlatformCode = {}));

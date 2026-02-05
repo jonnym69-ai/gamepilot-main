@@ -1,20 +1,42 @@
+"use strict";
 // GamePilot Enhanced Persona Engine - Main Exports
 // Safe, additive improvements to the existing Persona Engine
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getMoodIntensityCategory = exports.isMoodRecent = exports.createMoodState = exports.mapMoodToPersonaContext = exports.getSnapshotSummary = exports.isHighConfidenceSnapshot = exports.createMinimalPersonaSnapshot = exports.buildPersonaSnapshot = exports.demigrateMoodHistory = exports.migrateMoodHistory = exports.validateMoodEvent = exports.userMoodEntryToMoodEvent = exports.moodEventToUserMoodEntry = exports.getSessionMoodDelta = exports.getCompoundMoodSuggestions = exports.getTemporalMoodPatterns = exports.recordRecommendationFeedback = exports.recordSessionEnd = exports.recordSessionStart = exports.recordMoodEvent = exports.DEFAULT_ENHANCED_CONFIG = exports.createEnhancedPersonaEngine = exports.EnhancedPersonaEngine = void 0;
 // Core enhanced engine
-export { EnhancedPersonaEngine, createEnhancedPersonaEngine, DEFAULT_ENHANCED_CONFIG } from './enhancedPersonaIntegration';
+var enhancedPersonaIntegration_1 = require("./enhancedPersonaIntegration");
+Object.defineProperty(exports, "EnhancedPersonaEngine", { enumerable: true, get: function () { return enhancedPersonaIntegration_1.EnhancedPersonaEngine; } });
+Object.defineProperty(exports, "createEnhancedPersonaEngine", { enumerable: true, get: function () { return enhancedPersonaIntegration_1.createEnhancedPersonaEngine; } });
+Object.defineProperty(exports, "DEFAULT_ENHANCED_CONFIG", { enumerable: true, get: function () { return enhancedPersonaIntegration_1.DEFAULT_ENHANCED_CONFIG; } });
 // Enhanced data models and functions
-export { 
+var enhancedPersonaEngine_1 = require("./enhancedPersonaEngine");
 // Recording functions
-recordMoodEvent, recordSessionStart, recordSessionEnd, recordRecommendationFeedback, 
+Object.defineProperty(exports, "recordMoodEvent", { enumerable: true, get: function () { return enhancedPersonaEngine_1.recordMoodEvent; } });
+Object.defineProperty(exports, "recordSessionStart", { enumerable: true, get: function () { return enhancedPersonaEngine_1.recordSessionStart; } });
+Object.defineProperty(exports, "recordSessionEnd", { enumerable: true, get: function () { return enhancedPersonaEngine_1.recordSessionEnd; } });
+Object.defineProperty(exports, "recordRecommendationFeedback", { enumerable: true, get: function () { return enhancedPersonaEngine_1.recordRecommendationFeedback; } });
 // Analysis functions
-getTemporalMoodPatterns, getCompoundMoodSuggestions, getSessionMoodDelta, 
+Object.defineProperty(exports, "getTemporalMoodPatterns", { enumerable: true, get: function () { return enhancedPersonaEngine_1.getTemporalMoodPatterns; } });
+Object.defineProperty(exports, "getCompoundMoodSuggestions", { enumerable: true, get: function () { return enhancedPersonaEngine_1.getCompoundMoodSuggestions; } });
+Object.defineProperty(exports, "getSessionMoodDelta", { enumerable: true, get: function () { return enhancedPersonaEngine_1.getSessionMoodDelta; } });
 // Utility functions
-moodEventToUserMoodEntry, userMoodEntryToMoodEvent, validateMoodEvent, 
+Object.defineProperty(exports, "moodEventToUserMoodEntry", { enumerable: true, get: function () { return enhancedPersonaEngine_1.moodEventToUserMoodEntry; } });
+Object.defineProperty(exports, "userMoodEntryToMoodEvent", { enumerable: true, get: function () { return enhancedPersonaEngine_1.userMoodEntryToMoodEvent; } });
+Object.defineProperty(exports, "validateMoodEvent", { enumerable: true, get: function () { return enhancedPersonaEngine_1.validateMoodEvent; } });
 // Migration helpers
-migrateMoodHistory, demigrateMoodHistory } from './enhancedPersonaEngine';
+Object.defineProperty(exports, "migrateMoodHistory", { enumerable: true, get: function () { return enhancedPersonaEngine_1.migrateMoodHistory; } });
+Object.defineProperty(exports, "demigrateMoodHistory", { enumerable: true, get: function () { return enhancedPersonaEngine_1.demigrateMoodHistory; } });
 // Re-export existing persona engine for convenience
-export { buildPersonaSnapshot, createMinimalPersonaSnapshot, isHighConfidenceSnapshot, getSnapshotSummary } from './personaSnapshot';
-export { mapMoodToPersonaContext, createMoodState, isMoodRecent, getMoodIntensityCategory } from './personaMoodMapping';
+var personaSnapshot_1 = require("./personaSnapshot");
+Object.defineProperty(exports, "buildPersonaSnapshot", { enumerable: true, get: function () { return personaSnapshot_1.buildPersonaSnapshot; } });
+Object.defineProperty(exports, "createMinimalPersonaSnapshot", { enumerable: true, get: function () { return personaSnapshot_1.createMinimalPersonaSnapshot; } });
+Object.defineProperty(exports, "isHighConfidenceSnapshot", { enumerable: true, get: function () { return personaSnapshot_1.isHighConfidenceSnapshot; } });
+Object.defineProperty(exports, "getSnapshotSummary", { enumerable: true, get: function () { return personaSnapshot_1.getSnapshotSummary; } });
+var personaMoodMapping_1 = require("./personaMoodMapping");
+Object.defineProperty(exports, "mapMoodToPersonaContext", { enumerable: true, get: function () { return personaMoodMapping_1.mapMoodToPersonaContext; } });
+Object.defineProperty(exports, "createMoodState", { enumerable: true, get: function () { return personaMoodMapping_1.createMoodState; } });
+Object.defineProperty(exports, "isMoodRecent", { enumerable: true, get: function () { return personaMoodMapping_1.isMoodRecent; } });
+Object.defineProperty(exports, "getMoodIntensityCategory", { enumerable: true, get: function () { return personaMoodMapping_1.getMoodIntensityCategory; } });
 // ============================================================================
 // QUICK START GUIDE
 // ============================================================================

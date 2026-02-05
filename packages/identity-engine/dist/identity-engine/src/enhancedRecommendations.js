@@ -1,6 +1,9 @@
-import { ENHANCED_MOODS } from '@gamepilot/static-data';
-import { EnhancedMoodFilter } from './moodFilterPipeline';
-export class EnhancedRecommendationEngine {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EnhancedRecommendationEngine = void 0;
+const static_data_1 = require("@gamepilot/static-data");
+const moodFilterPipeline_1 = require("./moodFilterPipeline");
+class EnhancedRecommendationEngine {
     /**
      * Get enhanced mood-aware recommendations
      */
@@ -10,7 +13,7 @@ export class EnhancedRecommendationEngine {
         const minThreshold = context.minScoreThreshold || 30;
         // If mood context is provided, use enhanced mood filtering
         if (context.moodContext) {
-            const moodResults = EnhancedMoodFilter.filterByMood(availableGames, context.moodContext);
+            const moodResults = moodFilterPipeline_1.EnhancedMoodFilter.filterByMood(availableGames, context.moodContext);
             // Convert mood filter results to enhanced recommendations
             moodResults.games.forEach(game => {
                 const enhancedRec = this.createEnhancedRecommendation(game, identity, context, moodResults.scores[game.id], moodResults.reasoning[game.id], moodResults.moodInfluence[game.id]);
@@ -78,7 +81,7 @@ export class EnhancedRecommendationEngine {
                 time: 50
             };
         }
-        const primaryMood = ENHANCED_MOODS.find(m => m.id === moodContext.primaryMood);
+        const primaryMood = static_data_1.ENHANCED_MOODS.find(m => m.id === moodContext.primaryMood);
         if (!primaryMood) {
             return {
                 energy: 50,
@@ -169,8 +172,8 @@ export class EnhancedRecommendationEngine {
     static analyzeMoodCombination(moodContext, game) {
         if (!moodContext.secondaryMood)
             return undefined;
-        const primaryMood = ENHANCED_MOODS.find(m => m.id === moodContext.primaryMood);
-        const secondaryMood = ENHANCED_MOODS.find(m => m.id === moodContext.secondaryMood);
+        const primaryMood = static_data_1.ENHANCED_MOODS.find(m => m.id === moodContext.primaryMood);
+        const secondaryMood = static_data_1.ENHANCED_MOODS.find(m => m.id === moodContext.secondaryMood);
         if (!primaryMood || !secondaryMood)
             return undefined;
         // Calculate synergy between moods for this specific game
@@ -338,3 +341,4 @@ export class EnhancedRecommendationEngine {
         return this.getEnhancedRecommendations(mockIdentity, context, games);
     }
 }
+exports.EnhancedRecommendationEngine = EnhancedRecommendationEngine;

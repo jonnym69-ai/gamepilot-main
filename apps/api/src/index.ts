@@ -19,7 +19,7 @@ import {
 import { Request, Response } from 'express'
 
 const app = express()
-const PORT = 3001 // HARDCODED - NEVER CHANGE
+const PORT = process.env.PORT || 3001
 
 export { app }
 

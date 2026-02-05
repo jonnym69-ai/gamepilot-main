@@ -1,4 +1,7 @@
-export const MOODS = [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MOODS = void 0;
+exports.MOODS = [
     {
         id: 'chill',
         name: 'Chill',

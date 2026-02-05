@@ -1,5 +1,8 @@
-import { GENRES, MOODS } from '@gamepilot/static-data';
-export class MLRecommendationEngine {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.mlRecommendationEngine = exports.MLRecommendationEngine = void 0;
+const static_data_1 = require("@gamepilot/static-data");
+class MLRecommendationEngine {
     constructor(config = {
         collaborativeWeight: 0.4,
         contentBasedWeight: 0.3,
@@ -206,7 +209,7 @@ export class MLRecommendationEngine {
         let totalWeight = 0;
         // Genre compatibility
         for (const [genre, preference] of profile.preferredGenres) {
-            const genreIndex = GENRES.findIndex(g => g.id === genre);
+            const genreIndex = static_data_1.GENRES.findIndex(g => g.id === genre);
             if (genreIndex >= 0 && genreIndex < gameFeature.genreVector.length) {
                 score += gameFeature.genreVector[genreIndex] * preference;
                 totalWeight += preference;
@@ -218,7 +221,7 @@ export class MLRecommendationEngine {
         let score = 0;
         let totalWeight = 0;
         for (const [mood, preference] of profile.moodPatterns) {
-            const moodIndex = MOODS.findIndex(m => m.id === mood);
+            const moodIndex = static_data_1.MOODS.findIndex(m => m.id === mood);
             if (moodIndex >= 0 && moodIndex < gameFeature.moodVector.length) {
                 score += gameFeature.moodVector[moodIndex] * preference;
                 totalWeight += preference;
@@ -280,9 +283,9 @@ export class MLRecommendationEngine {
         };
     }
     encodeGenres(genres) {
-        const vector = new Array(GENRES.length).fill(0);
+        const vector = new Array(static_data_1.GENRES.length).fill(0);
         for (const genre of genres) {
-            const index = GENRES.findIndex(g => g.id === genre.id);
+            const index = static_data_1.GENRES.findIndex(g => g.id === genre.id);
             if (index >= 0) {
                 vector[index] = 1;
             }
@@ -290,7 +293,7 @@ export class MLRecommendationEngine {
         return vector;
     }
     calculateMoodVector(game) {
-        const vector = new Array(MOODS.length).fill(0);
+        const vector = new Array(static_data_1.MOODS.length).fill(0);
         // Simple mood mapping based on game properties
         if (game.genres) {
             for (const genre of game.genres) {
@@ -378,5 +381,6 @@ export class MLRecommendationEngine {
         return 'Hard';
     }
 }
+exports.MLRecommendationEngine = MLRecommendationEngine;
 // Singleton instance for the application
-export const mlRecommendationEngine = new MLRecommendationEngine();
+exports.mlRecommendationEngine = new MLRecommendationEngine();

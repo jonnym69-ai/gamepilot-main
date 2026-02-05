@@ -1,8 +1,14 @@
+"use strict";
 // GamePilot Persona Snapshot API
 // Orchestrates trait extraction, mood mapping, and narrative generation
-import { derivePersonaTraits } from "./traitExtractor";
-import { mapMoodToPersonaContext } from "./personaMoodMapping";
-import { buildPersonaNarrative } from "./personaNarrative";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.buildPersonaSnapshot = buildPersonaSnapshot;
+exports.createMinimalPersonaSnapshot = createMinimalPersonaSnapshot;
+exports.isHighConfidenceSnapshot = isHighConfidenceSnapshot;
+exports.getSnapshotSummary = getSnapshotSummary;
+const traitExtractor_1 = require("./traitExtractor");
+const personaMoodMapping_1 = require("./personaMoodMapping");
+const personaNarrative_1 = require("./personaNarrative");
 /**
  * Builds a complete persona snapshot from raw signals and mood data
  * Orchestrates the entire persona engine pipeline
@@ -11,7 +17,7 @@ import { buildPersonaNarrative } from "./personaNarrative";
  * @returns Complete persona snapshot with traits, mood, narrative, and confidence
  * @throws Error if signals are missing or invalid
  */
-export function buildPersonaSnapshot(input) {
+function buildPersonaSnapshot(input) {
     // Validate input signals
     if (!input.signals) {
         throw new Error("PersonaSnapshotInput.signals is required");
@@ -20,11 +26,11 @@ export function buildPersonaSnapshot(input) {
     validateRawPlayerSignals(input.signals);
     try {
         // Step 1: Extract persona traits from raw signals
-        const traits = derivePersonaTraits(input.signals);
+        const traits = (0, traitExtractor_1.derivePersonaTraits)(input.signals);
         // Step 2: Map mood entry to mood state within persona context
-        const { mood } = mapMoodToPersonaContext(traits, input.moodEntry || undefined);
+        const { mood } = (0, personaMoodMapping_1.mapMoodToPersonaContext)(traits, input.moodEntry || undefined);
         // Step 3: Build narrative from traits and mood
-        const narrative = buildPersonaNarrative({ traits, mood });
+        const narrative = (0, personaNarrative_1.buildPersonaNarrative)({ traits, mood });
         // Step 4: Extract confidence from traits
         const confidence = traits.confidence;
         // Step 5: Return unified snapshot
@@ -84,7 +90,7 @@ function validateRawPlayerSignals(signals) {
  * Helper function to create a minimal persona snapshot for testing
  * Uses default values for optional fields
  */
-export function createMinimalPersonaSnapshot(partialSignals) {
+function createMinimalPersonaSnapshot(partialSignals) {
     // Create default signals with minimal required data
     const defaultSignals = {
         playtimeByGenre: {},
@@ -105,14 +111,14 @@ export function createMinimalPersonaSnapshot(partialSignals) {
  * Helper function to check if a persona snapshot is high-confidence
  * Returns true if confidence >= 0.7
  */
-export function isHighConfidenceSnapshot(snapshot) {
+function isHighConfidenceSnapshot(snapshot) {
     return snapshot.confidence >= 0.7;
 }
 /**
  * Helper function to get snapshot summary
  * Returns a concise summary of the persona snapshot
  */
-export function getSnapshotSummary(snapshot) {
+function getSnapshotSummary(snapshot) {
     const { archetypeId, intensity, pacing } = snapshot.traits;
     const moodLabel = snapshot.mood ? snapshot.mood.moodId : 'no mood';
     const confidence = Math.round(snapshot.confidence * 100);

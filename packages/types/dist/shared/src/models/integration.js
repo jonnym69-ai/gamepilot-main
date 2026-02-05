@@ -1,16 +1,29 @@
+"use strict";
 // Canonical UserIntegration model for GamePilot platform
 // This model unifies all Integration interfaces across the monorepo
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.IntegrationStatus = void 0;
+exports.isValidUserIntegration = isValidUserIntegration;
+exports.isValidSyncConfig = isValidSyncConfig;
+exports.isValidSteamIntegrationMetadata = isValidSteamIntegrationMetadata;
+exports.isValidDiscordIntegrationMetadata = isValidDiscordIntegrationMetadata;
+exports.isValidYouTubeIntegrationMetadata = isValidYouTubeIntegrationMetadata;
+exports.createDefaultUserIntegration = createDefaultUserIntegration;
+exports.validateUserIntegration = validateUserIntegration;
+exports.isIntegrationActive = isIntegrationActive;
+exports.isIntegrationExpired = isIntegrationExpired;
+exports.isIntegrationHealthy = isIntegrationHealthy;
 // Integration status enum
-export var IntegrationStatus;
+var IntegrationStatus;
 (function (IntegrationStatus) {
     IntegrationStatus["ACTIVE"] = "active";
     IntegrationStatus["INACTIVE"] = "inactive";
     IntegrationStatus["DISCONNECTED"] = "disconnected";
     IntegrationStatus["EXPIRED"] = "expired";
     IntegrationStatus["ERROR"] = "error";
-})(IntegrationStatus || (IntegrationStatus = {}));
+})(IntegrationStatus || (exports.IntegrationStatus = IntegrationStatus = {}));
 // Type guards and utilities
-export function isValidUserIntegration(integration) {
+function isValidUserIntegration(integration) {
     return (integration &&
         typeof integration.id === 'string' &&
         typeof integration.userId === 'string' &&
@@ -30,7 +43,7 @@ export function isValidUserIntegration(integration) {
         (integration.lastUsedAt === undefined || integration.lastUsedAt instanceof Date) &&
         (integration.metadata === undefined || typeof integration.metadata === 'object'));
 }
-export function isValidSyncConfig(config) {
+function isValidSyncConfig(config) {
     return (config &&
         typeof config.autoSync === 'boolean' &&
         typeof config.syncFrequency === 'number' &&
@@ -41,7 +54,7 @@ export function isValidSyncConfig(config) {
         config.maxRetries >= 0 &&
         (config.lastSyncAt === undefined || config.lastSyncAt instanceof Date));
 }
-export function isValidSteamIntegrationMetadata(metadata) {
+function isValidSteamIntegrationMetadata(metadata) {
     return (metadata &&
         typeof metadata.steamId === 'string' &&
         typeof metadata.personaName === 'string' &&
@@ -51,7 +64,7 @@ export function isValidSteamIntegrationMetadata(metadata) {
         (metadata.gameExtraInfo === undefined || typeof metadata.gameExtraInfo === 'string') &&
         (metadata.gameId === undefined || typeof metadata.gameId === 'string'));
 }
-export function isValidDiscordIntegrationMetadata(metadata) {
+function isValidDiscordIntegrationMetadata(metadata) {
     return (metadata &&
         typeof metadata.id === 'string' &&
         typeof metadata.username === 'string' &&
@@ -67,7 +80,7 @@ export function isValidDiscordIntegrationMetadata(metadata) {
         (metadata.bannerUrl === undefined || typeof metadata.bannerUrl === 'string') &&
         (metadata.accentColor === undefined || typeof metadata.accentColor === 'number'));
 }
-export function isValidYouTubeIntegrationMetadata(metadata) {
+function isValidYouTubeIntegrationMetadata(metadata) {
     return (metadata &&
         typeof metadata.channelTitle === 'string' &&
         typeof metadata.subscriberCount === 'number' &&
@@ -78,7 +91,7 @@ export function isValidYouTubeIntegrationMetadata(metadata) {
         metadata.viewCount >= 0 &&
         metadata.publishedAt instanceof Date);
 }
-export function createDefaultUserIntegration(userData) {
+function createDefaultUserIntegration(userData) {
     return {
         id: userData.id,
         userId: userData.userId,
@@ -99,7 +112,7 @@ export function createDefaultUserIntegration(userData) {
         }
     };
 }
-export function validateUserIntegration(integration) {
+function validateUserIntegration(integration) {
     const errors = [];
     const warnings = [];
     if (!integration.id)
@@ -126,14 +139,14 @@ export function validateUserIntegration(integration) {
     };
 }
 // Integration status helpers
-export function isIntegrationActive(integration) {
+function isIntegrationActive(integration) {
     return integration.isConnected && integration.status === IntegrationStatus.ACTIVE;
 }
-export function isIntegrationExpired(integration) {
+function isIntegrationExpired(integration) {
     return integration.status === IntegrationStatus.EXPIRED ||
         (!!(integration.expiresAt && integration.expiresAt < new Date()));
 }
-export function isIntegrationHealthy(integration) {
+function isIntegrationHealthy(integration) {
     return isIntegrationActive(integration) &&
         !isIntegrationExpired(integration) &&
         integration.syncConfig.errorCount < 3;

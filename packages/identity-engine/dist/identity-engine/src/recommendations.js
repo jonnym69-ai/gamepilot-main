@@ -1,5 +1,8 @@
-import { MOODS } from '@gamepilot/static-data';
-export class RecommendationEngine {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RecommendationEngine = void 0;
+const static_data_1 = require("@gamepilot/static-data");
+class RecommendationEngine {
     /**
      * Get personalized game recommendations
      */
@@ -63,7 +66,7 @@ export class RecommendationEngine {
     calculateMoodMatch(game, identity, context) {
         if (!context.currentMood)
             return 50;
-        const moodData = MOODS.find(m => m.id === context.currentMood);
+        const moodData = static_data_1.MOODS.find(m => m.id === context.currentMood);
         if (!moodData)
             return 50;
         // Check if game genre is associated with current mood
@@ -154,7 +157,7 @@ export class RecommendationEngine {
     generateReasons(game, identity, context, score) {
         const reasons = [];
         if (context.currentMood) {
-            const moodData = MOODS.find(m => m.id === context.currentMood);
+            const moodData = static_data_1.MOODS.find(m => m.id === context.currentMood);
             if (moodData?.associatedGenres.includes(game.genre)) {
                 reasons.push(`Perfect for your ${moodData.name} mood`);
             }
@@ -227,3 +230,4 @@ export class RecommendationEngine {
         return gameTags.some(tag => game.tags?.includes(tag));
     }
 }
+exports.RecommendationEngine = RecommendationEngine;

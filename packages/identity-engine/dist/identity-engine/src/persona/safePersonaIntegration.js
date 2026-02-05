@@ -1,7 +1,19 @@
+"use strict";
 // GamePilot Enhanced Persona Engine - Safe Integration Layer
 // Plugs enhanced persona engine into existing system without breaking changes
-import { buildPersonaSnapshot } from "./personaSnapshot";
-import { createEnhancedPersonaEngine } from "./enhancedPersona";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.personaEngine = exports.ENABLE_ENHANCED_PERSONA = void 0;
+exports.buildPersonaSnapshotSafe = buildPersonaSnapshotSafe;
+exports.recordMoodEventSafe = recordMoodEventSafe;
+exports.startSessionSafe = startSessionSafe;
+exports.endSessionSafe = endSessionSafe;
+exports.recordFeedbackSafe = recordFeedbackSafe;
+exports.getPersonaEngineStatus = getPersonaEngineStatus;
+exports.isEnhancedPersonaSnapshot = isEnhancedPersonaSnapshot;
+exports.getEnhancedInsights = getEnhancedInsights;
+exports.migrateLegacyMoodData = migrateLegacyMoodData;
+const personaSnapshot_1 = require("./personaSnapshot");
+const enhancedPersona_1 = require("./enhancedPersona");
 // ============================================================================
 // FEATURE FLAG (Safe Toggle)
 // ============================================================================
@@ -10,7 +22,7 @@ import { createEnhancedPersonaEngine } from "./enhancedPersona";
  * Set to false for safety, true to enable enhanced features
  * Can be controlled via environment variables or runtime config
  */
-export const ENABLE_ENHANCED_PERSONA = typeof process !== 'undefined' && process.env?.ENABLE_ENHANCED_PERSONA === 'true' || false;
+exports.ENABLE_ENHANCED_PERSONA = typeof process !== 'undefined' && process.env?.ENABLE_ENHANCED_PERSONA === 'true' || false;
 /**
  * Safe persona engine wrapper
  * Chooses between existing and enhanced engines based on feature flag
@@ -19,11 +31,11 @@ export const ENABLE_ENHANCED_PERSONA = typeof process !== 'undefined' && process
 class SafePersonaEngineWrapper {
     constructor() {
         this.enhancedEngine = null;
-        this.isEnabled = ENABLE_ENHANCED_PERSONA;
+        this.isEnabled = exports.ENABLE_ENHANCED_PERSONA;
         // Only initialize enhanced engine if flag is enabled
         if (this.isEnabled) {
             try {
-                this.enhancedEngine = createEnhancedPersonaEngine({
+                this.enhancedEngine = (0, enhancedPersona_1.createEnhancedPersonaEngine)({
                     enableTemporalPatterns: true,
                     enableSessionTracking: true,
                     enableCompoundMoods: true,
@@ -60,13 +72,13 @@ class SafePersonaEngineWrapper {
             }
             else {
                 // Use legacy engine (existing behavior)
-                return buildPersonaSnapshot(input);
+                return (0, personaSnapshot_1.buildPersonaSnapshot)(input);
             }
         }
         catch (error) {
             console.warn('⚠️ Enhanced snapshot build failed, falling back to legacy:', error);
             // Always fall back to legacy engine on error
-            return buildPersonaSnapshot(input);
+            return (0, personaSnapshot_1.buildPersonaSnapshot)(input);
         }
     }
     /**
@@ -218,7 +230,7 @@ class SafePersonaEngineWrapper {
  * Global persona engine instance
  * Provides consistent access across the application
  */
-export const personaEngine = new SafePersonaEngineWrapper();
+exports.personaEngine = new SafePersonaEngineWrapper();
 // ============================================================================
 // CONVENIENCE FUNCTIONS (Safe API)
 // ============================================================================
@@ -226,43 +238,43 @@ export const personaEngine = new SafePersonaEngineWrapper();
  * Builds persona snapshot using safe engine
  * Drop-in replacement for existing buildPersonaSnapshot calls
  */
-export function buildPersonaSnapshotSafe(input) {
-    return personaEngine.buildSnapshot(input);
+function buildPersonaSnapshotSafe(input) {
+    return exports.personaEngine.buildSnapshot(input);
 }
 /**
  * Records mood event safely
  * Only records if enhanced engine is enabled
  */
-export function recordMoodEventSafe(moodId, intensity, moodTags, context, gameId) {
-    personaEngine.recordMood(moodId, intensity, moodTags, context, gameId);
+function recordMoodEventSafe(moodId, intensity, moodTags, context, gameId) {
+    exports.personaEngine.recordMood(moodId, intensity, moodTags, context, gameId);
 }
 /**
  * Starts session tracking safely
  * Returns session ID if enhanced engine enabled
  */
-export function startSessionSafe(gameId, preMood) {
-    return personaEngine.startSession(gameId, preMood);
+function startSessionSafe(gameId, preMood) {
+    return exports.personaEngine.startSession(gameId, preMood);
 }
 /**
  * Ends session tracking safely
  * Returns session data if enhanced engine enabled
  */
-export function endSessionSafe(sessionId, postMood) {
-    return personaEngine.endSession(sessionId, postMood);
+function endSessionSafe(sessionId, postMood) {
+    return exports.personaEngine.endSession(sessionId, postMood);
 }
 /**
  * Records recommendation feedback safely
  * Only records if enhanced engine is enabled
  */
-export function recordFeedbackSafe(recommendationId, moodAtTime, feedback, gameId, confidence) {
-    personaEngine.recordFeedback(recommendationId, moodAtTime, feedback, gameId, confidence);
+function recordFeedbackSafe(recommendationId, moodAtTime, feedback, gameId, confidence) {
+    exports.personaEngine.recordFeedback(recommendationId, moodAtTime, feedback, gameId, confidence);
 }
 /**
  * Gets engine status for debugging
  * Useful for feature detection and troubleshooting
  */
-export function getPersonaEngineStatus() {
-    return personaEngine.getEngineStatus();
+function getPersonaEngineStatus() {
+    return exports.personaEngine.getEngineStatus();
 }
 // ============================================================================
 // TYPE GUARDS (Safe Type Checking)
@@ -271,7 +283,7 @@ export function getPersonaEngineStatus() {
  * Type guard to check if snapshot is enhanced
  * Allows safe access to enhanced features
  */
-export function isEnhancedPersonaSnapshot(snapshot) {
+function isEnhancedPersonaSnapshot(snapshot) {
     return snapshot &&
         typeof snapshot === 'object' &&
         'temporalInsights' in snapshot &&
@@ -282,7 +294,7 @@ export function isEnhancedPersonaSnapshot(snapshot) {
  * Gets enhanced insights safely
  * Returns null if not enhanced or data missing
  */
-export function getEnhancedInsights(snapshot) {
+function getEnhancedInsights(snapshot) {
     if (isEnhancedPersonaSnapshot(snapshot)) {
         return {
             temporalInsights: snapshot.temporalInsights,
@@ -299,8 +311,8 @@ export function getEnhancedInsights(snapshot) {
  * Migrates legacy mood data to enhanced format
  * Only runs if enhanced engine is enabled
  */
-export function migrateLegacyMoodData(legacyMoods) {
-    if (!ENABLE_ENHANCED_PERSONA) {
+function migrateLegacyMoodData(legacyMoods) {
+    if (!exports.ENABLE_ENHANCED_PERSONA) {
         console.log('⚠️ Enhanced engine disabled, skipping migration');
         return false;
     }

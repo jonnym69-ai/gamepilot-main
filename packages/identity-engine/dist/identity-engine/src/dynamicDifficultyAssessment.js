@@ -1,4 +1,7 @@
-export class DynamicDifficultyAssessor {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.dynamicDifficultyAssessor = exports.DynamicDifficultyAssessor = void 0;
+class DynamicDifficultyAssessor {
     constructor() {
         this.difficultyProfiles = new Map();
         this.performanceHistory = new Map();
@@ -515,5 +518,6 @@ export class DynamicDifficultyAssessor {
         return (recentPerformance - olderPerformance) / 50; // Normalize to roughly -1 to 1
     }
 }
+exports.DynamicDifficultyAssessor = DynamicDifficultyAssessor;
 // Singleton instance for the application
-export const dynamicDifficultyAssessor = new DynamicDifficultyAssessor();
+exports.dynamicDifficultyAssessor = new DynamicDifficultyAssessor();

@@ -1,13 +1,16 @@
-import { IdentityEngine } from './computeIdentity';
-import { ENHANCED_MOODS } from '@gamepilot/static-data';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MoodPersonaIntegration = void 0;
+const computeIdentity_1 = require("./computeIdentity");
+const static_data_1 = require("@gamepilot/static-data");
 /**
  * Integration service connecting Enhanced Mood System with Persona Engine
  */
-export class MoodPersonaIntegration {
+class MoodPersonaIntegration {
     constructor() {
         this.moodHistory = new Map();
         this.dynamicWeights = new Map();
-        this.identityEngine = new IdentityEngine();
+        this.identityEngine = new computeIdentity_1.IdentityEngine();
     }
     /**
      * Process mood selection and update persona with learning
@@ -215,7 +218,7 @@ export class MoodPersonaIntegration {
      */
     initializeDynamicWeights() {
         const weights = {};
-        ENHANCED_MOODS.forEach(mood => {
+        static_data_1.ENHANCED_MOODS.forEach(mood => {
             weights[mood.id] = {
                 moodId: mood.id,
                 genreWeights: { ...mood.genreWeights },
@@ -363,7 +366,7 @@ export class MoodPersonaIntegration {
      */
     generateStaticRecommendations(mood, availableGames) {
         // Fallback implementation using static mood data
-        const moodData = ENHANCED_MOODS.find(m => m.id === mood);
+        const moodData = static_data_1.ENHANCED_MOODS.find(m => m.id === mood);
         if (!moodData)
             return [];
         return availableGames.slice(0, 5).map(game => ({
@@ -381,3 +384,4 @@ export class MoodPersonaIntegration {
         }));
     }
 }
+exports.MoodPersonaIntegration = MoodPersonaIntegration;

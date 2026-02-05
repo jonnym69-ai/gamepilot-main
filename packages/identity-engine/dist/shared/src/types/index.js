@@ -1,5 +1,8 @@
+"use strict";
 // Core data types for GamePilot platform
-export var PlatformCode;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PlatformCode = void 0;
+var PlatformCode;
 (function (PlatformCode) {
     PlatformCode["STEAM"] = "steam";
     PlatformCode["XBOX"] = "xbox";
@@ -15,4 +18,4 @@ export var PlatformCode;
     PlatformCode["HUMBLE"] = "humble";
     PlatformCode["YOUTUBE"] = "youtube";
     PlatformCode["CUSTOM"] = "custom";
-})(PlatformCode || (PlatformCode = {}));
+})(PlatformCode || (exports.PlatformCode = PlatformCode = {}));

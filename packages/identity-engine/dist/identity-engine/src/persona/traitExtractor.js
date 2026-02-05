@@ -1,9 +1,12 @@
+"use strict";
 // GamePilot Persona Trait Extractor
 // Deterministic trait extraction from raw player signals
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.derivePersonaTraits = derivePersonaTraits;
 /**
  * Derive persona traits from raw player signals using deterministic rules
  */
-export function derivePersonaTraits(signals) {
+function derivePersonaTraits(signals) {
     // Extract each trait dimension using explainable rules
     const archetypeId = deriveArchetype(signals);
     const intensity = deriveIntensity(signals);

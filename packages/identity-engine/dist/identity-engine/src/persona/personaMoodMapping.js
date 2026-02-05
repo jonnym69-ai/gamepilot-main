@@ -1,5 +1,11 @@
+"use strict";
 // GamePilot Persona Mood Integration Layer
 // Connects PersonaTraits with the existing mood system
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.mapMoodToPersonaContext = mapMoodToPersonaContext;
+exports.createMoodState = createMoodState;
+exports.isMoodRecent = isMoodRecent;
+exports.getMoodIntensityCategory = getMoodIntensityCategory;
 /**
  * Maps UserMoodEntry to PersonaMoodContext
  * Pure mapping layer with no interpretation logic
@@ -8,7 +14,7 @@
  * @param moodEntry - Optional user mood entry from the mood system
  * @returns PersonaMoodContext with traits and mood state
  */
-export function mapMoodToPersonaContext(traits, moodEntry) {
+function mapMoodToPersonaContext(traits, moodEntry) {
     // If no mood entry provided, return context with null mood
     if (!moodEntry) {
         return {
@@ -31,7 +37,7 @@ export function mapMoodToPersonaContext(traits, moodEntry) {
  * Helper function to create MoodState directly
  * Useful for testing or when mood data comes from different sources
  */
-export function createMoodState(moodId, intensity, timestamp = new Date()) {
+function createMoodState(moodId, intensity, timestamp = new Date()) {
     return {
         moodId,
         intensity: Math.max(1, Math.min(10, intensity)), // Clamp to 1-10 range
@@ -42,7 +48,7 @@ export function createMoodState(moodId, intensity, timestamp = new Date()) {
  * Helper function to check if mood is recent
  * Determines if mood data is still relevant for persona analysis
  */
-export function isMoodRecent(moodState, maxAgeHours = 24) {
+function isMoodRecent(moodState, maxAgeHours = 24) {
     const now = new Date();
     const moodAge = now.getTime() - moodState.timestamp.getTime();
     const maxAgeMs = maxAgeHours * 60 * 60 * 1000;
@@ -52,7 +58,7 @@ export function isMoodRecent(moodState, maxAgeHours = 24) {
  * Helper function to get mood intensity category
  * Categorizes intensity into Low/Medium/High for easier analysis
  */
-export function getMoodIntensityCategory(intensity) {
+function getMoodIntensityCategory(intensity) {
     if (intensity <= 3)
         return "Low";
     if (intensity <= 7)

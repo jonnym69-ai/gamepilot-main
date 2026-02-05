@@ -1,10 +1,13 @@
+"use strict";
 /**
  * Free AI Components for GamePilot 1.0
  * Uses only free, open-source libraries (MIT/Apache/BSD)
  * No paid APIs, external LLMs, or cloud services
  */
-import { MOODS, GENRES } from '@gamepilot/static-data';
-export class FreeMoodEngine {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.FreeAIEngine = exports.SessionAnalyzer = exports.MoodRecommendationMapper = exports.FreeVectorSearch = exports.FreeRecommendationEngine = exports.FreeMoodEngine = void 0;
+const static_data_1 = require("@gamepilot/static-data");
+class FreeMoodEngine {
     constructor() {
         this.moodKeywords = {
             chill: ['relax', 'casual', 'peaceful', 'calm', 'zen', 'meditative', 'stress-free'],
@@ -124,7 +127,7 @@ export class FreeMoodEngine {
      * Generate reasoning for mood analysis
      */
     generateMoodReasoning(mood, sessions, bestScore, totalScore) {
-        const moodData = MOODS.find(m => m.id === mood);
+        const moodData = static_data_1.MOODS.find(m => m.id === mood);
         const moodName = moodData?.name || 'Unknown';
         const sessionCount = sessions.length;
         const avgDuration = sessions.reduce((sum, s) => sum + (s.duration || 0), 0) / sessionCount;
@@ -133,7 +136,8 @@ export class FreeMoodEngine {
             `Mood confidence: ${Math.round((bestScore / totalScore) * 100)}%`;
     }
 }
-export class FreeRecommendationEngine {
+exports.FreeMoodEngine = FreeMoodEngine;
+class FreeRecommendationEngine {
     constructor() {
         this.moodVectors = this.generateMoodVectors();
         this.genreVectors = this.generateGenreVectors();
@@ -173,7 +177,7 @@ export class FreeRecommendationEngine {
     generateMoodVectors() {
         const vectorSize = 8; // Number of mood dimensions
         const vectors = {};
-        Object.keys(MOODS).forEach((moodId, index) => {
+        Object.keys(static_data_1.MOODS).forEach((moodId, index) => {
             const vector = new Array(vectorSize).fill(0);
             vector[index] = 1; // One-hot encoding
             vectors[moodId] = vector;
@@ -184,9 +188,9 @@ export class FreeRecommendationEngine {
      * Generate genre vectors for similarity calculations
      */
     generateGenreVectors() {
-        const vectorSize = Object.keys(GENRES).length;
+        const vectorSize = Object.keys(static_data_1.GENRES).length;
         const vectors = {};
-        Object.keys(GENRES).forEach((genreId, index) => {
+        Object.keys(static_data_1.GENRES).forEach((genreId, index) => {
             const vector = new Array(vectorSize).fill(0);
             vector[index] = 1; // One-hot encoding
             vectors[genreId] = vector;
@@ -252,7 +256,7 @@ export class FreeRecommendationEngine {
      * Combine multiple genre vectors
      */
     combineGenreVectors(genres) {
-        const vectorSize = Object.keys(GENRES).length;
+        const vectorSize = Object.keys(static_data_1.GENRES).length;
         const combined = new Array(vectorSize).fill(0);
         genres.forEach(genre => {
             const genreVector = this.genreVectors[genre];
@@ -343,7 +347,8 @@ export class FreeRecommendationEngine {
         return 1 - Math.abs(gameSocial - userSocial);
     }
 }
-export class FreeVectorSearch {
+exports.FreeRecommendationEngine = FreeRecommendationEngine;
+class FreeVectorSearch {
     constructor() {
         this.vectors = new Map();
         this.metadata = new Map();
@@ -413,7 +418,8 @@ export class FreeVectorSearch {
         this.metadata.clear();
     }
 }
-export class MoodRecommendationMapper {
+exports.FreeVectorSearch = FreeVectorSearch;
+class MoodRecommendationMapper {
     constructor() {
         this.mappings = {
             chill: {
@@ -513,7 +519,8 @@ export class MoodRecommendationMapper {
         return filteredGames.slice(0, limit);
     }
 }
-export class SessionAnalyzer {
+exports.MoodRecommendationMapper = MoodRecommendationMapper;
+class SessionAnalyzer {
     constructor() {
         this.moodEngine = new FreeMoodEngine();
         this.recommendationMapper = new MoodRecommendationMapper();
@@ -636,7 +643,7 @@ export class SessionAnalyzer {
         const topGenre = [...preferredGenres.entries()]
             .sort((a, b) => b[1] - a[1])[0];
         if (topGenre && topGenre[0]) {
-            const genreData = GENRES.find(g => g.id === topGenre[0]);
+            const genreData = static_data_1.GENRES.find(g => g.id === topGenre[0]);
             recommendations.push(`Explore more ${genreData?.name || 'Unknown'} games`);
         }
         // Mood-based recommendations
@@ -665,10 +672,11 @@ export class SessionAnalyzer {
         return recommendations;
     }
 }
+exports.SessionAnalyzer = SessionAnalyzer;
 // ============================================================================
 // MAIN FREE AI ENGINE EXPORTS
 // ============================================================================
-export class FreeAIEngine {
+class FreeAIEngine {
     constructor() {
         this.moodEngine = new FreeMoodEngine();
         this.recommendationEngine = new FreeRecommendationEngine();
@@ -719,3 +727,4 @@ export class FreeAIEngine {
         return this.moodMapper.getMapping(mood);
     }
 }
+exports.FreeAIEngine = FreeAIEngine;

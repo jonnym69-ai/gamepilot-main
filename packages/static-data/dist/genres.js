@@ -1,4 +1,7 @@
-export const GENRES = [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GENRES = void 0;
+exports.GENRES = [
     {
         id: 'action',
         name: 'Action',

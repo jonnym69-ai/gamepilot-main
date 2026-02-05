@@ -1,7 +1,19 @@
+"use strict";
 // Canonical User model for GamePilot platform
 // This model unifies all User interfaces across the monorepo
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MoodType = exports.PlaystyleArchetypeType = void 0;
+exports.isValidUser = isValidUser;
+exports.isValidGamingProfile = isValidGamingProfile;
+exports.isValidPrivacySettings = isValidPrivacySettings;
+exports.isValidPreferences = isValidPreferences;
+exports.isValidSocialSettings = isValidSocialSettings;
+exports.isValidPlaystyleArchetype = isValidPlaystyleArchetype;
+exports.isValidMoodProfile = isValidMoodProfile;
+exports.isValidUserMoodEntry = isValidUserMoodEntry;
+exports.createDefaultUser = createDefaultUser;
 // Enums for type safety
-export var PlaystyleArchetypeType;
+var PlaystyleArchetypeType;
 (function (PlaystyleArchetypeType) {
     PlaystyleArchetypeType["EXPLORER"] = "explorer";
     PlaystyleArchetypeType["ACHIEVER"] = "achiever";
@@ -9,8 +21,8 @@ export var PlaystyleArchetypeType;
     PlaystyleArchetypeType["COMPETITOR"] = "competitor";
     PlaystyleArchetypeType["CREATOR"] = "creator";
     PlaystyleArchetypeType["SOCIALIZER"] = "socializer";
-})(PlaystyleArchetypeType || (PlaystyleArchetypeType = {}));
-export var MoodType;
+})(PlaystyleArchetypeType || (exports.PlaystyleArchetypeType = PlaystyleArchetypeType = {}));
+var MoodType;
 (function (MoodType) {
     MoodType["NEUTRAL"] = "neutral";
     MoodType["COMPETITIVE"] = "competitive";
@@ -20,9 +32,9 @@ export var MoodType;
     MoodType["CREATIVE"] = "creative";
     MoodType["ADVENTUROUS"] = "adventurous";
     MoodType["STRATEGIC"] = "strategic";
-})(MoodType || (MoodType = {}));
+})(MoodType || (exports.MoodType = MoodType = {}));
 // Type guards and utilities
-export function isValidUser(user) {
+function isValidUser(user) {
     return (user &&
         typeof user.id === 'string' &&
         typeof user.email === 'string' &&
@@ -37,7 +49,7 @@ export function isValidUser(user) {
         isValidPreferences(user.preferences) &&
         isValidSocialSettings(user.social));
 }
-export function isValidGamingProfile(profile) {
+function isValidGamingProfile(profile) {
     return (profile &&
         Array.isArray(profile.primaryPlatforms) &&
         typeof profile.genreAffinities === 'object' &&
@@ -52,7 +64,7 @@ export function isValidGamingProfile(profile) {
         typeof profile.longestStreak === 'number' &&
         Array.isArray(profile.favoriteGames));
 }
-export function isValidPrivacySettings(privacy) {
+function isValidPrivacySettings(privacy) {
     return (privacy &&
         ['public', 'friends', 'private'].includes(privacy.profileVisibility) &&
         typeof privacy.sharePlaytime === 'boolean' &&
@@ -61,7 +73,7 @@ export function isValidPrivacySettings(privacy) {
         typeof privacy.allowFriendRequests === 'boolean' &&
         typeof privacy.showOnlineStatus === 'boolean');
 }
-export function isValidPreferences(preferences) {
+function isValidPreferences(preferences) {
     return (preferences &&
         ['dark', 'light', 'auto'].includes(preferences.theme) &&
         typeof preferences.language === 'string' &&
@@ -78,14 +90,14 @@ export function isValidPreferences(preferences) {
         typeof preferences.display.animateTransitions === 'boolean' &&
         typeof preferences.display.showRatings === 'boolean');
 }
-export function isValidSocialSettings(social) {
+function isValidSocialSettings(social) {
     return (social &&
         Array.isArray(social.friends) &&
         Array.isArray(social.blockedUsers) &&
         Array.isArray(social.favoriteGenres) &&
         Array.isArray(social.customTags));
 }
-export function isValidPlaystyleArchetype(archetype) {
+function isValidPlaystyleArchetype(archetype) {
     return (archetype &&
         typeof archetype.id === 'string' &&
         typeof archetype.name === 'string' &&
@@ -96,13 +108,13 @@ export function isValidPlaystyleArchetype(archetype) {
         typeof archetype.score === 'number' &&
         archetype.score >= 0 && archetype.score <= 100);
 }
-export function isValidMoodProfile(moodProfile) {
+function isValidMoodProfile(moodProfile) {
     return (moodProfile &&
         Array.isArray(moodProfile.moodHistory) &&
         Array.isArray(moodProfile.moodTriggers) &&
         typeof moodProfile.moodPreferences === 'object');
 }
-export function isValidUserMoodEntry(entry) {
+function isValidUserMoodEntry(entry) {
     return (entry &&
         typeof entry.moodId === 'string' &&
         typeof entry.intensity === 'number' &&
@@ -111,7 +123,7 @@ export function isValidUserMoodEntry(entry) {
         (typeof entry.context === 'string' || entry.context === undefined) &&
         (typeof entry.gameId === 'string' || entry.gameId === undefined));
 }
-export function createDefaultUser(userData) {
+function createDefaultUser(userData) {
     return {
         id: userData.id,
         email: userData.email,

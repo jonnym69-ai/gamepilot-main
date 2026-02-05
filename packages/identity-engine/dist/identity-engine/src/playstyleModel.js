@@ -1,4 +1,7 @@
-export class PlaystyleModel {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getPlaystyleInsights = exports.calculatePlaystyleScores = exports.PLAYSTYLE_ARCHETYPES = exports.PlaystyleModel = void 0;
+class PlaystyleModel {
     constructor() {
         this.playstyleDefinitions = [
             {
@@ -222,8 +225,9 @@ export class PlaystyleModel {
         return [...this.playstyleDefinitions];
     }
 }
+exports.PlaystyleModel = PlaystyleModel;
 // Export playstyle definitions and utilities for backward compatibility
-export const PLAYSTYLE_ARCHETYPES = {
+exports.PLAYSTYLE_ARCHETYPES = {
     explorer: {
         name: 'Explorer',
         description: 'Enjoys discovering new content and secrets',
@@ -267,7 +271,7 @@ export const PLAYSTYLE_ARCHETYPES = {
         recommendation: 'Competitive and skill-based games'
     }
 };
-export const calculatePlaystyleScores = (games = []) => {
+const calculatePlaystyleScores = (games = []) => {
     // Mock calculation based on game data
     return {
         explorer: Math.floor(Math.random() * 100),
@@ -278,9 +282,11 @@ export const calculatePlaystyleScores = (games = []) => {
         competitive: Math.floor(Math.random() * 100)
     };
 };
-export const getPlaystyleInsights = () => [
+exports.calculatePlaystyleScores = calculatePlaystyleScores;
+const getPlaystyleInsights = () => [
     'You prefer exploration and discovery',
     'Achievement hunting motivates your gameplay',
     'Social gaming enhances your experience',
     'Strategic thinking is your strength'
 ];
+exports.getPlaystyleInsights = getPlaystyleInsights;
