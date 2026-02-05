@@ -18,8 +18,10 @@ RUN npm install
 # Copy source code
 COPY . .
 
-# Build internal packages in order
-RUN npm run build:packages
+# Build only API dependencies
+RUN cd packages/types && npm install && npm run build
+RUN cd packages/static-data && npm install && npm run build
+RUN cd packages/shared && npm install && npm run build
 
 # Build the API
 RUN npm run build:api
