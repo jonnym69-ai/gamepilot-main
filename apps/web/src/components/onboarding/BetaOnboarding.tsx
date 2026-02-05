@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { toast } from '../Toast'
+import { useToast } from '../Toast'
 import { motion, AnimatePresence } from 'framer-motion'
 
 // Sound effects
@@ -41,6 +41,7 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
   const [currentStep, setCurrentStep] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<string[]>([])
   const navigate = useNavigate()
+  const toast = useToast()
 
   // Play transition sound when step changes
   useEffect(() => {
@@ -167,7 +168,7 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
             onClick={() => {
               playSound('click')
               navigate('/library')
-              toast.info('Click "Import Steam" in your library to connect!')
+              toast.addToast({ type: 'info', title: 'Click "Import Steam" in your library to connect!' })
             }}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
           >
@@ -237,7 +238,7 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
           <div className="flex gap-3">
             <button
               onClick={() => {
-                toast.info('Feedback button will be available in the app!')
+                toast.addToast({ type: 'info', title: 'Feedback button will be available in the app!' })
               }}
               className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
             >
@@ -368,7 +369,7 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
     } else {
       playSound('complete')
       onComplete()
-      toast.success('Welcome to GamePilot Beta! 🎮')
+      toast.addToast({ type: 'success', title: 'Steam account connected successfully!' })
     }
   }
 
@@ -382,7 +383,7 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
   const handleSkip = () => {
     playSound('click')
     onComplete()
-    toast.info('Onboarding skipped. You can always access it later!')
+    toast.addToast({ type: 'info', title: 'Onboarding skipped. You can always access it later!' })
   }
 
   if (skipOnboarding) {
