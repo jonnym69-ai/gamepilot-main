@@ -11,8 +11,8 @@ RUN npm install --only=production
 # Copy API source code and embedded shared package
 COPY apps/api .
 
-# Build embedded shared package
-RUN cd apps/api/src/shared && npm install && npm run build
+# Build shared package from monorepo
+RUN cd packages/shared && npm install && npm run build
 
 # Expose port
 EXPOSE 3001
