@@ -12,7 +12,7 @@ RUN npm install --only=production
 COPY apps/api .
 
 # Build embedded shared package
-RUN cd src/shared && npm install && npm run build
+RUN cd apps/api/src/shared && npm install && npm run build
 
 # Expose port
 EXPOSE 3001
