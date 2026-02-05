@@ -10,7 +10,7 @@ import { Identity } from './pages/Identity'
 import { Integrations } from './features/integrations/Integrations'
 import { Analytics } from './pages/Analytics'
 import { InsightsDashboard } from './pages/InsightsDashboard'
-import { Donate } from './pages/Donate'
+import Donate from './pages/Donate'
 import { useAuth } from './store/authStore'
 import { useLibraryStore } from './stores/useLibraryStore'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -163,14 +163,11 @@ function AppContent({ isAuthenticated, user, isLoading, initializeAuth }: any) {
           <Route path="/login" element={
             <PageErrorBoundary>
               <Login />
+            </PageErrorBoundary>
+          } />
           <Route path="/register" element={
             <PageErrorBoundary>
               <Register />
-            </PageErrorBoundary>
-          } />
-          <Route path="/login" element={
-            <PageErrorBoundary>
-              <Login />
             </PageErrorBoundary>
           } />
           <Route path="/auth/callback/steam" element={
