@@ -147,175 +147,168 @@ function AppContent({ isAuthenticated, user, isLoading, initializeAuth }: any) {
   }, [libraryActions])
 
   return (
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <ToastProvider>
-          <div className="min-h-screen">
-            {/* Navigation - Always show since it handles both auth states */}
-            <Navigation 
-              isAuthenticated={isAuthenticated}
-              user={user}
-            />
+    <div className="min-h-screen">
+      {/* Navigation - Always show since it handles both auth states */}
+      <Navigation 
+        isAuthenticated={isAuthenticated}
+        user={user}
+      />
+    
+      {/* Main Content with Mobile Layout */}
+      <Routes>
+        {/* Public routes - no MobileLayout wrapper */}
+        <Route path="/login" element={
+          <PageErrorBoundary>
+            <Login />
+          </PageErrorBoundary>
+        } />
+        <Route path="/register" element={
+          <PageErrorBoundary>
+            <Register />
+          </PageErrorBoundary>
+        } />
+        <Route path="/auth/callback/steam" element={
+          <PageErrorBoundary>
+            <SteamCallback />
+          </PageErrorBoundary>
+        } />
+        <Route path="/donate" element={
+          <PageErrorBoundary>
+            <Donate />
+          </PageErrorBoundary>
+        } />
         
-          {/* Main Content with Mobile Layout */}
-          <Routes>
-          {/* Public routes - no MobileLayout wrapper */}
-          <Route path="/login" element={
+        {/* Protected routes - wrapped with MobileLayout */}
+        <Route path="/" element={
+          <ProtectedRoute>
             <PageErrorBoundary>
-              <Login />
+              <MobileLayout showNavigation={true}>
+                <CustomisationProvider>
+                  <Home />
+                </CustomisationProvider>
+              </MobileLayout>
             </PageErrorBoundary>
-          } />
-          <Route path="/register" element={
+          </ProtectedRoute>
+        } />
+        <Route path="/library" element={
+          <ProtectedRoute>
             <PageErrorBoundary>
-              <Register />
+              <MobileLayout showNavigation={true}>
+                <CustomisationProvider>
+                  <LibrarySimple />
+                </CustomisationProvider>
+              </MobileLayout>
             </PageErrorBoundary>
-          } />
-          <Route path="/auth/callback/steam" element={
+          </ProtectedRoute>
+        } />
+        <Route path="/library/add" element={
+          <ProtectedRoute>
             <PageErrorBoundary>
-              <SteamCallback />
+              <MobileLayout showNavigation={false}>
+                <CustomisationProvider>
+                  <LibrarySimple />
+                </CustomisationProvider>
+              </MobileLayout>
             </PageErrorBoundary>
-          } />
-          <Route path="/donate" element={
+          </ProtectedRoute>
+        } />
+        <Route path="/library/game/:gameId" element={
+          <ProtectedRoute>
             <PageErrorBoundary>
-              <Donate />
+              <MobileLayout showNavigation={false}>
+                <CustomisationProvider>
+                  <GameDetailsPage />
+                </CustomisationProvider>
+              </MobileLayout>
             </PageErrorBoundary>
-          } />
-          
-          {/* Protected routes - wrapped with MobileLayout */}
-          <Route path="/" element={
-            <ProtectedRoute>
-              <PageErrorBoundary>
-                <AppContent 
-                  isAuthenticated={isAuthenticated} 
-                  user={user} 
-                  isLoading={isLoading} 
-                  initializeAuth={initializeAuth} 
-                />
-              </PageErrorBoundary>
-            </ProtectedRoute>
-          } />
-          <Route path="/library" element={
-            <ProtectedRoute>
-              <PageErrorBoundary>
-                <MobileLayout showNavigation={false}>
-                  <CustomisationProvider>
-                    <LibrarySimple />
-                  </CustomisationProvider>
-                </MobileLayout>
-              </PageErrorBoundary>
-            </ProtectedRoute>
-          } />
-          <Route path="/library/add" element={
-            <ProtectedRoute>
-              <PageErrorBoundary>
-                <MobileLayout showNavigation={false}>
-                  <CustomisationProvider>
-                    <LibrarySimple />
-                  </CustomisationProvider>
-                </MobileLayout>
-              </PageErrorBoundary>
-            </ProtectedRoute>
-          } />
-          <Route path="/library/game/:gameId" element={
-            <ProtectedRoute>
-              <PageErrorBoundary>
-                <MobileLayout showNavigation={false}>
-                  <CustomisationProvider>
-                    <GameDetailsPage />
-                  </CustomisationProvider>
-                </MobileLayout>
-              </PageErrorBoundary>
-            </ProtectedRoute>
-          } />
-          <Route path="/identity" element={
-            <ProtectedRoute>
-              <PageErrorBoundary>
-                <MobileLayout showNavigation={false}>
-                  <CustomisationProvider>
-                    <Identity />
-                  </CustomisationProvider>
-                </MobileLayout>
-              </PageErrorBoundary>
-            </ProtectedRoute>
-          } />
-          <Route path="/analytics" element={
-            <ProtectedRoute>
-              <PageErrorBoundary>
-                <MobileLayout showNavigation={false}>
-                  <CustomisationProvider>
-                    <Analytics />
-                  </CustomisationProvider>
-                </MobileLayout>
-              </PageErrorBoundary>
-            </ProtectedRoute>
-          } />
-          <Route path="/insights" element={
-            <ProtectedRoute>
-              <PageErrorBoundary>
-                <MobileLayout showNavigation={false}>
-                  <CustomisationProvider>
-                    <InsightsDashboard />
-                  </CustomisationProvider>
-                </MobileLayout>
-              </PageErrorBoundary>
-            </ProtectedRoute>
-          } />
-          <Route path="/integrations" element={
-            <ProtectedRoute>
-              <PageErrorBoundary>
-                <MobileLayout showNavigation={false}>
-                  <CustomisationProvider>
-                    <Integrations />
-                  </CustomisationProvider>
-                </MobileLayout>
-              </PageErrorBoundary>
-            </ProtectedRoute>
-          } />
-          <Route path="/settings" element={
-            <ProtectedRoute>
-              <PageErrorBoundary>
-                <MobileLayout showNavigation={false}>
-                  <CustomisationProvider>
-                    <Suspense fallback={<div>Loading...</div>}>
-                      <Settings />
-                    </Suspense>
-                  </CustomisationProvider>
-                </MobileLayout>
-              </PageErrorBoundary>
-            </ProtectedRoute>
-          } />
-          <Route path="/customisation" element={
-            <ProtectedRoute>
-              <PageErrorBoundary>
-                <MobileLayout showNavigation={false}>
-                  <CustomisationProvider>
-                    <CustomisationPage />
-                  </CustomisationProvider>
-                </MobileLayout>
-              </PageErrorBoundary>
-            </ProtectedRoute>
-          } />
-          <Route path="/help" element={
-            <ProtectedRoute>
-              <PageErrorBoundary>
-                <MobileLayout showNavigation={false}>
-                  <CustomisationProvider>
-                    <HelpDocumentation />
-                  </CustomisationProvider>
-                </MobileLayout>
-              </PageErrorBoundary>
-            </ProtectedRoute>
-          } />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-        
-        {/* Help Button - Always visible */}
-        <HelpButton />
-        </div>
-      </ToastProvider>
-    </QueryClientProvider>
-  </ErrorBoundary>
-)
+          </ProtectedRoute>
+        } />
+        <Route path="/identity" element={
+          <ProtectedRoute>
+            <PageErrorBoundary>
+              <MobileLayout showNavigation={false}>
+                <CustomisationProvider>
+                  <Identity />
+                </CustomisationProvider>
+              </MobileLayout>
+            </PageErrorBoundary>
+          </ProtectedRoute>
+        } />
+        <Route path="/analytics" element={
+          <ProtectedRoute>
+            <PageErrorBoundary>
+              <MobileLayout showNavigation={false}>
+                <CustomisationProvider>
+                  <Analytics />
+                </CustomisationProvider>
+              </MobileLayout>
+            </PageErrorBoundary>
+          </ProtectedRoute>
+        } />
+        <Route path="/insights" element={
+          <ProtectedRoute>
+            <PageErrorBoundary>
+              <MobileLayout showNavigation={false}>
+                <CustomisationProvider>
+                  <InsightsDashboard />
+                </CustomisationProvider>
+              </MobileLayout>
+            </PageErrorBoundary>
+          </ProtectedRoute>
+        } />
+        <Route path="/integrations" element={
+          <ProtectedRoute>
+            <PageErrorBoundary>
+              <MobileLayout showNavigation={false}>
+                <CustomisationProvider>
+                  <Integrations />
+                </CustomisationProvider>
+              </MobileLayout>
+            </PageErrorBoundary>
+          </ProtectedRoute>
+        } />
+        <Route path="/settings" element={
+          <ProtectedRoute>
+            <PageErrorBoundary>
+              <MobileLayout showNavigation={false}>
+                <CustomisationProvider>
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <Settings />
+                  </Suspense>
+                </CustomisationProvider>
+              </MobileLayout>
+            </PageErrorBoundary>
+          </ProtectedRoute>
+        } />
+        <Route path="/customisation" element={
+          <ProtectedRoute>
+            <PageErrorBoundary>
+              <MobileLayout showNavigation={false}>
+                <CustomisationProvider>
+                  <CustomisationPage />
+                </CustomisationProvider>
+              </MobileLayout>
+            </PageErrorBoundary>
+          </ProtectedRoute>
+        } />
+        <Route path="/help" element={
+          <ProtectedRoute>
+            <PageErrorBoundary>
+              <MobileLayout showNavigation={false}>
+                <CustomisationProvider>
+                  <HelpDocumentation />
+                </CustomisationProvider>
+              </MobileLayout>
+            </PageErrorBoundary>
+          </ProtectedRoute>
+        } />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+      
+      {/* Help Button - Always visible */}
+      <HelpButton />
+    </div>
+  )
 }
 
 export default App

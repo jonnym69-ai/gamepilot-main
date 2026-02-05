@@ -12,7 +12,7 @@ export const LibraryReviewSection: React.FC<LibraryReviewSectionProps> = ({ clas
   const totalGames = games.length
   const recentlyPlayed = games
     .filter(game => game.lastPlayed && typeof game.lastPlayed === 'number')
-    .sort((a, b) => (b.lastPlayed as number) - (a.lastPlayed as number))
+    .sort((a, b) => (b.lastPlayed?.getTime() || 0) - (a.lastPlayed?.getTime() || 0))
     .slice(0, 3)
 
   const mostPlayedGames = games
@@ -64,10 +64,10 @@ export const LibraryReviewSection: React.FC<LibraryReviewSectionProps> = ({ clas
       {/* Review Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="text-center p-4 bg-gray-800/50 rounded-lg border border-gray-700/30">
-          <div className="text-2xl font-bold text-green-400 mb-2">{completedGames}</div>
+          <div className="text-2xl font-bold text-green-400 mb-2">{completedGames.length}</div>
           <div className="text-sm text-gray-400 mb-1">Completed Games</div>
           <div className="text-xs text-gray-500">
-            {totalGames > 0 ? Math.round((completedGames / totalGames) * 100) : 0}% completion rate
+            {totalGames > 0 ? Math.round((completedGames.length / totalGames) * 100) : 0}% completion rate
           </div>
         </div>
         
@@ -146,7 +146,7 @@ export const LibraryReviewSection: React.FC<LibraryReviewSectionProps> = ({ clas
                   )}
                 </div>
                 <div className="text-xs text-gray-500 mt-1">
-                  Last played {formatLastPlayed(game.lastPlayed as number)}
+                  Last played {formatLastPlayed(game.lastPlayed?.getTime())}
                 </div>
               </div>
               <div className="text-right">

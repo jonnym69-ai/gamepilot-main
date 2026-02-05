@@ -33,7 +33,7 @@ export const PerformanceOptimizer: React.FC<PerformanceOptimizerProps> = ({
       // Keep all required properties but limit arrays for performance
       genres: game.genres?.slice(0, 2), // Limit genres for performance
       platforms: game.platforms?.slice(0, 1), // Limit platforms for performance
-      subgenres: game.subgenres?.slice(0, 2), // Limit subgenres for performance
+      subgenres: game.genres?.slice(0, 2), // Use genres instead of subgenres for performance
       emotionalTags: game.emotionalTags?.slice(0, 3), // Limit emotional tags for performance
       _optimized: true as const
     }))

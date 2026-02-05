@@ -505,7 +505,7 @@ export const Library: React.FC = () => {
                 lastPlayed: new Date(),
                 addedAt: new Date(),
                 releaseYear: new Date().getFullYear(),
-                subgenres: [],
+                genres: [],
                 emotionalTags: []
               }
               actions.setGames([...games, gameWithId])

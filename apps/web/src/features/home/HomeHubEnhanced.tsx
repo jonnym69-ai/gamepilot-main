@@ -27,7 +27,7 @@ const mockRecentlyPlayed: Game[] = [
     addedAt: new Date(),
     isFavorite: false,
     genres: [],
-    subgenres: [],
+    moods: [],
     platforms: [],
     emotionalTags: [],
     releaseYear: 2020
@@ -42,7 +42,7 @@ const mockRecentlyPlayed: Game[] = [
     addedAt: new Date(),
     isFavorite: true,
     genres: [],
-    subgenres: [],
+    moods: [],
     platforms: [],
     emotionalTags: [],
     releaseYear: 2023
@@ -57,7 +57,7 @@ const mockRecentlyPlayed: Game[] = [
     addedAt: new Date(),
     isFavorite: false,
     genres: [],
-    subgenres: [],
+    moods: [],
     platforms: [],
     emotionalTags: [],
     releaseYear: 2024

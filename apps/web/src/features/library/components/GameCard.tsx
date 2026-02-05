@@ -16,9 +16,12 @@ interface GameCardProps {
   onSelect?: (game: Game, selected: boolean) => void
   currentSession?: { gameId: string; startedAt: number } | null
   onLaunch?: (game: Game) => void
+  onDelete?: (game: Game) => void
+  onEdit?: (game: Game) => void
+  capsuleImage?: string
 }
 
-export function GameCard({ game, isSelected, isSelectable, onSelect, currentSession, onLaunch }: GameCardProps) {
+export function GameCard({ game, isSelected, isSelectable, onSelect, currentSession, onLaunch, onDelete, onEdit }: GameCardProps) {
   const navigate = useNavigate()
   const { actions } = useLibraryStore()
   const [isHovered, setIsHovered] = useState(false)

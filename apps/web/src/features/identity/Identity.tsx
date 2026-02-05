@@ -24,7 +24,7 @@ export const Identity: React.FC = () => {
   
   // Get persona and mood data
   const persona = useLibraryPersona()
-  const { primaryMoodInfo, hasRecommendations } = useMoodRecommendations({ games })
+  const { primaryMood, hasRecommendations } = useMoodRecommendations({ games })
 
   useEffect(() => {
     const loadUserData = () => {
@@ -137,13 +137,13 @@ export const Identity: React.FC = () => {
               </div>
               
               {/* Current Mood Status */}
-              {hasRecommendations && primaryMoodInfo && (
+              {hasRecommendations && primaryMood && (
                 <div className="mt-4 pt-4 border-t border-purple-500/30">
                   <div className="flex items-center gap-3">
                     <span className="text-sm text-gray-400">Current Mood:</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-xl">{primaryMoodInfo.emoji}</span>
-                      <span className="text-white font-medium">{primaryMoodInfo.name}</span>
+                      <span className="text-xl">😊</span>
+                      <span className="text-white font-medium">{primaryMood}</span>
                     </div>
                   </div>
                 </div>

@@ -50,6 +50,9 @@ export const WhatToPlayNowFixed: React.FC<WhatToPlayNowProps> = ({
   const generateRecommendations = (excludeIds: Set<string> = new Set()) => {
     setIsLoading(true);
 
+    // Get available games (exclude already suggested)
+    const availableGames = games.filter((game: any) => !excludeIds.has(game.id));
+
     try {
       // Track analytics
       trackEvent("what_to_play_opened", {
@@ -61,9 +64,6 @@ export const WhatToPlayNowFixed: React.FC<WhatToPlayNowProps> = ({
 
       // Generate persona context
       const personaContext = generatePersonaContext(games);
-      
-      // Get available games (exclude already suggested)
-      const availableGames = games.filter((game: any) => !excludeIds.has(game.id));
       
       // Validate mood system with current library
       const validation = validateMoodSystem(games);

@@ -46,7 +46,7 @@ export default function Donate() {
                   </p>
                   <div className="space-y-3">
                     <div className="text-3xl font-bold text-white mb-2">
-                      $5
+                      £5
                     </div>
                     <p className="text-gray-400 text-sm">
                       Coffee fuel for late-night coding sessions
@@ -79,10 +79,10 @@ export default function Donate() {
                   </p>
                   <div className="space-y-3">
                     <div className="text-3xl font-bold text-white mb-2">
-                      $15
+                      £15
                     </div>
                     <p className="text-gray-400 text-sm">
-                      Keep the recommendations flowing all month
+                      Keep recommendations flowing all month
                     </p>
                   </div>
                   <motion.a
@@ -99,7 +99,7 @@ export default function Donate() {
               </motion.div>
             </div>
 
-            {/* Alternative Support Methods */}
+            {/* Support Platforms */}
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -107,33 +107,67 @@ export default function Donate() {
             >
               <Card className="bg-white/5 border border-white/20 p-6">
                 <h3 className="text-xl font-semibold text-white mb-3">
-                  💝 Other Ways to Help
+                  💝 Support GamePilot
                 </h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-3 mb-3">
-                      <div className="text-2xl">⭐</div>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <motion.a
+                      href="https://patreon.com/jonnym69"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex items-center space-x-3 bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-700 hover:to-red-700 transition-all"
+                    >
+                      <div className="text-2xl">🎗</div>
                       <div>
-                        <p className="text-white font-semibold">Star on GitHub</p>
-                        <p className="text-gray-400 text-sm">Help others discover GamePilot</p>
+                        <p className="text-white font-semibold">Patreon</p>
+                        <p className="text-gray-400 text-sm">Support ongoing development</p>
                       </div>
-                    </div>
-                    
-                    <div className="flex items-center space-x-3 mb-3">
-                      <div className="text-2xl">🐛</div>
+                    </motion.a>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3 mb-3">
+                    <motion.a
+                      href="https://crowdfunder.com/jonnym69"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex items-center space-x-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all"
+                    >
+                      <div className="text-2xl">🎯</div>
                       <div>
-                        <p className="text-white font-semibold">Report Issues</p>
-                        <p className="text-gray-400 text-sm">Help improve GamePilot</p>
+                        <p className="text-white font-semibold">Crowdfunder</p>
+                        <p className="text-gray-400 text-sm">Help fund new features</p>
                       </div>
-                    </div>
-                    
-                    <div className="flex items-center space-x-3">
-                      <div className="text-2xl">💬</div>
-                      <div>
-                        <p className="text-white font-semibold">Spread the Word</p>
-                        <p className="text-gray-400 text-sm">Tell friends about GamePilot</p>
-                      </div>
+                    </motion.a>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="text-2xl">⭐</div>
+                    <div>
+                      <p className="text-white font-semibold">Star on GitHub</p>
+                      <p className="text-gray-400 text-sm">Help others discover GamePilot</p>
                     </div>
                   </div>
+                  
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="text-2xl">🐛</div>
+                    <div>
+                      <p className="text-white font-semibold">Report Issues</p>
+                      <p className="text-gray-400 text-sm">Help improve GamePilot</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <div className="text-2xl">💬</div>
+                    <div>
+                      <p className="text-white font-semibold">Spread the Word</p>
+                      <p className="text-gray-400 text-sm">Tell friends about GamePilot</p>
+                    </div>
+                  </div>
+                </div>
               </Card>
             </motion.div>
 
@@ -153,7 +187,7 @@ export default function Donate() {
                 </p>
                 <div className="flex justify-center space-x-4 mt-4">
                   <motion.a
-                    href="https://github.com/jonnym69-ai/gamepilot-main"
+                    href="https://github.com/jonnym69/gamepilot-main"
                     target="_blank"
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.05 }}

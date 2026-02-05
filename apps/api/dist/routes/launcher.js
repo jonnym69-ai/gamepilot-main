@@ -5,7 +5,7 @@ const zod_1 = require("zod");
 const database_1 = require("../services/database");
 const authService_1 = require("../auth/authService");
 const shared_1 = require("@gamepilot/shared");
-const platform_1 = require("@gamepilot/shared/src/constants/platform");
+const platform_1 = require("@gamepilot/shared");
 const router = (0, express_1.Router)();
 // Game upsert schema
 const upsertGameSchema = zod_1.z.object({

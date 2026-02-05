@@ -215,7 +215,8 @@ export const Identity: React.FC = () => {
         saveIdentitySnapshot(snapshot)
         
         // Check for new milestones
-        const newMilestones = detectNewMilestones(identityHistory, snapshot)
+        const snapshotWithId = { ...snapshot, id: `snapshot_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` }
+        const newMilestones = detectNewMilestones(identityHistory, snapshotWithId)
         if (newMilestones.length > 0) {
           showNotifications(newMilestones)
         }

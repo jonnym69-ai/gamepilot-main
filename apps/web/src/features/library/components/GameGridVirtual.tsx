@@ -66,17 +66,13 @@ export function GameGridVirtual({
           <GameCard
             key={game.id}
             game={game}
-            index={rowIndex * columns + colIndex}
-            isSelectable={isBulkSelectMode}
+                        isSelectable={isBulkSelectMode}
             isSelected={selectedGames.has(game.id)}
             onSelect={onSelectGame}
             onEdit={onEditGame}
             onDelete={onDeleteGame}
-            onReorder={onReorderGame}
-            onLaunch={onLaunch}
-            isDraggable={isDraggable}
-            isLaunching={launchingGameId === game.id}
-          />
+                        onLaunch={onLaunch}
+                                  />
         ))}
         {/* Fill empty slots to maintain grid layout */}
         {row.length < columns && Array.from({ length: columns - row.length }).map((_, emptyIndex) => (

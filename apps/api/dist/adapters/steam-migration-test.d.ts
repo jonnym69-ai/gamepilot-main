@@ -66,9 +66,9 @@ export declare class SteamMigrationTest {
     static testIntegrationAdapter(): {
         success: boolean;
         integration: UserIntegration;
-        convertedBack: import("@gamepilot/shared").SteamProfile | null;
+        convertedBack: import("@gamepilot/shared/models").SteamProfile | null;
         safeIntegration: UserIntegration | null;
-        safeProfile: import("@gamepilot/shared").SteamProfile | null;
+        safeProfile: import("@gamepilot/shared/models").SteamProfile | null;
         error?: undefined;
     } | {
         success: boolean;
@@ -133,9 +133,9 @@ export declare class SteamMigrationTest {
         integrationAdapter: {
             success: boolean;
             integration: UserIntegration;
-            convertedBack: import("@gamepilot/shared").SteamProfile | null;
+            convertedBack: import("@gamepilot/shared/models").SteamProfile | null;
             safeIntegration: UserIntegration | null;
-            safeProfile: import("@gamepilot/shared").SteamProfile | null;
+            safeProfile: import("@gamepilot/shared/models").SteamProfile | null;
             error?: undefined;
         } | {
             success: boolean;

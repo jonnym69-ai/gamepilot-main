@@ -37,6 +37,7 @@ export const HomeHub: React.FC = () => {
   }, []);
   
   // Get mood/persona data
+  const persona = useLibraryPersona()
   const {
     primaryMood,
     secondaryMood,
@@ -226,7 +227,7 @@ export const HomeHub: React.FC = () => {
                 }}
                 variant="compact"
               />
-              {hasRecommendations && primaryMoodInfo && (
+              {hasRecommendations && primaryMood && (
                 <div className="text-sm text-gray-400">
                   {moodRecommendations.length} recommendations ready
                 </div>
@@ -268,16 +269,16 @@ export const HomeHub: React.FC = () => {
         </header>
 
         {/* Mood Recommendations */}
-        {hasRecommendations && primaryMoodInfo && (
+        {hasRecommendations && primaryMood && (
           <div className="mb-12">
             <div className="bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-500/30 rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-                    <span>{primaryMoodInfo.emoji}</span>
-                    {primaryMoodInfo.name} Recommendations
-                    {secondaryMoodInfo && (
-                      <span className="text-purple-400">+ {secondaryMoodInfo.emoji} {secondaryMoodInfo.name}</span>
+                    <span>😊</span>
+                    {primaryMood} Recommendations
+                    {secondaryMood && (
+                      <span className="text-purple-400">+ 😊 {secondaryMood}</span>
                     )}
                   </h2>
                   <p className="text-gray-300">

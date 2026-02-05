@@ -18,7 +18,8 @@
     "baseUrl": ".",
     "paths": {
       "@gamepilot/shared": ["../../packages/shared/dist"],
-      "@gamepilot/shared/*": ["../../packages/shared/dist/*"]
+      "@gamepilot/shared/*": ["../../packages/shared/dist/types/*"],
+      "@gamepilot/shared/models/*": ["../../packages/shared/dist/types/models/*"]
     }
   },
   "references": [

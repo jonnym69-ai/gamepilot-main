@@ -54,7 +54,7 @@ export const Settings: React.FC = () => {
   // Get persona and mood data
   const persona = useLibraryPersona()
   const { games } = useLibraryStore()
-  const { primaryMoodInfo, hasRecommendations } = useMoodRecommendations({ games })
+  const { primaryMood, hasRecommendations } = useMoodRecommendations({ games })
   
   // Use customisation store for appearance settings
   const customisation = useCustomisation()
@@ -934,13 +934,13 @@ export const Settings: React.FC = () => {
                     )}
                     
                     {/* Current Mood Status */}
-                    {hasRecommendations && primaryMoodInfo && (
+                    {hasRecommendations && primaryMood && (
                       <div className="bg-gradient-to-r from-blue-900/30 to-cyan-900/30 border border-blue-500/30 rounded-lg p-6">
                         <h3 className="text-lg font-semibold text-white mb-4">Current Mood State</h3>
                         <div className="flex items-center gap-4">
-                          <span className="text-3xl">{primaryMoodInfo.emoji}</span>
+                          <span className="text-3xl">😊</span>
                           <div>
-                            <div className="text-white font-medium text-lg">{primaryMoodInfo.name}</div>
+                            <div className="text-white font-medium text-lg">{primaryMood}</div>
                             <div className="text-sm text-gray-400">Active mood for recommendations</div>
                           </div>
                         </div>

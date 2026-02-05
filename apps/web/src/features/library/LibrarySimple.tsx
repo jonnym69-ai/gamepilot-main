@@ -1026,7 +1026,7 @@ export const LibrarySimple: React.FC = () => {
           <VirtualizedGameList
             games={filteredGames}
             onGameLaunch={handleGameLaunch}
-            onGameEdit={(gameId, updates) => handleGameEdit(gameId, updates)}
+            onGameEdit={(gameId, updates) => handleEditGame(gameId, updates)}
             onGameDelete={handleGameDelete}
             selectedGames={selectedGames}
             onGameSelectToggle={handleGameSelectToggle}

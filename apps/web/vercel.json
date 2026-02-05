@@ -16,7 +16,7 @@
     }
   ],
   "env": {
-    "VITE_API_URL": "@railway_api_url",
+    "VITE_API_URL": "https://gamepilot-main.up.railway.app",
     "VITE_ENABLE_STEAM_INTEGRATION": "true",
     "VITE_ENABLE_DISCORD_INTEGRATION": "true",
     "VITE_ENABLE_YOUTUBE_INTEGRATION": "true",

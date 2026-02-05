@@ -29,7 +29,7 @@ export function useTestEnhancedMoodSystem() {
       id: 'game-1',
       title: 'Stardew Valley',
       coverImage: '/covers/stardew-valley.jpg',
-      genres: [{ id: 'casual', name: 'Casual', color: 'green', subgenres: [] }, { id: 'simulation', name: 'Simulation', color: 'blue', subgenres: [] }],
+      genres: [{ id: 'casual', name: 'Casual', description: 'Relaxing and easy-to-play games', icon: '🌱', color: 'green', tags: ['relaxing', 'family-friendly'] }, { id: 'simulation', name: 'Simulation', description: 'Games that simulate real-world activities', icon: '🏗️', color: 'blue', tags: ['realistic', 'detailed'] }],
       subgenres: [],
       platforms: [{ id: 'pc', name: 'PC', code: 'pc' as any, isConnected: false }],
       emotionalTags: [],
@@ -38,13 +38,14 @@ export function useTestEnhancedMoodSystem() {
       isFavorite: false,
       releaseYear: 2016,
       tags: ['relaxing', 'creative', 'building'],
-      hoursPlayed: 45
+      hoursPlayed: 45,
+      moods: ['relaxed', 'creative']
     },
     {
       id: 'game-2', 
       title: 'Counter-Strike 2',
       coverImage: '/covers/cs2.jpg',
-      genres: [{ id: 'action', name: 'Action', color: 'red', subgenres: [] }, { id: 'multiplayer', name: 'Multiplayer', color: 'blue', subgenres: [] }],
+      genres: [{ id: 'action', name: 'Action', description: 'Fast-paced and exciting gameplay', icon: '⚔️', color: 'red', tags: ['fast-paced', 'exciting'] }, { id: 'multiplayer', name: 'Multiplayer', description: 'Games that support multiple players', icon: '👥', color: 'blue', tags: ['social', 'competitive'] }],
       subgenres: [],
       platforms: [{ id: 'pc', name: 'PC', code: 'pc' as any, isConnected: false }],
       emotionalTags: [],
@@ -53,13 +54,14 @@ export function useTestEnhancedMoodSystem() {
       isFavorite: false,
       releaseYear: 2023,
       tags: ['competitive', 'intense', 'team-based'],
-      hoursPlayed: 120
+      hoursPlayed: 120,
+      moods: ['competitive', 'intense']
     },
     {
       id: 'game-3',
       title: 'Civilization VI',
       coverImage: '/covers/civ6.jpg',
-      genres: [{ id: 'strategy', name: 'Strategy', color: 'purple', subgenres: [] }],
+      genres: [{ id: 'strategy', name: 'Strategy', description: 'Games that require strategic thinking', icon: '♟️', color: 'purple', tags: ['tactical', 'thoughtful'] }],
       subgenres: [],
       platforms: [{ id: 'pc', name: 'PC', code: 'pc' as any, isConnected: false }],
       emotionalTags: [],
@@ -68,13 +70,14 @@ export function useTestEnhancedMoodSystem() {
       isFavorite: false,
       releaseYear: 2016,
       tags: ['strategic', 'complex', 'challenging'],
-      hoursPlayed: 200
+      hoursPlayed: 200,
+      moods: ['strategic', 'focused']
     },
     {
       id: 'game-4',
       title: 'The Witcher 3',
       coverImage: '/covers/witcher3.jpg',
-      genres: [{ id: 'rpg', name: 'RPG', color: 'blue', subgenres: [] }, { id: 'adventure', name: 'Adventure', color: 'green', subgenres: [] }],
+      genres: [{ id: 'rpg', name: 'RPG', description: 'Role-playing games with character progression', icon: '🗡️', color: 'blue', tags: ['story-driven', 'character'] }, { id: 'adventure', name: 'Adventure', description: 'Games focused on exploration and discovery', icon: '🗺️', color: 'green', tags: ['exploration', 'discovery'] }],
       subgenres: [],
       platforms: [{ id: 'pc', name: 'PC', code: 'pc' as any, isConnected: false }, { id: 'console', name: 'Console', code: 'console' as any, isConnected: false }],
       emotionalTags: [],
@@ -83,13 +86,14 @@ export function useTestEnhancedMoodSystem() {
       isFavorite: false,
       releaseYear: 2015,
       tags: ['story-driven', 'immersive', 'exploration'],
-      hoursPlayed: 80
+      hoursPlayed: 80,
+      moods: ['immersive', 'adventurous']
     },
     {
       id: 'game-5',
       title: 'Minecraft',
       coverImage: '/covers/minecraft.jpg',
-      genres: [{ id: 'creative', name: 'Creative', color: 'orange', subgenres: [] }, { id: 'adventure', name: 'Adventure', color: 'green', subgenres: [] }],
+      genres: [{ id: 'creative', name: 'Creative', description: 'Games that allow creative expression', icon: '🎨', color: 'orange', tags: ['creativity', 'building'] }, { id: 'adventure', name: 'Adventure', description: 'Games focused on exploration and discovery', icon: '🗺️', color: 'green', tags: ['exploration', 'discovery'] }],
       subgenres: [],
       platforms: [{ id: 'pc', name: 'PC', code: 'pc' as any, isConnected: false }, { id: 'console', name: 'Console', code: 'console' as any, isConnected: false }, { id: 'mobile', name: 'Mobile', code: 'mobile' as any, isConnected: false }],
       emotionalTags: [],
@@ -98,7 +102,8 @@ export function useTestEnhancedMoodSystem() {
       isFavorite: false,
       releaseYear: 2011,
       tags: ['creative', 'building', 'exploration'],
-      hoursPlayed: 150
+      hoursPlayed: 150,
+      moods: ['creative', 'relaxed']
     }
   ]
 
