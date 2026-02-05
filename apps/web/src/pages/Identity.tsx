@@ -57,17 +57,16 @@ import {
 } from '../utils/identityMilestones'
 import { MilestoneNotification, useMilestoneNotifications } from '../components/MilestoneNotification'
 
-// NEW: Import season components
-import { 
-  generateSeasonReport, 
-  saveSeasonReport, 
-  getSeasonReports, 
-  shouldGenerateSeasonReport,
-  generateAllSeasonReports,
-  type SeasonReport
-} from '../utils/identitySeason'
-import { SeasonTimeline } from '../components/SeasonTimeline'
-import { SeasonShareCard } from '../components/SeasonShareCard'
+// NEW: Import personalization system
+import { usePersonalization } from '../hooks/usePersonalization'
+
+// NEW: Import achievement system
+import { AchievementSystem } from '../components/AchievementSystem'
+import { AchievementNotification } from '../components/AchievementNotification'
+import { useAchievements, Achievement } from '../hooks/useAchievements'
+
+// NEW: Import enhanced animations
+import { useMicroInteractions } from '../hooks/useMicroInteractions'
 
 export const Identity: React.FC = () => {
   const personaSnapshot = usePersonaSnapshot()
@@ -95,21 +94,23 @@ export const Identity: React.FC = () => {
   // NEW: Milestone state
   const [unlockedMilestones, setUnlockedMilestones] = useState<Milestone[]>([])
 
-  // NEW: Season state
-  const [seasonReports, setSeasonReports] = useState<SeasonReport[]>([])
-  const [isSeasonCardModalOpen, setIsSeasonCardModalOpen] = useState(false)
-  const [selectedSeasonReport, setSelectedSeasonReport] = useState<SeasonReport | null>(null)
+  // NEW: Personalization state
+  const { customTheme, avatar, setCustomTheme, updateAvatar } = usePersonalization()
 
-  // NEW: Load identity history, milestones, and seasons on mount
+  // NEW: Achievement system state
+  const { achievements, unlockedAchievements, recentAchievements, checkAchievements } = useAchievements()
+  const [isAchievementPanelOpen, setIsAchievementPanelOpen] = useState(false)
+
+  // NEW: Micro-interactions state
+  const { triggerInteraction, playHoverEffect, playClickEffect } = useMicroInteractions()
+
+  // NEW: Load identity history and milestones on mount
   useEffect(() => {
     const history = getIdentityHistory()
     setIdentityHistory(history)
     
     const milestones = getUnlockedMilestones()
     setUnlockedMilestones(milestones)
-    
-    const seasons = getSeasonReports()
-    setSeasonReports(seasons)
   }, [])
 
   // NEW: Listen for milestone events
@@ -124,33 +125,6 @@ export const Identity: React.FC = () => {
       window.removeEventListener('milestones-updated', handleMilestoneUpdate as EventListener)
     }
   }, [])
-
-  // NEW: Listen for season events
-  useEffect(() => {
-    const handleSeasonUpdate = (event: CustomEvent) => {
-      const { reports } = event.detail;
-      setSeasonReports(reports)
-    }
-
-    window.addEventListener('season-reports-updated', handleSeasonUpdate as EventListener)
-    return () => {
-      window.removeEventListener('season-reports-updated', handleSeasonUpdate as EventListener)
-    }
-  }, [])
-
-  // NEW: Check if we should generate a season report
-  useEffect(() => {
-    if (identityHistory.length > 0) {
-      const lastReport = seasonReports[0]
-      if (shouldGenerateSeasonReport(lastReport || null)) {
-        const newReport = generateSeasonReport(identityHistory, unlockedMilestones)
-        if (newReport) {
-          saveSeasonReport(newReport)
-          setSeasonReports(prev => [newReport, ...prev])
-        }
-      }
-    }
-  }, [identityHistory, unlockedMilestones, seasonReports])
 
   // NEW: Get library data for persona analysis
   const { games } = useLibraryStore()
@@ -251,11 +225,23 @@ export const Identity: React.FC = () => {
     }
   }, [personaContext, identityDefiningGames, identityNarrative, identityHistory])
 
+  // NEW: Enhanced animations and interactions
   useEffect(() => {
-    // Trigger animations after component mounts
+    // Trigger entrance animations
     const timer = setTimeout(() => setIsLoaded(true), 100)
+    
+    // Check for new achievements
+    if (personaContext && identityDefiningGames) {
+      checkAchievements({
+        personaContext,
+        games: identityDefiningGames,
+        analytics: analyticsInsights,
+        milestones: unlockedMilestones
+      })
+    }
+    
     return () => clearTimeout(timer)
-  }, [])
+  }, [personaContext, identityDefiningGames, analyticsInsights, unlockedMilestones])
 
   // Get archetype theme colors
   const getArchetypeTheme = (archetypeId: string) => {
@@ -370,29 +356,54 @@ export const Identity: React.FC = () => {
       />
       
       <div className="container mx-auto px-4 py-8 pointer-events-auto relative z-10">
-        {/* Hero Identity Section */}
+        {/* Enhanced Hero Section with Personalization */}
         <header className={`mb-16 ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}>
-          {/* Archetype Title */}
-          <div className="text-center mb-8">
-            <div 
-              className={`inline-block ${theme.bg} px-8 py-4 rounded-2xl border border-white/10 backdrop-blur-sm mb-6 cursor-pointer hover:scale-105 transition-transform`}
-              onClick={() => setIsArchetypeModalOpen(true)}
-            >
-              <h1 className={`text-6xl md:text-7xl font-black ${theme.accent} mb-2 tracking-tight`}>
-                {currentArchetype.toUpperCase()}
-              </h1>
-              <div className="text-6xl mb-4">
-                {getArchetypeSymbol(currentArchetype)}
+          <div className="flex items-center justify-between mb-8">
+            {/* Avatar and Personalization */}
+            <div className="flex items-center gap-4">
+              <div className="relative group">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-2xl font-bold shadow-lg transform transition-all group-hover:scale-110 group-hover:rotate-3">
+                  {avatar?.emoji || '🎮'}
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-gray-900 flex items-center justify-center">
+                  <span className="text-xs">✨</span>
+                </div>
               </div>
-              <div className="text-sm text-gray-400">
-                Click for detailed analysis
+              
+              <div>
+                <h1 className="text-3xl font-bold text-white mb-1">
+                  {avatar?.name || 'GamePilot'}
+                </h1>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 text-sm">Level {avatar?.level || 1}</span>
+                  <span className="text-gray-600">•</span>
+                  <button
+                    className="text-purple-400 hover:text-purple-300 text-sm transition-colors"
+                  >
+                    🎨 Customize Theme
+                  </button>
+                </div>
               </div>
             </div>
-            
-            {/* Cinematic Identity Statement */}
-            <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed font-light">
-              {getArchetypeDetails(currentArchetype).fullDescription}
-            </p>
+
+            {/* Achievement and Stats Summary */}
+            <div className="flex items-center gap-6">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-yellow-400">{unlockedAchievements.length}</div>
+                <div className="text-xs text-gray-400">Achievements</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-400">{identityHistory.length}</div>
+                <div className="text-xs text-gray-400">Snapshots</div>
+              </div>
+              <button
+                onClick={() => setIsAchievementPanelOpen(true)}
+                className="px-4 py-2 bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white rounded-lg font-medium transition-all transform hover:scale-105 flex items-center gap-2"
+              >
+                <span>🏆</span>
+                View Achievements
+              </button>
+            </div>
           </div>
         </header>
 
@@ -697,7 +708,7 @@ export const Identity: React.FC = () => {
             </div>
           )}
 
-          {/* NEW: Identity Evolution Timeline */}
+          {/* Identity Evolution Timeline */}
           <div className={`mb-12 ${isLoaded ? 'animate-slide-up' : 'opacity-0'} animate-delay-800`}>
             <IdentityTimeline
               snapshots={identityHistory}
@@ -732,17 +743,6 @@ export const Identity: React.FC = () => {
               onDelete={(snapshotId) => {
                 deleteIdentitySnapshot(snapshotId)
                 setIdentityHistory(prev => prev.filter(s => s.id !== snapshotId))
-              }}
-            />
-          </div>
-
-          {/* NEW: Identity Seasons */}
-          <div className={`mb-12 ${isLoaded ? 'animate-slide-up' : 'opacity-0'} animate-delay-900`}>
-            <SeasonTimeline
-              reports={seasonReports}
-              onGenerateSeasonCard={(report) => {
-                setSelectedSeasonReport(report)
-                setIsSeasonCardModalOpen(true)
               }}
             />
           </div>
@@ -832,52 +832,20 @@ export const Identity: React.FC = () => {
         onClose={milestoneNotifications.closeNotifications}
       />
 
-      {/* NEW: Season Card Modal */}
-      {isSeasonCardModalOpen && selectedSeasonReport && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-br from-amber-900 via-orange-900 to-red-900 rounded-2xl max-w-4xl w-full border border-amber-500/30 shadow-2xl max-h-[90vh] overflow-y-auto">
-            {/* Header */}
-            <div className="p-6 border-b border-amber-500/20">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-2xl font-bold text-white mb-1">
-                    {selectedSeasonReport.monthName} {selectedSeasonReport.year} Season Report
-                  </h3>
-                  <p className="text-amber-300 text-sm">Your monthly gaming identity summary</p>
-                </div>
-                <button
-                  onClick={() => setIsSeasonCardModalOpen(false)}
-                  className="text-amber-400 hover:text-white transition-colors"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            </div>
+      {/* NEW: Achievement System */}
+      <AchievementSystem
+        achievements={achievements}
+        unlockedAchievements={unlockedAchievements}
+        isOpen={isAchievementPanelOpen}
+        onClose={() => setIsAchievementPanelOpen(false)}
+      />
 
-            {/* Content */}
-            <div className="p-6">
-              <SeasonShareCard report={selectedSeasonReport} />
-            </div>
-
-            {/* Footer */}
-            <div className="p-6 border-t border-amber-500/20">
-              <div className="flex items-center justify-between">
-                <div className="text-amber-300 text-sm">
-                  Generated on {new Date(selectedSeasonReport.generatedAt).toLocaleDateString()}
-                </div>
-                <button
-                  onClick={() => setIsSeasonCardModalOpen(false)}
-                  className="px-4 py-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white rounded-lg font-medium transition-all"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* NEW: Achievement Notification */}
+      <AchievementNotification
+        achievements={recentAchievements}
+        isOpen={milestoneNotifications.isNotificationOpen && recentAchievements.length > 0}
+        onClose={milestoneNotifications.closeNotifications}
+      />
     </div>
   )
 }

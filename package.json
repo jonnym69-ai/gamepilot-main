@@ -16,6 +16,7 @@
     "build:apps": "npm run build:api && npm run build:web",
     "build:web": "npm run build --workspace=gamepilot-web",
     "build:api": "npm run build --workspace=gamepilot-api",
+    "start": "npm run start --workspace=gamepilot-api",
     "test": "npm test --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "type-check": "npm run type-check --workspaces --if-present",
