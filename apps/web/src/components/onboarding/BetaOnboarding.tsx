@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useToast } from '../Toast'
+import { useToast } from '../ui/ToastProvider'
 import { motion, AnimatePresence } from 'framer-motion'
 
 // Sound effects
@@ -168,7 +168,7 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
             onClick={() => {
               playSound('click')
               navigate('/library')
-              toast.addToast({ type: 'info', title: 'Click "Import Steam" in your library to connect!' })
+              toast.showInfo('Click "Import Steam" in your library to connect!')
             }}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
           >
@@ -238,7 +238,7 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
           <div className="flex gap-3">
             <button
               onClick={() => {
-                toast.addToast({ type: 'info', title: 'Feedback button will be available in the app!' })
+                toast.showInfo('Feedback button will be available in the app!')
               }}
               className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
             >
@@ -369,7 +369,7 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
     } else {
       playSound('complete')
       onComplete()
-      toast.addToast({ type: 'success', title: 'Steam account connected successfully!' })
+      toast.showSuccess('Steam account connected successfully!')
     }
   }
 
@@ -383,7 +383,7 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
   const handleSkip = () => {
     playSound('click')
     onComplete()
-    toast.addToast({ type: 'info', title: 'Onboarding skipped. You can always access it later!' })
+    toast.showInfo('Onboarding skipped. You can always access it later!')
   }
 
   if (skipOnboarding) {
