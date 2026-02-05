@@ -3,6 +3,35 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from '../Toast'
 import { motion, AnimatePresence } from 'framer-motion'
 
+// Sound effects
+const playSound = (type: 'click' | 'success' | 'transition' | 'complete') => {
+  try {
+    const audio = new Audio()
+    
+    switch(type) {
+      case 'click':
+        audio.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSw'
+        break
+      case 'success':
+        audio.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSw'
+        break
+      case 'transition':
+        audio.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSw'
+        break
+      case 'complete':
+        audio.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSw'
+        break
+    }
+    
+    audio.volume = 0.3
+    audio.play().catch(() => {
+      // Ignore audio errors (some browsers block autoplay)
+    })
+  } catch (error) {
+    // Ignore sound errors
+  }
+}
+
 interface BetaOnboardingProps {
   onComplete: () => void
   skipOnboarding: boolean
@@ -12,6 +41,13 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
   const [currentStep, setCurrentStep] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<string[]>([])
   const navigate = useNavigate()
+
+  // Play transition sound when step changes
+  useEffect(() => {
+    if (currentStep > 0) {
+      playSound('transition')
+    }
+  }, [currentStep])
 
   const onboardingSteps = [
     {
@@ -129,6 +165,7 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
           </div>
           <button
             onClick={() => {
+              playSound('click')
               navigate('/library')
               toast.info('Click "Import Steam" in your library to connect!')
             }}
@@ -165,7 +202,10 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
             ))}
           </div>
           <button
-            onClick={() => navigate('/recommendations')}
+            onClick={() => {
+              playSound('click')
+              navigate('/recommendations')
+            }}
             className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
           >
             Try Mood Recommendations
@@ -229,14 +269,20 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
             <h4 className="text-white font-semibold mb-4">Support Our Development</h4>
             <div className="grid grid-cols-1 gap-3 mb-4">
               <button
-                onClick={() => window.open('https://patreon.com/GamePilot?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink', '_blank')}
+                onClick={() => {
+                  playSound('click')
+                  window.open('https://patreon.com/GamePilot?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink', '_blank')
+                }}
                 className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
               >
                 <span className="text-xl">🧡</span>
                 <span>Support on Patreon</span>
               </button>
               <button
-                onClick={() => window.open('https://www.crowdfunder.co.uk/p/qr/VlDoA4dy?utm_campaign=sharemodal&utm_medium=referral&utm_source=shortlink', '_blank')}
+                onClick={() => {
+                  playSound('click')
+                  window.open('https://www.crowdfunder.co.uk/p/qr/VlDoA4dy?utm_campaign=sharemodal&utm_medium=referral&utm_source=shortlink', '_blank')
+                }}
                 className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
               >
                 <span className="text-xl">💰</span>
@@ -246,7 +292,10 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
             <h4 className="text-white font-semibold mb-3">Follow Our Journey</h4>
             <div className="space-y-2">
               <button
-                onClick={() => window.open('https://youtube.com/@gamepilot-dev?si=lhi91Ro2rz0eDbV5', '_blank')}
+                onClick={() => {
+                  playSound('click')
+                  window.open('https://youtube.com/@gamepilot-dev?si=lhi91Ro2rz0eDbV5', '_blank')
+                }}
                 className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
               >
                 <span className="text-xl">📺</span>
@@ -317,18 +366,21 @@ export const BetaOnboarding: React.FC<BetaOnboardingProps> = ({ onComplete, skip
     if (currentStep < onboardingSteps.length - 1) {
       setCurrentStep(currentStep + 1)
     } else {
+      playSound('complete')
       onComplete()
       toast.success('Welcome to GamePilot Beta! 🎮')
     }
   }
 
   const handlePrevious = () => {
+    playSound('click')
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1)
     }
   }
 
   const handleSkip = () => {
+    playSound('click')
     onComplete()
     toast.info('Onboarding skipped. You can always access it later!')
   }
