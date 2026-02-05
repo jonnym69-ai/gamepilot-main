@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "@gamepilot/identity-engine",
   "version": "1.0.0",
   "description": "Player identity logic for GamePilot",
@@ -9,8 +9,13 @@
     "dev": "tsc --watch",
     "type-check": "tsc --noEmit"
   },
-  "dependencies": {},
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
   "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "typescript": "^5.0.2"
   },
   "files": [

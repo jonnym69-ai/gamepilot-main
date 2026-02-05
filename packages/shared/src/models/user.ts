@@ -87,7 +87,27 @@ export interface User {
       showGameCovers: boolean
       animateTransitions: boolean
       showRatings: boolean
+      accentColor?: string
+      backgroundMode?: 'solid' | 'gradient' | 'image'
+      backgroundImageUrl?: string
+      animationLevel?: 'low' | 'medium' | 'high'
+      density?: 'compact' | 'comfortable'
+      lightingMode?: 'none' | 'mood' | 'rgb-sync'
+      borderRadius?: number
+      borderWidth?: number
+      shadowIntensity?: number
+      glassOpacity?: number
+      fontFamily?: string
+      fontSize?: string
+      fontWeight?: number
+      animationStyle?: string
+      hoverEffects?: boolean
+      loadingAnimations?: boolean
+      soundTheme?: string
+      soundEnabled?: boolean
+      volume?: number
     }
+    perPageCustomisation?: Record<string, any>
   }
   
   // Social Features

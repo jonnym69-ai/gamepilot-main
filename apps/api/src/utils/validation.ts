@@ -59,12 +59,32 @@ export const updatePreferencesSchema = z.object({
     friendActivity: z.boolean().optional(),
     platformUpdates: z.boolean().optional()
   }).optional(),
-  display: z.object({
+    display: z.object({
     compactMode: z.boolean().optional(),
     showGameCovers: z.boolean().optional(),
     animateTransitions: z.boolean().optional(),
-    showRatings: z.boolean().optional()
-  }).optional()
+    showRatings: z.boolean().optional(),
+    accentColor: z.string().optional(),
+    backgroundMode: z.enum(['solid', 'gradient', 'image']).optional(),
+    backgroundImageUrl: z.string().url().optional().or(z.literal('')),
+    animationLevel: z.enum(['low', 'medium', 'high']).optional(),
+    density: z.enum(['compact', 'comfortable']).optional(),
+    lightingMode: z.enum(['none', 'mood', 'rgb-sync']).optional(),
+    borderRadius: z.number().min(0).max(50).optional(),
+    borderWidth: z.number().min(0).max(10).optional(),
+    shadowIntensity: z.number().min(0).max(100).optional(),
+    glassOpacity: z.number().min(0).max(100).optional(),
+    fontFamily: z.string().optional(),
+    fontSize: z.string().optional(),
+    fontWeight: z.number().min(100).max(900).optional(),
+    animationStyle: z.string().optional(),
+    hoverEffects: z.boolean().optional(),
+    loadingAnimations: z.boolean().optional(),
+    soundTheme: z.string().optional(),
+    soundEnabled: z.boolean().optional(),
+    volume: z.number().min(0).max(100).optional()
+  }).optional(),
+  perPageCustomisation: z.record(z.any()).optional()
 })
 
 export const updatePrivacySchema = z.object({

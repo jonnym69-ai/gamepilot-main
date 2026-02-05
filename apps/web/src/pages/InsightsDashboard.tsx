@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { RecommendationTuningPanel } from '../components/RecommendationTuningPanel';
+import { apiFetch } from '../config/api';
 
 // Types for analytics data
 interface AnalyticsEvent {
@@ -119,30 +120,61 @@ export const InsightsDashboard: React.FC = () => {
     personaEffectiveness: {}
   });
 
-  // Load analytics data from localStorage
+  // Load analytics data from backend
   useEffect(() => {
-    const loadAnalytics = () => {
+    const loadAnalytics = async () => {
       try {
-        const storedEvents = localStorage.getItem('analytics_events');
-        const storedStats = localStorage.getItem('analytics_stats');
-        
-        if (storedEvents) {
-          const parsedEvents = JSON.parse(storedEvents);
-          setEvents(parsedEvents.slice(-50)); // Show last 50 events
-        }
-        
-        if (storedStats) {
-          setStats(JSON.parse(storedStats));
+        const response = await apiFetch('api/analytics/events?limit=100');
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success) {
+            setEvents(result.data);
+            
+            // Recompute stats from real events
+            const newStats: AnalyticsStats = {
+              contextualShown: 0,
+              personaShown: 0,
+              contextualClicked: 0,
+              personaClicked: 0,
+              sessionLengthUsage: {},
+              moodUsage: {},
+              timeOfDayUsage: {},
+              personaEffectiveness: {}
+            };
+
+            result.data.forEach((event: any) => {
+              if (event.name === 'recommendation_shown') {
+                if (event.payload.type === 'contextual') newStats.contextualShown++;
+                else if (event.payload.type === 'persona') newStats.personaShown++;
+              } else if (event.name === 'recommendation_clicked') {
+                if (event.payload.type === 'contextual') newStats.contextualClicked++;
+                else if (event.payload.type === 'persona') newStats.personaClicked++;
+                
+                if (event.payload.gameId) {
+                  const gameId = event.payload.gameId;
+                  if (!newStats.personaEffectiveness[gameId]) {
+                    newStats.personaEffectiveness[gameId] = { impressions: 0, clicks: 0 };
+                  }
+                  newStats.personaEffectiveness[gameId].clicks++;
+                }
+              } else if (event.name === 'mood_selected') {
+                const mood = event.payload.moodId || event.payload.mood;
+                if (mood) {
+                  newStats.moodUsage[mood] = (newStats.moodUsage[mood] || 0) + 1;
+                }
+              }
+            });
+
+            setStats(newStats);
+          }
         }
       } catch (error) {
-        console.warn('Failed to load analytics data:', error);
+        console.warn('Failed to load analytics data from backend:', error);
       }
     };
 
     loadAnalytics();
-    
-    // Refresh every 5 seconds for live updates
-    const interval = setInterval(loadAnalytics, 5000);
+    const interval = setInterval(loadAnalytics, 10000);
     return () => clearInterval(interval);
   }, []);
 

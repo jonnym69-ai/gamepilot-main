@@ -25,7 +25,9 @@ interface AuthActions {
   setUser: (user: User | null) => void;
   setAuthenticated: (isAuthenticated: boolean) => void;
   initializeAuth: () => void;
-  updateProfile: (updates: Partial<User>) => void;
+  updateProfile: (updates: Partial<User>) => Promise<void>;
+  updatePreferences: (updates: Partial<User['preferences']>) => Promise<void>;
+  updatePrivacy: (updates: Partial<User['privacy']>) => Promise<void>;
   
   // Persona management
   getPersona: () => any | null;
@@ -402,11 +404,86 @@ export const useAuthStore = create<AuthState & AuthActions>()(
         get().fetchCurrentUser();
       },
 
-      updateProfile: (updates: Partial<User>) => {
+      updateProfile: async (updates: Partial<User>) => {
         const currentUser = get().user;
-        if (currentUser) {
-          const updatedUser = { ...currentUser, ...updates };
-          set({ user: updatedUser });
+        if (!currentUser) return;
+
+        try {
+          set({ isLoading: true });
+          const response = await apiFetch('api/auth/profile', {
+            method: 'PUT',
+            body: JSON.stringify(updates),
+          });
+
+          if (!response.ok) throw new Error('Failed to update profile');
+          
+          const result = await response.json();
+          if (result.success) {
+            set({ user: { ...currentUser, ...updates, ...result.data } });
+          }
+        } catch (error) {
+          console.error('❌ Update profile error:', error);
+          set({ error: error instanceof Error ? error.message : 'Update failed' });
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      updatePreferences: async (updates: Partial<User['preferences']>) => {
+        const currentUser = get().user;
+        if (!currentUser) return;
+
+        try {
+          set({ isLoading: true });
+          const response = await apiFetch('api/auth/preferences', {
+            method: 'PUT',
+            body: JSON.stringify(updates),
+          });
+
+          if (!response.ok) throw new Error('Failed to update preferences');
+          
+          const result = await response.json();
+          if (result.success) {
+            set({ 
+              user: { 
+                ...currentUser, 
+                preferences: { ...currentUser.preferences, ...updates } 
+              } 
+            });
+          }
+        } catch (error) {
+          console.error('❌ Update preferences error:', error);
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      updatePrivacy: async (updates: Partial<User['privacy']>) => {
+        const currentUser = get().user;
+        if (!currentUser) return;
+
+        try {
+          set({ isLoading: true });
+          const response = await apiFetch('api/auth/privacy', {
+            method: 'PUT',
+            body: JSON.stringify(updates),
+          });
+
+          if (!response.ok) throw new Error('Failed to update privacy');
+          
+          const result = await response.json();
+          if (result.success) {
+            set({ 
+              user: { 
+                ...currentUser, 
+                privacy: { ...currentUser.privacy, ...updates } 
+              } 
+            });
+          }
+        } catch (error) {
+          console.error('❌ Update privacy error:', error);
+        } finally {
+          set({ isLoading: false });
         }
       },
 
