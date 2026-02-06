@@ -49,7 +49,7 @@ router.get('/profile', async (req: Request, res: Response) => {
         legacy: profile,
         
         // Canonical integration data
-        canonical: {
+        canonical: userIntegration ? {
           id: userIntegration.id,
           platform: userIntegration.platform,
           externalUserId: userIntegration.externalUserId,
@@ -61,13 +61,13 @@ router.get('/profile', async (req: Request, res: Response) => {
           lastSyncAt: userIntegration.lastSyncAt,
           metadata: userIntegration.metadata,
           scopes: userIntegration.scopes
-        },
+        } : null,
         
         // Integration health status
-        health: IntegrationAdapter.getHealthStatus(userIntegration),
+        health: userIntegration ? IntegrationAdapter.getHealthStatus(userIntegration) : null,
         
         // Token refresh status
-        needsRefresh: IntegrationAdapter.needsTokenRefresh(userIntegration)
+        needsRefresh: userIntegration ? IntegrationAdapter.needsTokenRefresh(userIntegration) : null
       })
     }
     
