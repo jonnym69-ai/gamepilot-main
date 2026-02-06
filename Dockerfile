@@ -24,4 +24,4 @@ RUN cp -r apps/api/dist ./dist
 EXPOSE 3001
 
 # Start the application
-CMD ["npm", "run", "start:port"]
+CMD ["node", "dist/index.js"]
