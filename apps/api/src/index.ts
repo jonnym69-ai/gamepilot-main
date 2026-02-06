@@ -160,6 +160,11 @@ async function startServer() {
       })
     })
     
+    // Root route for health check
+    app.get("/", (req, res) => {
+      res.status(200).send("GamePilot API OK");
+    });
+    
     // Apply error handling middleware (must be last)
     app.use(notFoundHandler)
     app.use(errorHandler)
