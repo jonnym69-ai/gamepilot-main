@@ -21,3 +21,11 @@ export * from './persona/identityCore'
 export * from './persona/synthesis'
 export * from './persona/moodEngine'
 export * from './persona/reflection'
+
+// Re-export specific types that API expects
+export type { User } from './models/user'
+export type { UserIntegration, IntegrationStatus } from './models/integration'
+export type { IdentityCore } from './persona/identityCore'
+export { buildPersonaSignals, buildPersonaTraits } from './persona/synthesis'
+export { buildMoodState } from './persona/moodEngine'
+export { buildReflection } from './persona/reflection'
