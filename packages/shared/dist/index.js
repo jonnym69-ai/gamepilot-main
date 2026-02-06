@@ -14,6 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.buildReflection = exports.buildMoodState = exports.buildPersonaTraits = exports.buildPersonaSignals = exports.IntegrationStatus = void 0;
 // Core data types for GamePilot platform
 __exportStar(require("./types"), exports);
 // Models
@@ -31,4 +32,13 @@ __exportStar(require("./persona/identityCore"), exports);
 __exportStar(require("./persona/synthesis"), exports);
 __exportStar(require("./persona/moodEngine"), exports);
 __exportStar(require("./persona/reflection"), exports);
+var integration_1 = require("./models/integration");
+Object.defineProperty(exports, "IntegrationStatus", { enumerable: true, get: function () { return integration_1.IntegrationStatus; } });
+var synthesis_1 = require("./persona/synthesis");
+Object.defineProperty(exports, "buildPersonaSignals", { enumerable: true, get: function () { return synthesis_1.buildPersonaSignals; } });
+Object.defineProperty(exports, "buildPersonaTraits", { enumerable: true, get: function () { return synthesis_1.buildPersonaTraits; } });
+var moodEngine_1 = require("./persona/moodEngine");
+Object.defineProperty(exports, "buildMoodState", { enumerable: true, get: function () { return moodEngine_1.buildMoodState; } });
+var reflection_1 = require("./persona/reflection");
+Object.defineProperty(exports, "buildReflection", { enumerable: true, get: function () { return reflection_1.buildReflection; } });
 //# sourceMappingURL=index.js.map
