@@ -19,7 +19,7 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@shared/*": ["../shared/src/*"]
+      "@gamepilot/shared/*": ["../shared/dist/*"]
     }
   },
   "include": ["src"],
