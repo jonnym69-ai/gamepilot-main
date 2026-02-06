@@ -127,29 +127,7 @@ async function startServer() {
     // Apply stricter rate limiting to auth routes
     app.use('/api/auth', authLimiter)
     
-    // Health check endpoint
-    app.get('/health', asyncHandler(async (req: Request, res: Response) => {
-      let dbHealth
-      try {
-        dbHealth = await databaseService.healthCheck()
-      } catch (error) {
-        dbHealth = { status: 'unhealthy', details: 'Database not initialized' }
-      }
-      
-      const health = {
-        status: 'ok', // Always return 'ok' for Railway healthcheck
-        timestamp: new Date().toISOString(),
-        service: 'GamePilot API',
-        version: '1.0.0',
-        environment: process.env.NODE_ENV || 'development',
-        database: dbHealth.details,
-        uptime: process.uptime(),
-        memory: process.memoryUsage(),
-      }
-      
-      res.status(200).json(health)
-    }))
-
+    
     // Debug endpoint to check environment variables
     app.get('/debug/env', (req, res) => {
       res.json({
@@ -171,6 +149,8 @@ async function startServer() {
     
     // Start listening
     const port = typeof PORT === 'string' ? parseInt(PORT) : PORT
+    console.log(`🔍 PORT environment variable: ${process.env.PORT}`)
+    console.log(`🔍 Using port: ${port}`)
     app.listen(port, "0.0.0.0", () => {
       console.log(`🚀 GamePilot API server running on port ${port}`)
     })
