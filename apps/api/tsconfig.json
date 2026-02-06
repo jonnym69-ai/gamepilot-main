@@ -14,7 +14,14 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@gamepilot/shared/*": ["../../packages/shared/dist/*"],
+      "@gamepilot/static-data/*": ["../../packages/static-data/dist/*"],
+      "@gamepilot/identity-engine/*": ["../../packages/identity-engine/dist/*"],
+      "@gamepilot/types/*": ["../../packages/types/dist/*"],
+      "@gamepilot/integrations/*": ["../../packages/integrations/dist/*"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "src/monitoring/**/*"]
