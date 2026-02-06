@@ -75,31 +75,14 @@ interface APIHealthCheck {
   }
 }
 
-// GET /health - Comprehensive health check
+// GET /health - Simple health check for Render
 router.get('/', asyncHandler(async (req: Request, res: Response) => {
-  const startTime = Date.now()
-  const healthChecks = await performAllHealthChecks()
-  const responseTime = Date.now() - startTime
-
-  const response: HealthCheckResponse = {
-    status: calculateOverallStatus(healthChecks),
+  res.status(200).json({
+    status: 'healthy',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    version: process.env.npm_package_version || '1.0.0',
-    environment: process.env.NODE_ENV || 'development',
-    checks: healthChecks,
-    summary: {
-      total: 5,
-      healthy: Object.values(healthChecks).filter(check => check.status === 'healthy').length,
-      degraded: Object.values(healthChecks).filter(check => check.status === 'degraded').length,
-      unhealthy: Object.values(healthChecks).filter(check => check.status === 'unhealthy').length
-    }
-  }
-
-  // Set appropriate status code
-  const statusCode = response.status === 'healthy' ? 200 : response.status === 'degraded' ? 200 : 503
-
-  res.status(statusCode).json(response)
+    service: 'GamePilot API'
+  })
 }))
 
 // GET /health/ready - Readiness probe
