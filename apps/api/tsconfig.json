@@ -16,7 +16,8 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "@gamepilot/shared/*": ["../../packages/shared/dist/types/*"],
+      "@gamepilot/shared": ["../../packages/shared/dist"],
+      "@gamepilot/shared/*": ["../../packages/shared/dist/*"],
       "@gamepilot/static-data/*": ["../../packages/static-data/dist/*"],
       "@gamepilot/identity-engine/*": ["../../packages/identity-engine/dist/*"],
       "@gamepilot/types/*": ["../../packages/types/dist/*"],
