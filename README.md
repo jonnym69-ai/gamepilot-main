@@ -423,3 +423,5 @@ Contributions are welcome! Please read our contributing guidelines before submit
 ---
 
 Built with ❤️ for the gaming community
+#   U p d a t e d   f o r   R e n d e r   r e d e p l o y  
+ 
