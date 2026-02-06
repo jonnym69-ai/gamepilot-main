@@ -19,7 +19,9 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@gamepilot/shared/*": ["../shared/dist/*"]
+      "@gamepilot/shared/*": ["../shared/dist/*"],
+      "@gamepilot/static-data/*": ["../static-data/dist/*"],
+      "@gamepilot/identity-engine/*": ["../identity-engine/dist/*"]
     }
   },
   "include": ["src"],
