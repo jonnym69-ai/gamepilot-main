@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { databaseService } from '../services/database'
 import { authenticateToken, getCurrentUser } from '../auth/authService'
 import { PlatformCode } from '@gamepilot/shared'
-import { PLATFORMS } from '@gamepilot/shared/src/constants/platform'
+import { PLATFORMS } from '@gamepilot/shared'
 
 const router = Router()
 
