@@ -86,13 +86,26 @@ async function startServer() {
     })
     
     // Apply CORS middleware
+    const allowedOrigins = process.env.ALLOWED_ORIGINS 
+      ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
+      : ['https://gamepilot.com'];
+
     app.use(cors({
-      origin: process.env.NODE_ENV === 'production' 
-        ? ['https://gamepilot.com'] 
-        : ['http://localhost:3002', 'http://localhost:3003', 'http://localhost:3005', 'http://localhost:3000', 'http://127.0.0.1:50814', 'http://127.0.0.1:63762'],
+      origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl)
+        if (!origin) return callback(null, true);
+        
+        if (process.env.NODE_ENV !== 'production' || allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes(origin.replace(/\/$/, ''))) {
+          callback(null, true);
+        } else {
+          console.warn(`⚠️ CORS blocked request from origin: ${origin}`);
+          console.info(`Allowed origins are: ${allowedOrigins.join(', ')}`);
+          callback(new Error('Not allowed by CORS'));
+        }
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization']
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
     }))
     
     app.use(session({

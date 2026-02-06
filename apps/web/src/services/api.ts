@@ -3,7 +3,7 @@ import type { Game as SharedGame } from '@gamepilot/types';
 import { toast } from '../components/Toast';
 
 // API base URL from environment variables
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 // Retry configuration
 const RETRY_CONFIG = {
